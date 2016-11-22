@@ -7,8 +7,9 @@ var app = {
             height: 10
         };
         grid.initialize(gridOptions);
+        setUpTileChangeListener('.tile', grid.updateTileImage);
         player.initialize(gridOptions);
-        setUpListener('.tile', player.movePlayer);
+        setUpClickListener('.tile', player.movePlayer);
     }
 };
 
@@ -26,38 +27,38 @@ function Player() {
         self.blTile = function(center) { if (center % self.gridWidth === 1) return 0; else return center + self.gridWidth - 1; };
         self.brTile = function(center) { if (center % self.gridWidth === 0) return 0; else return center + self.gridWidth + 1; };
 
-        this._initPlayer();
-    };
-
-    this._initPlayer = function() {
-        $('#tile-1>img').replaceWith('<img src="img/character-color.png">');
         self.playerPos = 1;
+        this._setPlayer(self.playerPos);
         this.setFog();
     };
 
+    this._setPlayer = function(tileNumber) {
+        $('#tile-' + tileNumber).addClass('player').trigger('classChange', ['.player', '<img src="img/character-color.png">']);
+    };
+
     this.setFog = function(newTile) {
-        var surroundingPreviousTiles = $('#tile-' + (self.topTile(self.playerPos)) + '>img')
-            .add($('#tile-' + (self.bottomTile(self.playerPos)) + '>img'))
-            .add($('#tile-' + (self.leftTile(self.playerPos)) + '>img'))
-            .add($('#tile-' + (self.rightTile(self.playerPos)) + '>img'))
-            .add($('#tile-' + (self.tlTile(self.playerPos)) + '>img'))
-            .add($('#tile-' + (self.trTile(self.playerPos)) + '>img'))
-            .add($('#tile-' + (self.blTile(self.playerPos)) + '>img'))
-            .add($('#tile-' + (self.brTile(self.playerPos)) + '>img'));
-        var surroundingNewTiles = $('#tile-' + (self.topTile(newTile)) + '>img')
-            .add($('#tile-' + (self.bottomTile(newTile)) + '>img'))
-            .add($('#tile-' + (self.leftTile(newTile)) + '>img'))
-            .add($('#tile-' + (self.rightTile(newTile)) + '>img'))
-            .add($('#tile-' + (self.trTile(newTile)) + '>img'))
-            .add($('#tile-' + (self.tlTile(newTile)) + '>img'))
-            .add($('#tile-' + (self.brTile(newTile)) + '>img'))
-            .add($('#tile-' + (self.blTile(newTile)) + '>img'));
+        var surroundingPreviousTiles = $('#tile-' + (self.topTile(self.playerPos)))
+            .add($('#tile-' + (self.bottomTile(self.playerPos))))
+            .add($('#tile-' + (self.leftTile(self.playerPos))))
+            .add($('#tile-' + (self.rightTile(self.playerPos))))
+            .add($('#tile-' + (self.tlTile(self.playerPos))))
+            .add($('#tile-' + (self.trTile(self.playerPos))))
+            .add($('#tile-' + (self.blTile(self.playerPos))))
+            .add($('#tile-' + (self.brTile(self.playerPos))));
+        var surroundingNewTiles = $('#tile-' + (self.topTile(newTile)))
+            .add($('#tile-' + (self.bottomTile(newTile))))
+            .add($('#tile-' + (self.leftTile(newTile))))
+            .add($('#tile-' + (self.rightTile(newTile))))
+            .add($('#tile-' + (self.trTile(newTile))))
+            .add($('#tile-' + (self.tlTile(newTile))))
+            .add($('#tile-' + (self.brTile(newTile))))
+            .add($('#tile-' + (self.blTile(newTile))));
 
         if (newTile) {
-            surroundingPreviousTiles.replaceWith('<img src="img/black.png">');  // this seems to be getting completed last instead of first
-            surroundingNewTiles.replaceWith('<img src="img/fog.png">');
+            surroundingPreviousTiles.removeClass('lightFog').addClass('darkestFog').trigger('classChange', ['.darkestFog', '<img src="img/black.png">']);  // this seems to be getting completed last instead of first
+            surroundingNewTiles.addClass('lightFog').trigger('classChange', ['.lightFog', '<img src="img/fog.png">']);
         } else {
-            surroundingPreviousTiles.replaceWith('<img src="img/fog.png">');
+            surroundingPreviousTiles.addClass('lightFog').trigger('classChange', ['.lightFog', '<img src="img/fog.png">']);
         }
     };
 
@@ -74,7 +75,8 @@ function Player() {
             (newTilePos === (self.blTile(self.playerPos)))
         ) {
             self.setFog(newTilePos);
-            $('#tile-' + newTilePos + '>img').replaceWith('<img src="img/character-color.png">');
+            $('#tile-' + self.playerPos).removeClass('player');
+            self._setPlayer(newTilePos);
             self.playerPos = newTilePos;
         }
     };
@@ -96,17 +98,25 @@ function Grid() {
                 var cellNum;
                 for(var c=1; c <= self.gridWidth; c++) {
                     cellNum = ((r - 1) * self.gridWidth) + c;
-                    markup += '<figure id="tile-' + cellNum + '" class="tile"><img src="img/black.png"></figure>'
+                    markup += '<figure id="tile-' + cellNum + '" class="tile darkestFog"><img src="img/black.png"></figure>'
                 }
                 markup += '</div>';
             }
             return markup;
         });
     };
+
+    this.updateTileImage = function(e, tileClass, image) {
+        $(tileClass + '>img').replaceWith(image);
+    };
 }
 
-function setUpListener(target, callback) {
+function setUpClickListener(target, callback) {
     $(target).click(function(e) { callback(e.currentTarget); });
+}
+
+function setUpTileChangeListener(target, callback) {
+    $(target).on('classChange', function(e, tileClass, image) { callback(e, tileClass, image); })
 }
 
 $(app.initialize());
