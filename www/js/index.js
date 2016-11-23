@@ -1,95 +1,81 @@
-var app = {
-    initialize: function() {
-        var grid = new Grid();
-        var player = new Player();
-        var gridOptions = {
-            width: 10,
-            height: 10
-        };
-        grid.initialize(gridOptions);
-        setUpTileChangeListener('.tile', grid.updateTileImage);
-        player.initialize(gridOptions);
-        setUpClickListener('.tile', player.movePlayer);
-    }
-};
-
-function Player() {
-    var self = this;
-
-    this.initialize = function(gridOptions) {
+class Player {
+    constructor(gridOptions) {
         this.gridWidth = gridOptions.width;
-        self.topTile = function(center) { return center - self.gridWidth; };
-        self.bottomTile = function(center) { return center + self.gridWidth; };
-        self.leftTile = function(center) { if (center % self.gridWidth === 1) return 0; else return center - 1; };
-        self.rightTile = function(center) { if (center % self.gridWidth === 0) return 0; else return center + 1; };
-        self.tlTile = function(center) { if (center % self.gridWidth === 1) return 0; else return center - self.gridWidth - 1; };
-        self.trTile = function(center) { if (center % self.gridWidth === 0) return 0; else return center - self.gridWidth + 1; };
-        self.blTile = function(center) { if (center % self.gridWidth === 1) return 0; else return center + self.gridWidth - 1; };
-        self.brTile = function(center) { if (center % self.gridWidth === 0) return 0; else return center + self.gridWidth + 1; };
+        this.playerPos = gridOptions.playerStart;
+    }
 
-        self.playerPos = 1;
-        this._setPlayer(self.playerPos);
+    initialize() {
+        this._setPlayer(this.playerPos);
         this.setFog();
-    };
+    }
 
-    this._setPlayer = function(tileNumber) {
+    topTile(center) { return center - this.gridWidth; }
+    bottomTile(center) { return center + this.gridWidth; }
+    leftTile(center) { if (center % this.gridWidth === 1) return 0; else return center - 1; }
+    rightTile(center) { if (center % this.gridWidth === 0) return 0; else return center + 1; }
+    tlTile(center) { if (center % this.gridWidth === 1) return 0; else return center - this.gridWidth - 1; }
+    trTile(center) { if (center % this.gridWidth === 0) return 0; else return center - this.gridWidth + 1; }
+    blTile(center) { if (center % this.gridWidth === 1) return 0; else return center + this.gridWidth - 1; }
+    brTile(center) { if (center % this.gridWidth === 0) return 0; else return center + this.gridWidth + 1; }
+
+    _setPlayer(tileNumber) {
         $('#tile-' + tileNumber).addClass('player').trigger('classChange', ['.player', '<img src="img/character-color.png">']);
     };
 
-    this.setFog = function(newTile) {
-        var surroundingPreviousTiles = $('#tile-' + (self.topTile(self.playerPos)))
-            .add($('#tile-' + (self.bottomTile(self.playerPos))))
-            .add($('#tile-' + (self.leftTile(self.playerPos))))
-            .add($('#tile-' + (self.rightTile(self.playerPos))))
-            .add($('#tile-' + (self.tlTile(self.playerPos))))
-            .add($('#tile-' + (self.trTile(self.playerPos))))
-            .add($('#tile-' + (self.blTile(self.playerPos))))
-            .add($('#tile-' + (self.brTile(self.playerPos))));
-        var surroundingNewTiles = $('#tile-' + (self.topTile(newTile)))
-            .add($('#tile-' + (self.bottomTile(newTile))))
-            .add($('#tile-' + (self.leftTile(newTile))))
-            .add($('#tile-' + (self.rightTile(newTile))))
-            .add($('#tile-' + (self.trTile(newTile))))
-            .add($('#tile-' + (self.tlTile(newTile))))
-            .add($('#tile-' + (self.brTile(newTile))))
-            .add($('#tile-' + (self.blTile(newTile))));
+    setFog(newTile) {
+        let surroundingPreviousTiles = $('#tile-' + (this.topTile(this.playerPos)))
+            .add($('#tile-' + (this.bottomTile(this.playerPos))))
+            .add($('#tile-' + (this.leftTile(this.playerPos))))
+            .add($('#tile-' + (this.rightTile(this.playerPos))))
+            .add($('#tile-' + (this.tlTile(this.playerPos))))
+            .add($('#tile-' + (this.trTile(this.playerPos))))
+            .add($('#tile-' + (this.blTile(this.playerPos))))
+            .add($('#tile-' + (this.brTile(this.playerPos))));
+        let surroundingNewTiles = $('#tile-' + (this.topTile(newTile)))
+            .add($('#tile-' + (this.bottomTile(newTile))))
+            .add($('#tile-' + (this.leftTile(newTile))))
+            .add($('#tile-' + (this.rightTile(newTile))))
+            .add($('#tile-' + (this.trTile(newTile))))
+            .add($('#tile-' + (this.tlTile(newTile))))
+            .add($('#tile-' + (this.brTile(newTile))))
+            .add($('#tile-' + (this.blTile(newTile))));
 
         if (newTile) {
-            surroundingPreviousTiles.removeClass('lightFog').addClass('darkestFog').trigger('classChange', ['.darkestFog', '<img src="img/black.png">']);  // this seems to be getting completed last instead of first
+            surroundingPreviousTiles.removeClass('lightFog').addClass('darkestFog').trigger('classChange', ['.darkestFog', '<img src="img/black.png">']);
             surroundingNewTiles.addClass('lightFog').trigger('classChange', ['.lightFog', '<img src="img/fog.png">']);
         } else {
             surroundingPreviousTiles.addClass('lightFog').trigger('classChange', ['.lightFog', '<img src="img/fog.png">']);
         }
     };
 
-    this.movePlayer = function(newTile) {
-        var newTileIndex = newTile.id.indexOf('e') + 2,
+    movePlayer(newTile, player) {
+        let newTileIndex = newTile.id.indexOf('e') + 2,
             newTilePos = +newTile.id.slice(newTileIndex);
-        if ((newTilePos === (self.rightTile(self.playerPos))) ||
-            (newTilePos === (self.leftTile(self.playerPos))) ||
-            (newTilePos === (self.bottomTile(self.playerPos))) ||
-            (newTilePos === (self.topTile(self.playerPos))) ||
-            (newTilePos === (self.trTile(self.playerPos))) ||
-            (newTilePos === (self.tlTile(self.playerPos))) ||
-            (newTilePos === (self.brTile(self.playerPos))) ||
-            (newTilePos === (self.blTile(self.playerPos)))
+
+        if ((newTilePos === (player.rightTile(player.playerPos))) ||
+            (newTilePos === (player.leftTile(player.playerPos))) ||
+            (newTilePos === (player.bottomTile(player.playerPos))) ||
+            (newTilePos === (player.topTile(player.playerPos))) ||
+            (newTilePos === (player.trTile(player.playerPos))) ||
+            (newTilePos === (player.tlTile(player.playerPos))) ||
+            (newTilePos === (player.brTile(player.playerPos))) ||
+            (newTilePos === (player.blTile(player.playerPos)))
         ) {
-            self.setFog(newTilePos);
-            $('#tile-' + self.playerPos).removeClass('player');
-            self._setPlayer(newTilePos);
-            self.playerPos = newTilePos;
+            player.setFog(newTilePos);
+            $('#tile-' + player.playerPos).removeClass('player');
+            player._setPlayer(newTilePos);
+            player.playerPos = newTilePos;
         }
     };
 }
 
-function Grid() {
-    this.initialize = function(gridOptions) {
+class Grid {
+    constructor(gridOptions) {
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
-        this.drawGrid();
-    };
+    }
 
-    this.drawGrid = function() {
+    drawGrid() {
         var self = this;
         $('.grid').prepend(function(){
             var markup = '';
@@ -104,19 +90,35 @@ function Grid() {
             }
             return markup;
         });
-    };
+    }
 
-    this.updateTileImage = function(e, tileClass, image) {
+    updateTileImage(e, tileClass, image) {
         $(tileClass + '>img').replaceWith(image);
-    };
+    }
 }
 
-function setUpClickListener(target, callback) {
-    $(target).click(function(e) { callback(e.currentTarget); });
+function setUpClickListener(target, callback, object) {
+    $(target).click(function(e) { callback(e.currentTarget, object); });
 }
 
 function setUpTileChangeListener(target, callback) {
     $(target).on('classChange', function(e, tileClass, image) { callback(e, tileClass, image); })
 }
+
+var app = {
+    initialize: function() {
+        const gridOptions = {
+            width: 10,
+            height: 10,
+            playerStart: 1
+        };
+        var grid = new Grid(gridOptions);
+        var player = new Player(gridOptions);
+        grid.drawGrid();
+        setUpTileChangeListener('.tile', grid.updateTileImage);
+        player.initialize();
+        setUpClickListener('.tile', player.movePlayer, player);
+    }
+};
 
 $(app.initialize());
