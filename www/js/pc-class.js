@@ -33,14 +33,14 @@ class PlayerCharacter {
         this._setFog(this.playerPos);
     }
 
-    topTile(row, col) { return 'row' + (row - 1) + 'col' + col; }
-    bottomTile(row, col) { return 'row' + (row + 1) + 'col' + col; }
-    leftTile(row, col) { return 'row' + row + 'col' + (col - 1); }
-    rightTile(row, col) { return 'row' + row + 'col' + (col + 1); }
-    tlTile(row, col) { return 'row' + (row - 1) + 'col' + (col - 1); }
-    trTile(row, col) { return 'row' + (row - 1) + 'col' + (col + 1); }
-    blTile(row, col) { return 'row' + (row + 1) + 'col' + (col - 1); }
-    brTile(row, col) { return 'row' + (row + 1) + 'col' + (col + 1); }
+    _topTile(row, col) { return 'row' + (row - 1) + 'col' + col; }
+    _bottomTile(row, col) { return 'row' + (row + 1) + 'col' + col; }
+    _leftTile(row, col) { return 'row' + row + 'col' + (col - 1); }
+    _rightTile(row, col) { return 'row' + row + 'col' + (col + 1); }
+    _tlTile(row, col) { return 'row' + (row - 1) + 'col' + (col - 1); }
+    _trTile(row, col) { return 'row' + (row - 1) + 'col' + (col + 1); }
+    _blTile(row, col) { return 'row' + (row + 1) + 'col' + (col - 1); }
+    _brTile(row, col) { return 'row' + (row + 1) + 'col' + (col + 1); }
 
     /*
      * _findSurroundingTiles()
@@ -78,7 +78,6 @@ class PlayerCharacter {
                     }
                 }
             }
-
         }
         return tiles;
     }
@@ -135,14 +134,14 @@ class PlayerCharacter {
     movePlayer(newTile, player) {
         let newTilePos = newTile.id;
 
-        if ((newTilePos === (player.rightTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player.leftTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player.bottomTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player.topTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player.trTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player.tlTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player.brTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player.blTile(player.playerRow, player.playerCol)))
+        if ((newTilePos === (player._rightTile(player.playerRow, player.playerCol))) ||
+            (newTilePos === (player._leftTile(player.playerRow, player.playerCol))) ||
+            (newTilePos === (player._bottomTile(player.playerRow, player.playerCol))) ||
+            (newTilePos === (player._topTile(player.playerRow, player.playerCol))) ||
+            (newTilePos === (player._trTile(player.playerRow, player.playerCol))) ||
+            (newTilePos === (player._tlTile(player.playerRow, player.playerCol))) ||
+            (newTilePos === (player._brTile(player.playerRow, player.playerCol))) ||
+            (newTilePos === (player._blTile(player.playerRow, player.playerCol)))
         ) {
             player._setPlayerTileIdColIndex(newTilePos);
             player._setFog(newTilePos);
