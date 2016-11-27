@@ -17,15 +17,15 @@ class Grid {
     drawGrid() {
         var self = this,
             markup = '',
-            cellNum = 0,
-            blackTile = '<figure id="tile-" class="tile darkestFog"><img src="img/black.png"></figure>';
+            id = '',
+            blackTile = '<figure id="" class="tile light-non"><img src="img/light-non.png"></figure>';
 
         $('.grid').prepend(function(){
-            for(var r=1; r <= self.gridHeight; r++) {
-                markup += '<div id="row-' + r + '" class="row">';
-                for(var c=1; c <= self.gridWidth; c++) {
-                    cellNum = ((r - 1) * self.gridWidth) + c;
-                    markup += self._insertString(blackTile, cellNum, blackTile.indexOf('" class'));
+            for(var rowNum=1; rowNum <= self.gridHeight; rowNum++) {
+                markup += '<div class="row">';
+                for(var colNum=1; colNum <= self.gridWidth; colNum++) {
+                    id = "row" + rowNum + "col" + colNum;
+                    markup += self._insertString(blackTile, id, blackTile.indexOf('" class'));
                 }
                 markup += '</div>';
             }
@@ -34,6 +34,6 @@ class Grid {
     }
 
     updateTileImage(e, tileClass, image) {
-        $(tileClass + '>img').replaceWith(image);
+        $('.' + tileClass + '>img').replaceWith(image);
     }
 }

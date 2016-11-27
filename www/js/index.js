@@ -10,7 +10,7 @@ var app = {
         const gridOptions = {
             width: 10,
             height: 10,
-            playerStart: 1
+            playerStart: 'row1col1'
         };
 
         var grid = new Grid(gridOptions);
