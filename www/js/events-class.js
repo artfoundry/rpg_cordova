@@ -12,6 +12,10 @@ class Events {
     }
 
     setUpTileChangeListener(target, callback) {
-        $(target).on('classChange', function(e, tileClass, image) { callback(e, tileClass, image); })
+        $(target).on('tileChange', function(e, tileClass, image) { callback(e, tileClass, image); });
+    }
+
+    setUpLightChangeListener(target, callback) {
+        $(target).on('lightChange', function(e, tileClass, image) { callback(e, tileClass, image); });
     }
 }

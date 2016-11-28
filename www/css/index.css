@@ -46,6 +46,11 @@ body {
     max-height: 64px;
 }
 
+.light-img {
+    z-index: 2;
+    position: absolute;
+}
+
 img {
     max-width: 100%;
     height: auto;
