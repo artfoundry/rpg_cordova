@@ -18,7 +18,7 @@ class Grid {
         var self = this,
             markup = '',
             id = '',
-            blackTile = '<figure id="" class="tile light-non"><img src="img/light-non.png"></figure>';
+            blackTile = '<figure id="" class="tile light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>';
 
         $('.grid').prepend(function(){
             for(var rowNum=1; rowNum <= self.gridHeight; rowNum++) {
@@ -34,6 +34,10 @@ class Grid {
     }
 
     updateTileImage(e, tileClass, image) {
-        $('.' + tileClass + '>img').replaceWith(image);
+        $('.' + tileClass + '>img.content').replaceWith(image);
+    }
+
+    updateLightingImage(e, tileClass, image) {
+        $('.' + tileClass + '>img.light-img').replaceWith(image);
     }
 }

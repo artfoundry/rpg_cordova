@@ -5,7 +5,7 @@
  * private
  * - setting character position
  * - determining values of tiles surrounding character
- * - drawing fog around characters
+ * - drawing lighting around characters
  *
  * public
  * - moving
@@ -30,7 +30,7 @@ class PlayerCharacter {
     initialize() {
         this._setPlayerTileIdColIndex(this.playerPos)
         this._setPlayer(this.playerPos);
-        this._setFog(this.playerPos);
+        this._setLighting(this.playerPos);
     }
 
     _topTile(row, col) { return 'row' + (row - 1) + 'col' + col; }
@@ -82,8 +82,10 @@ class PlayerCharacter {
         return tiles;
     }
 
-    _setPlayer(tileId) {
-        $('#' + tileId).addClass('player').trigger('classChange', ['player', '<img src="img/character-color.png">']);
+    _setPlayer(newTileId, oldTileId) {
+        if (oldTileId)
+            $('#' + oldTileId).removeClass('player');
+        $('#' + newTileId).addClass('player').trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
         this._setPlayerRowCol();
     }
 
@@ -96,11 +98,16 @@ class PlayerCharacter {
         this.playerCol = +this.playerPos.slice(this.playerTileIdColIndex + 3);
     }
 
-    _setFog(centerTile) {
+    _setLighting(centerTile) {
         var newRow = +centerTile.slice(3,this.playerTileIdColIndex),
             newCol = +centerTile.slice(this.playerTileIdColIndex + 3),
             lightRadiusTiles,
-            lightBrightness = '';
+            lightBrightness = '',
+            $centerTile = $('#' + centerTile),
+            classIndex = $centerTile.attr('class').indexOf('light'),
+            centerLighting = $centerTile.attr('class').slice(classIndex, classIndex + 10);
+
+        $centerTile.removeClass(centerLighting).addClass('light-wht').trigger('lightChange', ['light-wht', '<img class="light-img" src="img/light-wht.png">']);
 
         for (let i = this.lightRadius; i >= 1; i--) {
             lightRadiusTiles = this._findSurroundingTiles(newRow, newCol, i);
@@ -120,34 +127,37 @@ class PlayerCharacter {
             // when moving, set previous outer light circle to darkness
             if (centerTile !== this.playerPos && i === this.lightRadius) {
                 let lastLightRadius = this._findSurroundingTiles(this.playerRow, this.playerCol, i);
-                lastLightRadius.removeClass(lightBrightness).addClass('light-non').trigger('classChange', ['light-non', '<img src="img/light-non.png">']);
+                lastLightRadius.removeClass(lightBrightness).addClass('light-non').trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
             }
             // remove previous light class
             lightRadiusTiles.removeClass(function(index) {
                 let classIndex = $(this).attr('class').indexOf('light');
                 return $(this).attr('class').slice(classIndex, classIndex+9);
             });
-            lightRadiusTiles.addClass(lightBrightness).trigger('classChange', [lightBrightness, '<img src="img/' + lightBrightness + '.png">']);
+            lightRadiusTiles.addClass(lightBrightness).trigger('lightChange', [lightBrightness, '<img class="light-img" src="img/' + lightBrightness + '.png">']);
         }
     };
 
     movePlayer(newTile, player) {
-        let newTilePos = newTile.id;
+        let currentPos = player.playerPos,
+            currentRow = player.playerRow,
+            currentCol = player.playerCol,
+            newTilePos = newTile.id;
 
-        if ((newTilePos === (player._rightTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player._leftTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player._bottomTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player._topTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player._trTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player._tlTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player._brTile(player.playerRow, player.playerCol))) ||
-            (newTilePos === (player._blTile(player.playerRow, player.playerCol)))
+        if ((newTilePos === (player._rightTile(currentRow, currentCol))) ||
+            (newTilePos === (player._leftTile(currentRow, currentCol))) ||
+            (newTilePos === (player._bottomTile(currentRow, currentCol))) ||
+            (newTilePos === (player._topTile(currentRow, currentCol))) ||
+            (newTilePos === (player._trTile(currentRow, currentCol))) ||
+            (newTilePos === (player._tlTile(currentRow, currentCol))) ||
+            (newTilePos === (player._brTile(currentRow, currentCol))) ||
+            (newTilePos === (player._blTile(currentRow, currentCol)))
         ) {
             player._setPlayerTileIdColIndex(newTilePos);
-            player._setFog(newTilePos);
-            $('#' + player.playerPos).removeClass('player');
+            $('#' + currentPos).trigger('tileChange', ['player', '<img class="content" src="img/trans.png">']);
+            player._setLighting(newTilePos);
             player.playerPos = newTilePos;
-            player._setPlayer(newTilePos);
+            player._setPlayer(newTilePos, currentPos);
         }
     };
 }
