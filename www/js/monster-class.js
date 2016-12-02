@@ -30,7 +30,7 @@ class Monster {
     }
 
     _randomMove() {
-        const direction = Math.round(Math.random() * 40) / 10;
+        const direction = Math.round((Math.random() * 40) / 10);
 
         switch (direction) {
             case 1:
