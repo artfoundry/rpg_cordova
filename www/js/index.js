@@ -45,7 +45,7 @@ var app = {
         monsters.monster1.initialize('monster-1');
         monsters.monster2.initialize('monster-2');
 
-        turnController.initalize();
+        turnController.runTurnCycle();
     }
 };
 

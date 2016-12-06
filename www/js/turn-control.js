@@ -17,13 +17,19 @@ class TurnController {
         this.events = new Events();
     }
 
-    initalize() {
-        this.events.setUpTileChangeListener('.tile', this.grid.updateTileImage);
-        this.events.setUpLightChangeListener('.tile', this.grid.updateLightingImage);
-        this.events.setUpClickListener('.tile', this.players.player1.movePlayer, this.players.player1, isMonsterTurn);
+    runTurnCycle() {
+        this.setupListeners();
+        this.tearDownListeners();
+        this.moveMonsters();
     }
 
-    turnCycle() {
+    setupListeners() {
+        this.events.setUpTileChangeListener('.tile', this.grid.updateTileImage);
+        this.events.setUpLightChangeListener('.tile', this.grid.updateLightingImage);
+        this.events.setUpClickListener('.tile', this.players.player1.movePlayer, this.players.player1);
+    }
+
+    tearDownListeners() {
 
     }
 
