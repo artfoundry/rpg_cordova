@@ -12,10 +12,11 @@
  */
 
 class PlayerCharacter {
-    constructor(gridOptions) {
+    constructor(gridOptions, playerOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
-        this.playerPos = gridOptions.playerStart;
+        this.playerPos = playerOptions.playerStart;
+        this.playerName = playerOptions.playerName;
         this.playerRow = 0;
         this.playerCol = 0;
         this.playerTileIdColIndex = 0;

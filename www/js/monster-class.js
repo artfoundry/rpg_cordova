@@ -3,17 +3,16 @@
  */
 
 class Monster {
-    constructor(gridOptions) {
+    constructor(gridOptions, monsterOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
+        this.monsterType = monsterOptions.monsterType;
         this.monsterRow = 0;
         this.monsterCol = 0;
         this.monsterPos = '';
-        this.monsterType = '';
     }
 
-    initialize(monsterType) {
-        this.monsterType = monsterType;
+    initialize() {
         this._randomizeLoc();
         this._setmonster();
         this._randomMove();
