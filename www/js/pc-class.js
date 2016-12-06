@@ -12,10 +12,11 @@
  */
 
 class PlayerCharacter {
-    constructor(gridOptions) {
+    constructor(gridOptions, playerOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
-        this.playerPos = gridOptions.playerStart;
+        this.playerPos = playerOptions.playerStart;
+        this.playerName = playerOptions.playerName;
         this.playerRow = 0;
         this.playerCol = 0;
         this.playerTileIdColIndex = 0;
@@ -48,7 +49,7 @@ class PlayerCharacter {
      */
 
     _findSurroundingTiles(centerRow, centerCol, searchRadius) {
-        var firstRow = centerRow - searchRadius,
+        let firstRow = centerRow - searchRadius,
             firstCol = centerCol - searchRadius,
             lastRow = centerRow + searchRadius,
             lastCol = centerCol + searchRadius,
@@ -99,7 +100,7 @@ class PlayerCharacter {
     }
 
     _setLighting(centerTile) {
-        var newRow = +centerTile.slice(3,this.playerTileIdColIndex),
+        let newRow = +centerTile.slice(3,this.playerTileIdColIndex),
             newCol = +centerTile.slice(this.playerTileIdColIndex + 3),
             lightRadiusTiles,
             lightBrightness = '',
@@ -136,9 +137,9 @@ class PlayerCharacter {
             });
             lightRadiusTiles.addClass(lightBrightness).trigger('lightChange', [lightBrightness, '<img class="light-img" src="img/' + lightBrightness + '.png">']);
         }
-    };
+    }
 
-    movePlayer(newTile, player) {
+    movePlayer(newTile, player, turnController) {
         let currentPos = player.playerPos,
             currentRow = player.playerRow,
             currentCol = player.playerCol,
@@ -158,6 +159,7 @@ class PlayerCharacter {
             player._setLighting(newTilePos);
             player.playerPos = newTilePos;
             player._setPlayer(newTilePos, currentPos);
+            turnController.moveMonsters();
         }
-    };
+    }
 }

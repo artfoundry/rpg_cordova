@@ -9,25 +9,43 @@ var app = {
     initialize: function() {
         const gridOptions = {
             width: 10,
-            height: 10,
-            playerStart: 'row1col1'
+            height: 10
         };
 
-        var grid = new Grid(gridOptions);
-        var player = new PlayerCharacter(gridOptions);
-        var monster1 = new Monster(gridOptions);
-        var monster2 = new Monster(gridOptions);
-        var events = new Events();
+        const playerOptions = {
+            "player1" : {
+                "playerName" : "Player1",
+                "playerStart" : "row1col1"
+            }
+        };
+
+        const monsterOptions = {
+            "monster1" : {
+                "monsterType" : "monster1"
+            },
+            "monster2" : {
+                "monsterType" : "monster2"
+            }
+        };
+
+        let grid = new Grid(gridOptions);
+        let players = {
+            player1: new PlayerCharacter(gridOptions, playerOptions.player1)
+        };
+        let monsters = {
+            monster1 : new Monster(gridOptions, monsterOptions),
+            monster2 : new Monster(gridOptions, monsterOptions)
+        };
+        let turnController = new TurnController(grid, players, monsters);
 
         grid.drawGrid();
-        events.setUpTileChangeListener('.tile', grid.updateTileImage);
-        events.setUpLightChangeListener('.tile', grid.updateLightingImage);
 
-        player.initialize();
-        events.setUpClickListener('.tile', player.movePlayer, player);
+        players.player1.initialize();
 
-        monster1.initialize('monster-1');
-        monster2.initialize('monster-2');
+        monsters.monster1.initialize('monster-1');
+        monsters.monster2.initialize('monster-2');
+
+        turnController.initalize();
     }
 };
 
