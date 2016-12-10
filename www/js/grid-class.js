@@ -15,15 +15,15 @@ class Grid {
     }
 
     drawGrid() {
-        var self = this,
+        let self = this,
             markup = '',
             id = '',
             blackTile = '<figure id="" class="tile light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>';
 
         $('.grid').prepend(() => {
-            for(var rowNum=1; rowNum <= self.gridHeight; rowNum++) {
+            for(let rowNum=1; rowNum <= self.gridHeight; rowNum++) {
                 markup += '<div class="row">';
-                for(var colNum=1; colNum <= self.gridWidth; colNum++) {
+                for(let colNum=1; colNum <= self.gridWidth; colNum++) {
                     id = "row" + rowNum + "col" + colNum;
                     markup += self._insertString(blackTile, id, blackTile.indexOf('" class'));
                 }

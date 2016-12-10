@@ -21,10 +21,10 @@ var app = {
 
         const monsterOptions = {
             "monster1" : {
-                "monsterType" : "monster1"
+                "monsterType" : "monster-1"
             },
             "monster2" : {
-                "monsterType" : "monster2"
+                "monsterType" : "monster-2"
             }
         };
 
@@ -33,19 +33,21 @@ var app = {
             player1: new PlayerCharacter(gridOptions, playerOptions.player1)
         };
         let monsters = {
-            monster1 : new Monster(gridOptions, monsterOptions),
-            monster2 : new Monster(gridOptions, monsterOptions)
+            monster1 : new Monster(gridOptions, monsterOptions.monster1),
+            monster2 : new Monster(gridOptions, monsterOptions.monster2)
         };
         let turnController = new TurnController(grid, players, monsters);
 
         grid.drawGrid();
 
+        turnController.initialize();
+        turnController.runTurnCycle();
+
         players.player1.initialize();
 
-        monsters.monster1.initialize('monster-1');
-        monsters.monster2.initialize('monster-2');
+        monsters.monster1.initialize();
+        monsters.monster2.initialize();
 
-        turnController.runTurnCycle();
     }
 };
 

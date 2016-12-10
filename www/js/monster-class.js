@@ -20,7 +20,11 @@ class Monster {
 
     _setmonster() {
         this.monsterPos = 'row' + this.monsterRow + 'col' + this.monsterCol;
-        $('#' + this.monsterPos).addClass(this.monsterType).trigger('tileChange', [this.monsterType, '<img class="content" src="img/' + this.monsterType + '.png">'])
+        $('#' + this.monsterPos).addClass(this.monsterType).trigger('tileChange', [this.monsterType, '<img class="content" src="img/' + this.monsterType + '.png">']);
+    }
+
+    _clearMonsterImg() {
+        $('#' + this.monsterPos).trigger('tileChange', [this.monsterType, '<img class="content" src="img/trans.png">']);
     }
 
     _randomizeLoc() {
@@ -30,6 +34,9 @@ class Monster {
 
     _randomMove() {
         const direction = Math.round((Math.random() * 40) / 10);
+
+        this._clearMonsterImg();
+        $('#' + this.monsterPos).removeClass(this.monsterType);
 
         switch (direction) {
             case 1:
@@ -47,6 +54,7 @@ class Monster {
             case 4:
                 if (this.monsterCol > 0)
                     this.monsterCol -= 1;
+                break;
         }
         this._setmonster();
     }

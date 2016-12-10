@@ -15,22 +15,37 @@ class TurnController {
         this.players = players;
         this.monsters = monsters;
         this.events = new Events();
+        this.gameIsActive = true;
+        this.isMonsterTurn = false;
+    }
+
+    initialize() {
+        this.events.setUpTileChangeListener('.tile', this.grid.updateTileImage);
+        this.events.setUpLightChangeListener('.tile', this.grid.updateLightingImage);
     }
 
     runTurnCycle() {
-        this.setupListeners();
-        this.tearDownListeners();
-        this.moveMonsters();
+        if(this.gameIsActive) {
+            if (this.isMonsterTurn) {
+                this._tearDownListeners();
+                this.moveMonsters();
+                this.isMonsterTurn = false;
+            }
+            this._setupListeners();
+        }
     }
 
-    setupListeners() {
-        this.events.setUpTileChangeListener('.tile', this.grid.updateTileImage);
-        this.events.setUpLightChangeListener('.tile', this.grid.updateLightingImage);
-        this.events.setUpClickListener('.tile', this.players.player1.movePlayer, this.players.player1);
+    endPlayerTurn() {
+        this.isMonsterTurn = true;
+        this.runTurnCycle();
     }
 
-    tearDownListeners() {
+    _setupListeners() {
+        this.events.setUpClickListener('.tile', this.players.player1.movePlayer, this.players.player1, this.endPlayerTurn.bind(this));
+    }
 
+    _tearDownListeners() {
+        this.events.removeClickListener('.tile');
     }
 
     moveMonsters() {
