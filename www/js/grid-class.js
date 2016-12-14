@@ -20,7 +20,7 @@ class Grid {
             id = '',
             blackTile = '<figure id="" class="tile light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>';
 
-        $('.grid').prepend(function(){
+        $('.grid').prepend(() => {
             for(var rowNum=1; rowNum <= self.gridHeight; rowNum++) {
                 markup += '<div class="row">';
                 for(var colNum=1; colNum <= self.gridWidth; colNum++) {

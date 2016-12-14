@@ -13,21 +13,24 @@ var app = {
             playerStart: 'row1col1'
         };
 
-        var grid = new Grid(gridOptions);
-        var player = new PlayerCharacter(gridOptions);
-        var monster1 = new Monster(gridOptions);
-        var monster2 = new Monster(gridOptions);
-        var events = new Events();
+        let grid = new Grid(gridOptions);
+        let player = new PlayerCharacter(gridOptions);
+        let monsters = {
+            monster1 : new Monster(gridOptions),
+            monster2 : new Monster(gridOptions)
+        };
+        let events = new Events();
+        let turnController = new TurnController(monsters);
 
         grid.drawGrid();
         events.setUpTileChangeListener('.tile', grid.updateTileImage);
         events.setUpLightChangeListener('.tile', grid.updateLightingImage);
 
         player.initialize();
-        events.setUpClickListener('.tile', player.movePlayer, player);
+        events.setUpClickListener('.tile', player.movePlayer, player, turnController);
 
-        monster1.initialize('monster-1');
-        monster2.initialize('monster-2');
+        monsters.monster1.initialize('monster-1');
+        monsters.monster2.initialize('monster-2');
     }
 };
 
