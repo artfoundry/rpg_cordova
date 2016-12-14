@@ -12,10 +12,11 @@
  */
 
 class PlayerCharacter {
-    constructor(gridOptions) {
+    constructor(gridOptions, playerOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
-        this.playerPos = gridOptions.playerStart;
+        this.playerPos = playerOptions.playerStart;
+        this.playerName = playerOptions.playerName;
         this.playerRow = 0;
         this.playerCol = 0;
         this.playerTileIdColIndex = 0;
@@ -138,7 +139,7 @@ class PlayerCharacter {
         }
     }
 
-    movePlayer(newTile, player, turnController) {
+    movePlayer(newTile, player, callback) {
         let currentPos = player.playerPos,
             currentRow = player.playerRow,
             currentCol = player.playerCol,
@@ -158,7 +159,7 @@ class PlayerCharacter {
             player._setLighting(newTilePos);
             player.playerPos = newTilePos;
             player._setPlayer(newTilePos, currentPos);
-            turnController.moveMonsters();
+            callback();
         }
     }
 }

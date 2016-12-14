@@ -7,15 +7,19 @@
  */
 
 class Events {
-    setUpClickListener(target, callback, playerObject, turnController) {
-        $(target).click((e) => { callback(e.currentTarget, playerObject, turnController); });
+    setUpClickListener(target, action, playerObject, callback) {
+        $(target).click((e) => { action(e.currentTarget, playerObject, callback); });
     }
 
-    setUpTileChangeListener(target, callback) {
-        $(target).on('tileChange', (e, tileClass, image) => { callback(e, tileClass, image); });
+    removeClickListener(target) {
+        $(target).off('click');
     }
 
-    setUpLightChangeListener(target, callback) {
-        $(target).on('lightChange', (e, tileClass, image) => { callback(e, tileClass, image); });
+    setUpTileChangeListener(target, action) {
+        $(target).on('tileChange', (e, tileClass, image) => { action(e, tileClass, image); });
+    }
+
+    setUpLightChangeListener(target, action) {
+        $(target).on('lightChange', (e, tileClass, image) => { action(e, tileClass, image); });
     }
 }
