@@ -85,8 +85,8 @@ class PlayerCharacter {
 
     _setPlayer(newTileId, oldTileId) {
         if (oldTileId)
-            $('#' + oldTileId).removeClass('player');
-        $('#' + newTileId).addClass('player').trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
+            $('#' + oldTileId).removeClass('player impassable');
+        $('#' + newTileId).addClass('player impassable').trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
         this._setPlayerRowCol();
     }
 

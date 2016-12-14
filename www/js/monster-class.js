@@ -20,11 +20,11 @@ class Monster {
 
     _setmonster() {
         this.monsterPos = 'row' + this.monsterRow + 'col' + this.monsterCol;
-        $('#' + this.monsterPos).addClass(this.monsterType).trigger('tileChange', [this.monsterType, '<img class="content" src="img/' + this.monsterType + '.png">']);
+        $('#' + this.monsterPos).addClass(this.monsterType + ' impassable').trigger('tileChange', [this.monsterType, '<img class="content" src="img/' + this.monsterType + '.png">']);
     }
 
     _clearMonsterImg() {
-        $('#' + this.monsterPos).trigger('tileChange', [this.monsterType, '<img class="content" src="img/trans.png">']);
+        $('#' + this.monsterPos).trigger('tileChange', [this.monsterType, '<img class="content" src="img/trans.png">']).removeClass(this.monsterType + ' impassable');
     }
 
     _randomizeLoc() {
@@ -36,23 +36,22 @@ class Monster {
         const direction = Math.round((Math.random() * 40) / 10);
 
         this._clearMonsterImg();
-        $('#' + this.monsterPos).removeClass(this.monsterType);
 
         switch (direction) {
             case 1:
-                if (this.monsterRow > 0)
+                if ((this.monsterRow > 0) && !($('#row' + (this.monsterRow - 1) + 'col' + this.monsterCol).hasClass('impassable')))
                     this.monsterRow -= 1;
                 break;
             case 2:
-                if (this.monsterCol < this.gridWidth)
+                if ((this.monsterCol < this.gridWidth) && !($('#row' + this.monsterRow + 'col' + (this.monsterCol + 1)).hasClass('impassable')))
                     this.monsterCol += 1;
                 break;
             case 3:
-                if (this.monsterRow < this.gridHeight)
+                if ((this.monsterRow < this.gridHeight) && !($('#row' + (this.monsterRow + 1) + 'col' + this.monsterCol).hasClass('impassable')))
                     this.monsterRow += 1;
                 break;
             case 4:
-                if (this.monsterCol > 0)
+                if ((this.monsterCol > 0) && !($('#row' + this.monsterRow + 'col' + (this.monsterCol - 1)).hasClass('impassable')))
                     this.monsterCol -= 1;
                 break;
         }
