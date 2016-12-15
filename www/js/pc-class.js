@@ -162,4 +162,14 @@ class PlayerCharacter {
             callback();
         }
     }
+
+    jiggle(player) {
+        $('#' + player.playerPos + '> .content').animate({
+            marginLeft: "+=10"
+        }, 100).animate({
+            marginLeft: "-=30"
+        }, 100).animate({
+            marginLeft: "+=20"
+        }, 100);
+    }
 }

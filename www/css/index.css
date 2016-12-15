@@ -38,12 +38,20 @@ body {
 }
 
 .tile {
-    background-image: url('../img/ground-tile.jpg');
-    background-size: contain;
     display: inline-block;
     width: 9%;
     max-width: 64px;
     max-height: 64px;
+}
+
+.tile-ground-dungeon {
+    background-image: url('../img/ground-dungeon.jpg');
+    background-size: contain;
+}
+
+.tile-wall {
+    background-image: url('../img/wall-dungeon.jpg');
+    background-size: contain;
 }
 
 .light-img {

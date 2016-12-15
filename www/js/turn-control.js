@@ -40,8 +40,20 @@ class TurnController {
         this.runTurnCycle();
     }
 
+
+    /*
+     * function _setupListeners
+     *
+     * Sets up click handlers through events class with these parameters:
+     *
+     * -target class
+     * -function to take action
+     * -function to take alternate action if click target is invalid
+     * -player object
+     * -callback function to run after player move action is finished
+     */
     _setupListeners() {
-        this.events.setUpClickListener('.tile', this.players.player1.movePlayer, this.players.player1, this.endPlayerTurn.bind(this));
+        this.events.setUpClickListener('.tile', this.players.player1.movePlayer, this.players.player1.jiggle, this.players.player1, this.endPlayerTurn.bind(this));
     }
 
     _tearDownListeners() {

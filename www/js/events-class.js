@@ -7,8 +7,14 @@
  */
 
 class Events {
-    setUpClickListener(target, action, playerObject, callback) {
-        $(target).click((e) => { action(e.currentTarget, playerObject, callback); });
+    setUpClickListener(target, action, altAction, playerObject, callback) {
+        $(target).click((e) => {
+            if ($(e.currentTarget).hasClass('impassable')) {
+                altAction(playerObject);
+            } else {
+                action(e.currentTarget, playerObject, callback);
+            }
+        });
     }
 
     removeClickListener(target) {

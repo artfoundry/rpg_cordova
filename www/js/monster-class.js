@@ -39,19 +39,19 @@ class Monster {
 
         switch (direction) {
             case 1:
-                if ((this.monsterRow > 0) && !($('#row' + (this.monsterRow - 1) + 'col' + this.monsterCol).hasClass('impassable')))
+                if (!($('#row' + (this.monsterRow - 1) + 'col' + this.monsterCol).hasClass('impassable')))
                     this.monsterRow -= 1;
                 break;
             case 2:
-                if ((this.monsterCol < this.gridWidth) && !($('#row' + this.monsterRow + 'col' + (this.monsterCol + 1)).hasClass('impassable')))
+                if (!($('#row' + this.monsterRow + 'col' + (this.monsterCol + 1)).hasClass('impassable')))
                     this.monsterCol += 1;
                 break;
             case 3:
-                if ((this.monsterRow < this.gridHeight) && !($('#row' + (this.monsterRow + 1) + 'col' + this.monsterCol).hasClass('impassable')))
+                if (!($('#row' + (this.monsterRow + 1) + 'col' + this.monsterCol).hasClass('impassable')))
                     this.monsterRow += 1;
                 break;
             case 4:
-                if ((this.monsterCol > 0) && !($('#row' + this.monsterRow + 'col' + (this.monsterCol - 1)).hasClass('impassable')))
+                if (!($('#row' + this.monsterRow + 'col' + (this.monsterCol - 1)).hasClass('impassable')))
                     this.monsterCol -= 1;
                 break;
         }
