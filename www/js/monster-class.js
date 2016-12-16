@@ -15,27 +15,37 @@ class Monster {
     initialize() {
         this._randomizeLoc();
         this._setmonster();
-        this._randomMove();
+        this.randomMove();
     }
 
     _setmonster() {
         this.monsterPos = 'row' + this.monsterRow + 'col' + this.monsterCol;
-        $('#' + this.monsterPos).addClass(this.monsterType + ' impassable').trigger('tileChange', [this.monsterType, '<img class="content" src="img/' + this.monsterType + '.png">']);
+        $('#' + this.monsterPos)
+            .addClass(this.monsterType + ' monster')
+            .trigger('tileChange', [this.monsterType, '<img class="content" src="img/' + this.monsterType + '.png">'])
+            .removeClass('walkable');
     }
 
-    _clearMonsterImg() {
-        $('#' + this.monsterPos).trigger('tileChange', [this.monsterType, '<img class="content" src="img/trans.png">']).removeClass(this.monsterType + ' impassable');
+    clearMonsterImg(monster) {
+        $('#' + monster.monsterPos)
+            .addClass('walkable')
+            .trigger('tileChange', [monster.monsterType, '<img class="content" src="img/trans.png">'])
+            .removeClass(monster.monsterType + ' monster');
     }
 
     _randomizeLoc() {
-        this.monsterRow = Math.round(Math.random() * this.gridHeight);
-        this.monsterCol = Math.round(Math.random() * this.gridWidth);
+        this.monsterRow = Math.ceil(Math.random() * (this.gridHeight/2) + (this.gridHeight/3));
+        if (this.monsterRow === 0)
+            this.monsterRow = 1;
+        this.monsterCol = Math.ceil(Math.random() * (this.gridWidth/2) + (this.gridWidth/3));
+        if (this.monsterCol === 0)
+            this.monsterCol = 1;
     }
 
-    _randomMove() {
+    randomMove() {
         const direction = Math.round((Math.random() * 40) / 10);
 
-        this._clearMonsterImg();
+        this.clearMonsterImg(this);
 
         switch (direction) {
             case 1:

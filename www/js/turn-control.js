@@ -31,7 +31,10 @@ class TurnController {
                 this.moveMonsters();
                 this.isMonsterTurn = false;
             }
-            this._setupListeners();
+            for (let player in this.players) {
+                if (Object.prototype.hasOwnProperty.call(this.players, player))
+                    this._setupListeners(this.players[player]);
+            }
         }
     }
 
@@ -52,8 +55,25 @@ class TurnController {
      * -player object
      * -callback function to run after player move action is finished
      */
-    _setupListeners() {
-        this.events.setUpClickListener('.tile', this.players.player1.movePlayer, this.players.player1.jiggle, this.players.player1, this.endPlayerTurn.bind(this));
+    _setupListeners(player) {
+        let actions = {
+                "walkable" : player.movePlayer,
+                "impassable" : player.jiggle,
+                "monster" : player.attack
+            },
+            params = {
+                "walkable" : {
+                    "player" : player,
+                    "callback" : this.endPlayerTurn.bind(this)
+                },
+                "impassable" : {
+                    "player" : player
+                },
+                "monster" : {
+                    "monsters" : this.monsters
+                }
+            };
+        this.events.setUpClickListener('.tile', actions, params);
     }
 
     _tearDownListeners() {
@@ -63,7 +83,7 @@ class TurnController {
     moveMonsters() {
         for (let monster in this.monsters) {
             if (Object.prototype.hasOwnProperty.call(this.monsters, monster))
-                this.monsters[monster]._randomMove();
+                this.monsters[monster].randomMove();
         }
     }
 }

@@ -7,12 +7,13 @@
  */
 
 class Events {
-    setUpClickListener(target, action, altAction, playerObject, callback) {
+    setUpClickListener(target, actions, params) {
         $(target).click((e) => {
-            if ($(e.currentTarget).hasClass('impassable')) {
-                altAction(playerObject);
-            } else {
-                action(e.currentTarget, playerObject, callback);
+            for (let targetType in actions) {
+                if (Object.prototype.hasOwnProperty.call(actions, targetType) && $(e.currentTarget).hasClass(targetType)) {
+                    actions[targetType](params[targetType], e.currentTarget);
+                    break;
+                }
             }
         });
     }

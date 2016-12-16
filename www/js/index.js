@@ -21,10 +21,10 @@ var app = {
 
         const monsterOptions = {
             "monster1" : {
-                "monsterType" : "monster-1"
+                "monsterType" : "Monster1"
             },
             "monster2" : {
-                "monsterType" : "monster-2"
+                "monsterType" : "Monster2"
             }
         };
 
@@ -47,7 +47,6 @@ var app = {
 
         monsters.monster1.initialize();
         monsters.monster2.initialize();
-
     }
 };
 
