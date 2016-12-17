@@ -15,8 +15,9 @@ class PlayerCharacter {
     constructor(gridOptions, playerOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
-        this.playerPos = playerOptions.playerStart;
-        this.playerName = playerOptions.playerName;
+        this.playerPos = playerOptions.startPos;
+        this.name = playerOptions.name;
+        this.health = playerOptions.health;
         this.playerRow = 0;
         this.playerCol = 0;
         this.playerTileIdColIndex = 0;
@@ -85,8 +86,12 @@ class PlayerCharacter {
 
     _setPlayer(newTileId, oldTileId) {
         if (oldTileId)
-            $('#' + oldTileId).removeClass('player');
-        $('#' + newTileId).addClass('player').trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
+            $('#' + oldTileId).removeClass('player impassable');
+
+        $('#' + newTileId)
+            .addClass('player impassable')
+            .trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
+
         this._setPlayerRowCol();
     }
 
@@ -108,7 +113,10 @@ class PlayerCharacter {
             classIndex = $centerTile.attr('class').indexOf('light'),
             centerLighting = $centerTile.attr('class').slice(classIndex, classIndex + 10);
 
-        $centerTile.removeClass(centerLighting).addClass('light-wht').trigger('lightChange', ['light-wht', '<img class="light-img" src="img/light-wht.png">']);
+        $centerTile
+            .removeClass(centerLighting)
+            .addClass('light-wht')
+            .trigger('lightChange', ['light-wht', '<img class="light-img" src="img/light-wht.png">']);
 
         for (let i = this.lightRadius; i >= 1; i--) {
             lightRadiusTiles = this._findSurroundingTiles(newRow, newCol, i);
@@ -128,22 +136,36 @@ class PlayerCharacter {
             // when moving, set previous outer light circle to darkness
             if (centerTile !== this.playerPos && i === this.lightRadius) {
                 let lastLightRadius = this._findSurroundingTiles(this.playerRow, this.playerCol, i);
-                lastLightRadius.removeClass(lightBrightness).addClass('light-non').trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
+                lastLightRadius
+                    .removeClass(lightBrightness)
+                    .addClass('light-non')
+                    .trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
             }
             // remove previous light class
             lightRadiusTiles.removeClass(function(index) {
                 let classIndex = $(this).attr('class').indexOf('light');
                 return $(this).attr('class').slice(classIndex, classIndex+9);
             });
-            lightRadiusTiles.addClass(lightBrightness).trigger('lightChange', [lightBrightness, '<img class="light-img" src="img/' + lightBrightness + '.png">']);
+            lightRadiusTiles
+                .addClass(lightBrightness)
+                .trigger('lightChange', [lightBrightness, '<img class="light-img" src="img/' + lightBrightness + '.png">']);
         }
     }
 
-    movePlayer(newTile, player, callback) {
-        let currentPos = player.playerPos,
+    /*
+     * function movePlayer
+     * Moves player character to newTile
+     * Parameters:
+     * - params: Object sent by TurnController containing player object and callback under "walkable" key
+     * - newTile: String of tile's id in the format "row#col#"
+     */
+    movePlayer(params, newTile) {
+        let player = params.player,
+            currentPos = player.playerPos,
             currentRow = player.playerRow,
             currentCol = player.playerCol,
-            newTilePos = newTile.id;
+            newTilePos = newTile.id,
+            callback = params.callback;
 
         if ((newTilePos === (player._rightTile(currentRow, currentCol))) ||
             (newTilePos === (player._leftTile(currentRow, currentCol))) ||
@@ -161,5 +183,50 @@ class PlayerCharacter {
             player._setPlayer(newTilePos, currentPos);
             callback();
         }
+    }
+
+    /*
+     * function jiggle
+     * Jiggles player character back and forth indicating player clicked on invalid tile
+     * Parameters:
+     * - params: Object sent by TurnController containing player object under "impassable" key
+     * (tile clicked on is also passed in but not used)
+     */
+    jiggle(params) {
+        let player = params.player;
+        $('#' + player.playerPos + '> .content').animate({
+            marginLeft: "+=10"
+        }, 100).animate({
+            marginLeft: "-=30"
+        }, 100).animate({
+            marginLeft: "+=20"
+        }, 100);
+    }
+
+    attack(params, target) {
+        let monsters = params.monsters,
+            targetMonster = {},
+            monsterNum,
+            callback = params.callback;
+
+        for (monsterNum in monsters) {
+            if (Object.prototype.hasOwnProperty.call(monsters, monsterNum)) {
+                if (monsters[monsterNum].monsterPos === target.id)
+                    targetMonster = monsters[monsterNum];
+            }
+        }
+
+        $('#' + targetMonster.monsterPos + '> .content').css("background-color", "red");
+        targetMonster.health -= 1;
+        window.setTimeout(function() {
+            $('#' + targetMonster.monsterPos + '> .content').css("background-color", "unset");
+            callback();
+        }, 200);
+    }
+
+    clearPlayerImg(player) {
+        $('#' + player.playerPos)
+            .trigger('tileChange', ['player', '<img class="content" src="img/trans.png">'])
+            .removeClass('player');
     }
 }

@@ -18,14 +18,19 @@ class Grid {
         let self = this,
             markup = '',
             id = '',
-            blackTile = '<figure id="" class="tile light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>';
+            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>',
+            borderTile = '<figure id="" class="tile tile-wall impassable"><img class="content" src="img/trans.png"></figure>';
 
         $('.grid').prepend(() => {
-            for(let rowNum=1; rowNum <= self.gridHeight; rowNum++) {
+            for(let rowNum=0; rowNum <= self.gridHeight + 1; rowNum++) {
                 markup += '<div class="row">';
-                for(let colNum=1; colNum <= self.gridWidth; colNum++) {
+                for(let colNum=0; colNum <= self.gridWidth + 1; colNum++) {
                     id = "row" + rowNum + "col" + colNum;
-                    markup += self._insertString(blackTile, id, blackTile.indexOf('" class'));
+                    if (rowNum === 0 || rowNum === self.gridHeight + 1 || colNum === 0 || colNum === self.gridWidth + 1) {
+                        markup += self._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
+                    } else {
+                        markup += self._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                    }
                 }
                 markup += '</div>';
             }

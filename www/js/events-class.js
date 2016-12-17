@@ -7,8 +7,15 @@
  */
 
 class Events {
-    setUpClickListener(target, action, playerObject, callback) {
-        $(target).click((e) => { action(e.currentTarget, playerObject, callback); });
+    setUpClickListener(target, actions, params) {
+        $(target).click((e) => {
+            for (let targetType in actions) {
+                if (Object.prototype.hasOwnProperty.call(actions, targetType) && $(e.currentTarget).hasClass(targetType)) {
+                    actions[targetType](params[targetType], e.currentTarget);
+                    break;
+                }
+            }
+        });
     }
 
     removeClickListener(target) {
