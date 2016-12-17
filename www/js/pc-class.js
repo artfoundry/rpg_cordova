@@ -15,8 +15,9 @@ class PlayerCharacter {
     constructor(gridOptions, playerOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
-        this.playerPos = playerOptions.playerStart;
-        this.playerName = playerOptions.playerName;
+        this.playerPos = playerOptions.startPos;
+        this.name = playerOptions.name;
+        this.health = playerOptions.health;
         this.playerRow = 0;
         this.playerCol = 0;
         this.playerTileIdColIndex = 0;
@@ -205,7 +206,8 @@ class PlayerCharacter {
     attack(params, target) {
         let monsters = params.monsters,
             targetMonster = {},
-            monsterNum;
+            monsterNum,
+            callback = params.callback;
 
         for (monsterNum in monsters) {
             if (Object.prototype.hasOwnProperty.call(monsters, monsterNum)) {
@@ -215,8 +217,16 @@ class PlayerCharacter {
         }
 
         $('#' + targetMonster.monsterPos + '> .content').css("background-color", "red");
+        targetMonster.health -= 1;
         window.setTimeout(function() {
             $('#' + targetMonster.monsterPos + '> .content').css("background-color", "unset");
-        }, 100);
+            callback();
+        }, 200);
+    }
+
+    clearPlayerImg(player) {
+        $('#' + player.playerPos)
+            .trigger('tileChange', ['player', '<img class="content" src="img/trans.png">'])
+            .removeClass('player');
     }
 }

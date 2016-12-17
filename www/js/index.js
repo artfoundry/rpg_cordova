@@ -14,17 +14,20 @@ var app = {
 
         const playerOptions = {
             "player1" : {
-                "playerName" : "Player1",
-                "playerStart" : "row1col1"
+                "name" : "Player1",
+                "startPos" : "row1col1",
+                "health" : 1
             }
         };
 
         const monsterOptions = {
             "monster1" : {
-                "monsterType" : "Monster1"
+                "monsterType" : "Monster1",
+                "health" : 1
             },
             "monster2" : {
-                "monsterType" : "Monster2"
+                "monsterType" : "Monster2",
+                "health" : 1
             }
         };
 

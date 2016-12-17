@@ -7,6 +7,7 @@ class Monster {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
         this.monsterType = monsterOptions.monsterType;
+        this.health = monsterOptions.health;
         this.monsterRow = 0;
         this.monsterCol = 0;
         this.monsterPos = '';
