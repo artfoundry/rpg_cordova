@@ -50,7 +50,7 @@ class PlayerCharacter {
             $('#' + oldTileId).removeClass('player impassable');
 
         $('#' + newTileId)
-            .addClass('player impassable')
+            .addClass(this.name + ' player impassable')
             .trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
 
         this._setPlayerRowCol();
@@ -120,7 +120,7 @@ class PlayerCharacter {
      * - params: Object sent by TurnController containing player object and callback under "walkable" key
      * - newTile: String of tile's id in the format "row#col#"
      */
-    movePlayer(params, newTile) {
+    movePlayer(newTile, params) {
         let player = params.player,
             currentPos = player.pos,
             currentRow = player.row,

@@ -11,7 +11,7 @@ class Events {
         $(target).click((e) => {
             for (let targetType in actions) {
                 if (Object.prototype.hasOwnProperty.call(actions, targetType) && $(e.currentTarget).hasClass(targetType)) {
-                    actions[targetType](params[targetType], e.currentTarget);
+                    actions[targetType](e.currentTarget, params[targetType]);
                     break;
                 }
             }
