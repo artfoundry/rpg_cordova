@@ -31,8 +31,8 @@ var app = {
             }
         };
 
-        let helpers = new Helpers(gridOptions);
         let grid = new Grid(gridOptions);
+        let helpers = new Helpers(grid);
         let players = {
             player1: new PlayerCharacter(gridOptions, playerOptions.player1, helpers)
         };

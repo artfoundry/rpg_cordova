@@ -113,6 +113,16 @@ class PlayerCharacter {
         }
     }
 
+    clearLighting() {
+        $('.light-drk, .light-med, .light-brt, .light-wht')
+            .removeClass('light-drk')
+            .removeClass('light-med')
+            .removeClass('light-brt')
+            .removeClass('light-wht')
+            .addClass('light-non')
+            .trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
+    }
+
     /*
      * function movePlayer
      * Moves player character to newTile
