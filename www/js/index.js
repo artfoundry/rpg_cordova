@@ -31,15 +31,16 @@ var app = {
             }
         };
 
+        let helpers = new Helpers(gridOptions);
         let grid = new Grid(gridOptions);
         let players = {
-            player1: new PlayerCharacter(gridOptions, playerOptions.player1)
+            player1: new PlayerCharacter(gridOptions, playerOptions.player1, helpers)
         };
         let monsters = {
             monster1 : new Monster(gridOptions, monsterOptions.monster1),
             monster2 : new Monster(gridOptions, monsterOptions.monster2)
         };
-        let turnController = new TurnController(grid, players, monsters);
+        let turnController = new TurnController(grid, players, monsters, helpers);
 
         grid.drawGrid();
 

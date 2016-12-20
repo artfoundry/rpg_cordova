@@ -12,7 +12,8 @@
  */
 
 class TurnController {
-    constructor(grid, players, monsters) {
+    constructor(grid, players, monsters, helpers) {
+        this.helpers = helpers;
         this.grid = grid;
         this.players = players;
         this.monsters = monsters;

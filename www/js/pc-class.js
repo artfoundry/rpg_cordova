@@ -4,7 +4,7 @@
  * Creates player characters and includes functions for:
  * private
  * - setting character position
- * - determining values of tiles surrounding character
+ * - determining ids of tiles surrounding character
  * - drawing lighting around characters
  *
  * public
@@ -12,7 +12,8 @@
  */
 
 class PlayerCharacter {
-    constructor(gridOptions, playerOptions) {
+    constructor(gridOptions, playerOptions, helpers) {
+        this.helpers = helpers;
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
         this.pos = playerOptions.startPos;
@@ -30,7 +31,7 @@ class PlayerCharacter {
     }
 
     initialize() {
-        this._setPlayerTileIdColIndex(this.pos)
+        this._setPlayerTileIdColIndex(this.pos);
         this._setPlayer(this.pos);
         this._setLighting(this.pos);
     }
@@ -43,46 +44,6 @@ class PlayerCharacter {
     _trTile(row, col) { return 'row' + (row - 1) + 'col' + (col + 1); }
     _blTile(row, col) { return 'row' + (row + 1) + 'col' + (col - 1); }
     _brTile(row, col) { return 'row' + (row + 1) + 'col' + (col + 1); }
-
-    /*
-     * _findSurroundingTiles()
-     * Finds all tiles in a given radius from the player tile, no farther, no closer, but ignores tiles that are out of the grid
-     */
-
-    _findSurroundingTiles(centerRow, centerCol, searchRadius) {
-        let firstRow = centerRow - searchRadius,
-            firstCol = centerCol - searchRadius,
-            lastRow = centerRow + searchRadius,
-            lastCol = centerCol + searchRadius,
-            tiles = $(),
-            tileToAdd = '';
-
-        for(let r = firstRow; r <= lastRow; r++) {
-            // if on the first or last row, and that row is inside the grid...
-            if ((r === firstRow && firstRow >= 1) || (r === lastRow && lastRow <= this.gridHeight)){
-                // ...then add all tiles for that row (as long as the tile is inside the grid as well
-                for(let c = firstCol; c <= lastCol; c++) {
-                    if (c >= 1 && c <= this.gridWidth) {
-                        tileToAdd = 'row' + r + 'col' + c;
-                        tiles = tiles.add($('#' + tileToAdd));
-                    }
-                }
-            } else {
-                // add the left and right tiles for the middle rows as long as their inside the grid
-                if (r >= 1 && r <= this.gridHeight) {
-                    if (firstCol >= 1) {
-                        tileToAdd = 'row' + r + 'col' + firstCol;
-                        tiles = tiles.add($('#' + tileToAdd));
-                    }
-                    if (lastCol <= this.gridWidth) {
-                        tileToAdd = 'row' + r + 'col' + lastCol;
-                        tiles = tiles.add($('#' + tileToAdd));
-                    }
-                }
-            }
-        }
-        return tiles;
-    }
 
     _setPlayer(newTileId, oldTileId) {
         if (oldTileId)
@@ -119,7 +80,7 @@ class PlayerCharacter {
             .trigger('lightChange', ['light-wht', '<img class="light-img" src="img/light-wht.png">']);
 
         for (let i = this.lightRadius; i >= 1; i--) {
-            lightRadiusTiles = this._findSurroundingTiles(newRow, newCol, i);
+            lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
             if (this.lightRadius < 3) {
                 if (i === 1)
                     lightBrightness = 'light-med';
@@ -135,7 +96,7 @@ class PlayerCharacter {
             }
             // when moving, set previous outer light circle to darkness
             if (centerTile !== this.pos && i === this.lightRadius) {
-                let lastLightRadius = this._findSurroundingTiles(this.row, this.col, i);
+                let lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
                 lastLightRadius
                     .removeClass(lightBrightness)
                     .addClass('light-non')
