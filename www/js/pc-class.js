@@ -50,7 +50,7 @@ class PlayerCharacter {
             $('#' + oldTileId).removeClass('player impassable');
 
         $('#' + newTileId)
-            .addClass('player impassable')
+            .addClass(this.name + ' player impassable')
             .trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
 
         this._setPlayerRowCol();
@@ -68,7 +68,7 @@ class PlayerCharacter {
     _setLighting(centerTile) {
         let newRow = +centerTile.slice(3,this.playerTileIdColIndex),
             newCol = +centerTile.slice(this.playerTileIdColIndex + 3),
-            lightRadiusTiles,
+            $lightRadiusTiles,
             lightBrightness = '',
             $centerTile = $('#' + centerTile),
             classIndex = $centerTile.attr('class').indexOf('light'),
@@ -80,7 +80,7 @@ class PlayerCharacter {
             .trigger('lightChange', ['light-wht', '<img class="light-img" src="img/light-wht.png">']);
 
         for (let i = this.lightRadius; i >= 1; i--) {
-            lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
+            $lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
             if (this.lightRadius < 3) {
                 if (i === 1)
                     lightBrightness = 'light-med';
@@ -96,18 +96,18 @@ class PlayerCharacter {
             }
             // when moving, set previous outer light circle to darkness
             if (centerTile !== this.pos && i === this.lightRadius) {
-                let lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
-                lastLightRadius
+                let $lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
+                $lastLightRadius
                     .removeClass(lightBrightness)
                     .addClass('light-non')
                     .trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
             }
             // remove previous light class
-            lightRadiusTiles.removeClass(function(index) {
+            $lightRadiusTiles.removeClass(function(index) {
                 let classIndex = $(this).attr('class').indexOf('light');
                 return $(this).attr('class').slice(classIndex, classIndex+9);
             });
-            lightRadiusTiles
+            $lightRadiusTiles
                 .addClass(lightBrightness)
                 .trigger('lightChange', [lightBrightness, '<img class="light-img" src="img/' + lightBrightness + '.png">']);
         }
@@ -120,7 +120,7 @@ class PlayerCharacter {
      * - params: Object sent by TurnController containing player object and callback under "walkable" key
      * - newTile: String of tile's id in the format "row#col#"
      */
-    movePlayer(params, newTile) {
+    movePlayer(newTile, params) {
         let player = params.player,
             currentPos = player.pos,
             currentRow = player.row,

@@ -66,8 +66,8 @@ class Grid {
      * - params: Object sent by TurnController containing player/monster object under "impassable" key
      * (tile clicked on is also passed in but not used)
      */
-    jiggle(target) {
-        $('#' + target.pos + '> .content').animate({
+    jiggle(e, targetObject) {
+        $('#' + targetObject.pos + '> .content').animate({
             marginLeft: "+=10"
         }, 100).animate({
             marginLeft: "-=30"

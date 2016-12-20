@@ -58,7 +58,7 @@ class TurnController {
         let actions = {
                 "walkable" : player.movePlayer,
                 "impassable" : this.grid.jiggle.bind(this),
-                "monster" : this.attack.bind(this)
+                "monster" : this._attack.bind(this)
             },
             params = {
                 "walkable" : {
@@ -67,7 +67,7 @@ class TurnController {
                 },
                 "impassable" : player,
                 "monster" : {
-                    "monsters" : this.monsters,
+                    "targets" : this.monsters,
                     "callback" : this.endPlayerTurn.bind(this)
                 }
             };
@@ -82,8 +82,14 @@ class TurnController {
         for (let monster in this.monsters) {
             if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 if (this.monsters[monster].health > 0) {
-                    this.grid.clearImg(this.monsters[monster]);
-                    this.monsters[monster].randomMove();
+                    let nearbyPlayerTiles = this._checkForNearbyPlayers(this.monsters[monster]);
+                    if (nearbyPlayerTiles) {
+                        this._attack(nearbyPlayerTiles[0], {"targets" : this.players});
+                    }
+                    else {
+                        this.grid.clearImg(this.monsters[monster]);
+                        this.monsters[monster].randomMove();
+                    }
                 }
                 else {
                     this._killObject(this.monsters, monster);
@@ -104,29 +110,52 @@ class TurnController {
         }
     }
 
-    attack(params, target) {
-        let monsters = params.monsters,
-            targetMonster = {},
-            monsterNum,
-            callback = params.callback;
+    _checkForNearbyPlayers(monster) {
+        let monsterLoc = monster.pos,
+            colIndex = monsterLoc.indexOf('col'),
+            monsterRow = monsterLoc.slice(3, colIndex),
+            monsterCol = monsterLoc.slice(colIndex + 3),
+            $playerLoc,
+            $surroundingTiles = this.helpers.findSurroundingTiles(monsterRow, monsterCol, 1);
 
-        for (monsterNum in monsters) {
-            if (Object.prototype.hasOwnProperty.call(monsters, monsterNum)) {
-                if (monsters[monsterNum].pos === target.id)
-                    targetMonster = monsters[monsterNum];
+        if ($surroundingTiles.hasClass('player')) {
+            // find tile with player and assign its id to playerLoc
+            $playerLoc = $.grep($surroundingTiles, function(tile){
+                return $(tile).hasClass('player');
+            });
+        }
+        return $playerLoc;
+    }
+
+    _attack(targetTile, params) {
+        let objectList = params.targets,
+            targetObject = {},
+            targetNum,
+            callback = params ? params.callback : null,
+            controller = this;
+
+        for (targetNum in objectList) {
+            if (Object.prototype.hasOwnProperty.call(objectList, targetNum)) {
+                if (objectList[targetNum].pos === targetTile.id)
+                    targetObject = objectList[targetNum];
             }
         }
 
-        $('#' + targetMonster.pos + '> .content').css("background-color", "red");
-        targetMonster.health -= 1;
+        $('#' + targetObject.pos + '> .content').css("background-color", "red");
+        targetObject.health -= 1;
         window.setTimeout(function() {
-            $('#' + targetMonster.pos + '> .content').css("background-color", "unset");
-            callback();
+            $('#' + targetObject.pos + '> .content').css("background-color", "unset");
         }, 200);
+        if (!controller.isMonsterTurn) {
+            callback();
+        }
     }
 
     _killObject(group, item) {
-        this.grid.clearImg(group[item]);
-        delete group[item];
+        let controller = this;
+        window.setTimeout(function() {
+            controller.grid.clearImg(group[item]);
+            delete group[item];
+        }, 400);
     }
 }
