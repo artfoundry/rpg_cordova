@@ -15,11 +15,11 @@ class PlayerCharacter {
     constructor(gridOptions, playerOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
-        this.playerPos = playerOptions.startPos;
+        this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
         this.health = playerOptions.health;
-        this.playerRow = 0;
-        this.playerCol = 0;
+        this.row = 0;
+        this.col = 0;
         this.playerTileIdColIndex = 0;
         this.lightRadius = 2;
         // radius x = 2x + 1 sqs
@@ -30,9 +30,9 @@ class PlayerCharacter {
     }
 
     initialize() {
-        this._setPlayerTileIdColIndex(this.playerPos)
-        this._setPlayer(this.playerPos);
-        this._setLighting(this.playerPos);
+        this._setPlayerTileIdColIndex(this.pos)
+        this._setPlayer(this.pos);
+        this._setLighting(this.pos);
     }
 
     _topTile(row, col) { return 'row' + (row - 1) + 'col' + col; }
@@ -100,8 +100,8 @@ class PlayerCharacter {
     }
 
     _setPlayerRowCol() {
-        this.playerRow = +this.playerPos.slice(3,this.playerTileIdColIndex);
-        this.playerCol = +this.playerPos.slice(this.playerTileIdColIndex + 3);
+        this.row = +this.pos.slice(3,this.playerTileIdColIndex);
+        this.col = +this.pos.slice(this.playerTileIdColIndex + 3);
     }
 
     _setLighting(centerTile) {
@@ -134,8 +134,8 @@ class PlayerCharacter {
                     lightBrightness = 'light-drk';
             }
             // when moving, set previous outer light circle to darkness
-            if (centerTile !== this.playerPos && i === this.lightRadius) {
-                let lastLightRadius = this._findSurroundingTiles(this.playerRow, this.playerCol, i);
+            if (centerTile !== this.pos && i === this.lightRadius) {
+                let lastLightRadius = this._findSurroundingTiles(this.row, this.col, i);
                 lastLightRadius
                     .removeClass(lightBrightness)
                     .addClass('light-non')
@@ -161,9 +161,9 @@ class PlayerCharacter {
      */
     movePlayer(params, newTile) {
         let player = params.player,
-            currentPos = player.playerPos,
-            currentRow = player.playerRow,
-            currentCol = player.playerCol,
+            currentPos = player.pos,
+            currentRow = player.row,
+            currentCol = player.col,
             newTilePos = newTile.id,
             callback = params.callback;
 
@@ -179,54 +179,9 @@ class PlayerCharacter {
             player._setPlayerTileIdColIndex(newTilePos);
             $('#' + currentPos).trigger('tileChange', ['player', '<img class="content" src="img/trans.png">']);
             player._setLighting(newTilePos);
-            player.playerPos = newTilePos;
+            player.pos = newTilePos;
             player._setPlayer(newTilePos, currentPos);
             callback();
         }
-    }
-
-    /*
-     * function jiggle
-     * Jiggles player character back and forth indicating player clicked on invalid tile
-     * Parameters:
-     * - params: Object sent by TurnController containing player object under "impassable" key
-     * (tile clicked on is also passed in but not used)
-     */
-    jiggle(params) {
-        let player = params.player;
-        $('#' + player.playerPos + '> .content').animate({
-            marginLeft: "+=10"
-        }, 100).animate({
-            marginLeft: "-=30"
-        }, 100).animate({
-            marginLeft: "+=20"
-        }, 100);
-    }
-
-    attack(params, target) {
-        let monsters = params.monsters,
-            targetMonster = {},
-            monsterNum,
-            callback = params.callback;
-
-        for (monsterNum in monsters) {
-            if (Object.prototype.hasOwnProperty.call(monsters, monsterNum)) {
-                if (monsters[monsterNum].monsterPos === target.id)
-                    targetMonster = monsters[monsterNum];
-            }
-        }
-
-        $('#' + targetMonster.monsterPos + '> .content').css("background-color", "red");
-        targetMonster.health -= 1;
-        window.setTimeout(function() {
-            $('#' + targetMonster.monsterPos + '> .content').css("background-color", "unset");
-            callback();
-        }, 200);
-    }
-
-    clearPlayerImg(player) {
-        $('#' + player.playerPos)
-            .trigger('tileChange', ['player', '<img class="content" src="img/trans.png">'])
-            .removeClass('player');
     }
 }

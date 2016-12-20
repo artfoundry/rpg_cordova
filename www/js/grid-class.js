@@ -38,11 +38,41 @@ class Grid {
         });
     }
 
+    clearImg(target) {
+        let targetType = '';
+        if (target.constructor === PlayerCharacter)
+            targetType = 'player';
+        else if (target.constructor === Monster)
+            targetType = 'monster';
+
+        $('#' + target.pos)
+            .addClass('walkable')
+            .trigger('tileChange', [target.name, '<img class="content" src="img/trans.png">'])
+            .removeClass(target.name + ' ' + targetType);
+    }
+
     updateTileImage(e, tileClass, image) {
         $('.' + tileClass + '>img.content').replaceWith(image);
     }
 
     updateLightingImage(e, tileClass, image) {
         $('.' + tileClass + '>img.light-img').replaceWith(image);
+    }
+
+    /*
+     * function jiggle
+     * Jiggles character back and forth indicating interaction with another object
+     * Parameters:
+     * - params: Object sent by TurnController containing player/monster object under "impassable" key
+     * (tile clicked on is also passed in but not used)
+     */
+    jiggle(target) {
+        $('#' + target.pos + '> .content').animate({
+            marginLeft: "+=10"
+        }, 100).animate({
+            marginLeft: "-=30"
+        }, 100).animate({
+            marginLeft: "+=20"
+        }, 100);
     }
 }
