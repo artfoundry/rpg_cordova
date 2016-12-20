@@ -81,8 +81,14 @@ class TurnController {
         for (let monster in this.monsters) {
             if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 if (this.monsters[monster].health > 0) {
-                    this.grid.clearImg(this.monsters[monster]);
-                    this.monsters[monster].randomMove();
+                    let playerNearby = this._checkForNearbyPlayers(monsters[monster]);
+                    if (playerNearby) {
+                        this.attack();
+                    }
+                    else {
+                        this.grid.clearImg(this.monsters[monster]);
+                        this.monsters[monster].randomMove();
+                    }
                 }
                 else {
                     this._killObject(this.monsters, monster);
@@ -101,6 +107,14 @@ class TurnController {
                 }
             }
         }
+    }
+
+    _checkForNearbyPlayers(monster) {
+        let monsterLoc = monster.pos,
+            playerLoc = '';
+
+
+        return playerLoc;
     }
 
     attack(params, target) {
