@@ -49,11 +49,13 @@ class Helpers {
         return tiles;
     }
 
-    killObject(group, item) {
+    killObject(objectList, object) {
         let helpers = this;
         window.setTimeout(function() {
-            helpers.grid.clearImg(group[item]);
-            delete group[item];
+            helpers.grid.clearImg(objectList[object]);
+            if (objectList[object].constructor === PlayerCharacter)
+                objectList[object].clearLighting();
+            delete objectList[object];
         }, 400);
     }
 }
