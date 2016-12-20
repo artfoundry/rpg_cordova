@@ -112,9 +112,15 @@ class TurnController {
 
     _checkForNearbyPlayers(monster) {
         let monsterLoc = monster.pos,
-            playerLoc = '';
+            colIndex = monsterLoc.indexOf('col'),
+            monsterRow = monsterLoc.slice(3, colIndex),
+            monsterCol = monsterLoc.slice(colIndex + 3),
+            playerLoc = '',
+            $surroundingTiles = this.helpers.findSurroundingTiles(monsterRow, monsterCol, 1);
 
-
+        if ($surroundingTiles.hasClass('player')) {
+            // find tile with player and assign its id to playerLoc
+        }
         return playerLoc;
     }
 
