@@ -72,6 +72,18 @@ class TurnController {
                 }
             };
         this.events.setUpClickListener('.tile', actions, params);
+
+        //temp listener for buttons
+        $('.light-button').click(function(e) {
+            if (e.currentTarget.id === "light-low")
+                player.lightRadius = 1;
+            else if (e.currentTarget.id === "light-med")
+                player.lightRadius = 2;
+            else if (e.currentTarget.id === "light-high")
+                player.lightRadius = 3;
+        });
+        player._setLighting(player.playerPos);
+        //end temp
     }
 
     _tearDownListeners() {
