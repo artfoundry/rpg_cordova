@@ -56,17 +56,15 @@ class TurnController {
     _setupListeners(player) {
         let actions = {
                 "walkable" : player.movePlayer,
-                "impassable" : player.jiggle,
-                "monster" : player.attack
+                "impassable" : this.grid.jiggle.bind(this),
+                "monster" : this.attack.bind(this)
             },
             params = {
                 "walkable" : {
                     "player" : player,
                     "callback" : this.endPlayerTurn.bind(this)
                 },
-                "impassable" : {
-                    "player" : player
-                },
+                "impassable" : player,
                 "monster" : {
                     "monsters" : this.monsters,
                     "callback" : this.endPlayerTurn.bind(this)
@@ -82,10 +80,11 @@ class TurnController {
     _moveMonsters() {
         for (let monster in this.monsters) {
             if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
-                if (this.monsters[monster].health > 0)
+                if (this.monsters[monster].health > 0) {
+                    this.grid.clearImg(this.monsters[monster]);
                     this.monsters[monster].randomMove();
+                }
                 else {
-                    this.monsters[monster].clearMonsterImg(this.monsters[monster]);
                     this._killObject(this.monsters, monster);
                 }
             }
@@ -98,14 +97,35 @@ class TurnController {
                 if (this.players[player].health > 0)
                     this._setupListeners(this.players[player]);
                 else {
-                    this.players[player].clearPlayerImg(this.players[player]);
                     this._killObject(this.players, player);
                 }
             }
         }
     }
 
+    attack(params, target) {
+        let monsters = params.monsters,
+            targetMonster = {},
+            monsterNum,
+            callback = params.callback;
+
+        for (monsterNum in monsters) {
+            if (Object.prototype.hasOwnProperty.call(monsters, monsterNum)) {
+                if (monsters[monsterNum].pos === target.id)
+                    targetMonster = monsters[monsterNum];
+            }
+        }
+
+        $('#' + targetMonster.pos + '> .content').css("background-color", "red");
+        targetMonster.health -= 1;
+        window.setTimeout(function() {
+            $('#' + targetMonster.pos + '> .content').css("background-color", "unset");
+            callback();
+        }, 200);
+    }
+
     _killObject(group, item) {
+        this.grid.clearImg(group[item]);
         delete group[item];
     }
 }
