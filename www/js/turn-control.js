@@ -82,7 +82,7 @@ class TurnController {
             else if (e.currentTarget.id === "light-high")
                 player.lightRadius = 3;
         });
-        player._setLighting(player.playerPos);
+        player._setLighting(player.pos);
         //end temp
     }
 
