@@ -92,7 +92,7 @@ class TurnController {
                     }
                 }
                 else {
-                    this._killObject(this.monsters, monster);
+                    this.helpers.killObject(this.monsters, monster);
                 }
             }
         }
@@ -104,7 +104,7 @@ class TurnController {
                 if (this.players[player].health > 0)
                     this._setupListeners(this.players[player]);
                 else {
-                    this._killObject(this.players, player);
+                    this.helpers.killObject(this.players, player);
                 }
             }
         }
@@ -149,13 +149,5 @@ class TurnController {
         if (!controller.isMonsterTurn) {
             callback();
         }
-    }
-
-    _killObject(group, item) {
-        let controller = this;
-        window.setTimeout(function() {
-            controller.grid.clearImg(group[item]);
-            delete group[item];
-        }, 400);
     }
 }

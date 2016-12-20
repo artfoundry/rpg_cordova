@@ -113,6 +113,10 @@ class PlayerCharacter {
         }
     }
 
+    clearLighting() {
+
+    }
+
     /*
      * function movePlayer
      * Moves player character to newTile
