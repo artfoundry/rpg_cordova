@@ -15,25 +15,25 @@ class Helpers {
     }
 
     findSurroundingTiles(centerRow, centerCol, searchRadius) {
-        let firstRow = centerRow - searchRadius,
-            firstCol = centerCol - searchRadius,
-            lastRow = centerRow + searchRadius,
-            lastCol = centerCol + searchRadius,
+        let firstRow = +centerRow - searchRadius,
+            firstCol = +centerCol - searchRadius,
+            lastRow = +centerRow + searchRadius,
+            lastCol = +centerCol + searchRadius,
             tiles = $(),
             tileToAdd = '';
 
-        for(let r = firstRow; r <= lastRow; r++) {
+        for (let r = firstRow; r <= lastRow; r++) {
             // if on the first or last row, and that row is inside the grid...
             if ((r === firstRow && firstRow >= 1) || (r === lastRow && lastRow <= this.grid.gridHeight)){
                 // ...then add all tiles for that row (as long as the tile is inside the grid as well
-                for(let c = firstCol; c <= lastCol; c++) {
+                for (let c = firstCol; c <= lastCol; c++) {
                     if (c >= 1 && c <= this.grid.gridWidth) {
                         tileToAdd = 'row' + r + 'col' + c;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
                 }
             } else {
-                // add the left and right tiles for the middle rows as long as their inside the grid
+                // add the left and right tiles for the middle rows as long as they're inside the grid
                 if (r >= 1 && r <= this.grid.gridHeight) {
                     if (firstCol >= 1) {
                         tileToAdd = 'row' + r + 'col' + firstCol;
