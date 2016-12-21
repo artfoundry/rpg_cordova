@@ -82,6 +82,7 @@ class TurnController {
             else if (e.currentTarget.id === "light-high")
                 player.lightRadius = 3;
         });
+        player.clearLighting();
         player._setLighting(player.pos);
         //end temp
     }
@@ -131,7 +132,6 @@ class TurnController {
             $surroundingTiles = this.helpers.findSurroundingTiles(monsterRow, monsterCol, 1);
 
         if ($surroundingTiles.hasClass('player')) {
-            // find tile with player and assign its id to playerLoc
             $playerLoc = $.grep($surroundingTiles, function(tile){
                 return $(tile).hasClass('player');
             });
