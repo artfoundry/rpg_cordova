@@ -49,13 +49,23 @@ class Helpers {
         return tiles;
     }
 
+    getTileIdColIndex(tileId) {
+        return tileId.indexOf('col');
+    }
+
+    setRowCol(pos) {
+        let colIndex = this.getTileIdColIndex(pos);
+        return {
+            row : +pos.slice(3, colIndex),
+            col : +pos.slice(colIndex + 3)
+        }
+    }
+
     killObject(objectList, object) {
         let helpers = this;
-        window.setTimeout(function() {
-            helpers.grid.clearImg(objectList[object]);
-            if (objectList[object].constructor === PlayerCharacter)
-                objectList[object].clearLighting();
-            delete objectList[object];
-        }, 400);
+        helpers.grid.clearImg(objectList[object]);
+        if (objectList[object].constructor === PlayerCharacter)
+            objectList[object].clearLighting();
+        delete objectList[object];
     }
 }

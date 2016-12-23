@@ -16,18 +16,16 @@ var app = {
             "player1" : {
                 "name" : "Player1",
                 "startPos" : "row1col1",
-                "health" : 1
+                "health" : 1,
+                "image" : "character-color.png"
             }
         };
 
         const monsterOptions = {
             "monster1" : {
-                "monsterType" : "Monster1",
-                "health" : 1
-            },
-            "monster2" : {
-                "monsterType" : "Monster2",
-                "health" : 1
+                "name" : "Queen",
+                "health" : 3,
+                "image" : "Queen.png"
             }
         };
 
@@ -37,8 +35,7 @@ var app = {
             player1: new PlayerCharacter(gridOptions, playerOptions.player1, helpers)
         };
         let monsters = {
-            monster1 : new Monster(gridOptions, monsterOptions.monster1),
-            monster2 : new Monster(gridOptions, monsterOptions.monster2)
+            monster1 : new QueenMonster(gridOptions, monsterOptions.monster1, helpers)
         };
         let turnController = new TurnController(grid, players, monsters, helpers);
 
@@ -50,7 +47,6 @@ var app = {
         players.player1.initialize();
 
         monsters.monster1.initialize();
-        monsters.monster2.initialize();
     }
 };
 

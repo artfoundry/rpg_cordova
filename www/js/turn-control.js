@@ -17,6 +17,7 @@ class TurnController {
         this.grid = grid;
         this.players = players;
         this.monsters = monsters;
+        this.monsterCount = Object.keys(this.monsters).length;
         this.events = new Events();
         this.gameIsActive = true;
         this.isMonsterTurn = false;
@@ -28,19 +29,31 @@ class TurnController {
     }
 
     runTurnCycle() {
-        if(this.gameIsActive) {
-            if (this.isMonsterTurn) {
-                this._tearDownListeners();
-                this._moveMonsters();
-                this.isMonsterTurn = false;
+        let controller = this;
+        if(controller.gameIsActive) {
+            if (controller.isMonsterTurn) {
+                controller._tearDownListeners();
+                controller._moveMonsters();
+                controller.isMonsterTurn = false;
             }
-            this._movePlayers();
+            controller._movePlayers();
         }
     }
 
     endPlayerTurn() {
-        this.isMonsterTurn = true;
-        this.runTurnCycle();
+        let playersAlive = 0;
+        for (let player in this.players) {
+            if (Object.prototype.hasOwnProperty.call(this.players, player)) {
+                if (this.players[player].health > 0)
+                    playersAlive += 1;
+            }
+        }
+        if (playersAlive > 0 && this.monsterCount > 0) {
+            this.isMonsterTurn = true;
+            this.runTurnCycle();
+        } else {
+            this.endGame();
+        }
     }
 
     /*
@@ -56,7 +69,7 @@ class TurnController {
      */
     _setupListeners(player) {
         let actions = {
-                "walkable" : player.movePlayer,
+                "walkable" : player.movePlayer.bind(this),
                 "impassable" : this.grid.jiggle.bind(this),
                 "monster" : this._attack.bind(this)
             },
@@ -92,22 +105,36 @@ class TurnController {
     }
 
     _moveMonsters() {
+        let newMinion = null,
+            newMinionNum = "";
+
         for (let monster in this.monsters) {
+            let minionAttacked = false;
             if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
-                if (this.monsters[monster].health > 0) {
+                if (this.monsters[monster].name === "Queen") {
+                    this.monsters[monster].saveCurrentPos();
+                } else {
                     let nearbyPlayerTiles = this._checkForNearbyPlayers(this.monsters[monster]);
                     if (nearbyPlayerTiles) {
                         this._attack(nearbyPlayerTiles[0], {"targets" : this.players});
-                    }
-                    else {
-                        this.grid.clearImg(this.monsters[monster]);
-                        this.monsters[monster].randomMove();
+                        minionAttacked = true;
                     }
                 }
-                else {
-                    this.helpers.killObject(this.monsters, monster);
+                if (!minionAttacked) {
+                    this.grid.clearImg(this.monsters[monster]);
+                    this.monsters[monster].randomMove();
+                    if (this.monsters[monster].name === "Queen") {
+                        newMinion = this.monsters[monster].spawn();
+                    }
                 }
             }
+        }
+        if (newMinion) {
+            this.monsterCount += 1;
+            newMinionNum = "monster" + this.monsterCount;
+            this.monsters[newMinionNum] = newMinion;
+            this.monsters[newMinionNum].name = "Minion" + this.monsterCount;
+            this.monsters[newMinionNum].initialize();
         }
     }
 
@@ -148,18 +175,26 @@ class TurnController {
 
         for (targetNum in objectList) {
             if (Object.prototype.hasOwnProperty.call(objectList, targetNum)) {
-                if (objectList[targetNum].pos === targetTile.id)
+                if (objectList[targetNum].pos === targetTile.id) {
                     targetObject = objectList[targetNum];
+                    break;
+                }
             }
         }
 
-        $('#' + targetObject.pos + '> .content').css("background-color", "red");
+        $('#' + targetObject.pos + '> .light-img').css("background-color", "red");
         targetObject.health -= 1;
-        window.setTimeout(function() {
-            $('#' + targetObject.pos + '> .content').css("background-color", "unset");
-        }, 200);
+        // window.setTimeout(function() {
+        //     $('#' + targetObject.pos + '> .light-img').css("background-color", "unset");
+        // }, 400);
+        if (targetObject.health < 1)
+            this.helpers.killObject(objectList, targetNum);
         if (!controller.isMonsterTurn) {
             callback();
         }
+    }
+
+    endGame() {
+        alert("Game Over!");
     }
 }

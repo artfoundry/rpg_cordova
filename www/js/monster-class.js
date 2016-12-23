@@ -6,7 +6,8 @@ class Monster {
     constructor(gridOptions, monsterOptions) {
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
-        this.name = monsterOptions.monsterType;
+        this.name = monsterOptions.name;
+        this.image = monsterOptions.image;
         this.health = monsterOptions.health;
         this.row = 0;
         this.col = 0;
@@ -22,7 +23,7 @@ class Monster {
         this.pos = 'row' + this.row + 'col' + this.col;
         $('#' + this.pos)
             .addClass(this.name + ' monster')
-            .trigger('tileChange', [this.name, '<img class="content" src="img/' + this.name + '.png">'])
+            .trigger('tileChange', [this.name, '<img class="content" src="img/' + this.image + '">'])
             .removeClass('walkable');
     }
 

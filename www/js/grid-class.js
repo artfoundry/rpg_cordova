@@ -42,7 +42,7 @@ class Grid {
         let targetType = '';
         if (target.constructor === PlayerCharacter)
             targetType = 'player';
-        else if (target.constructor === Monster)
+        else
             targetType = 'monster';
 
         $('#' + target.pos)
