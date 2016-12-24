@@ -61,11 +61,11 @@ class Helpers {
         }
     }
 
-    killObject(objectList, object) {
+    killObject(objectList, objectKey) {
         let helpers = this;
-        helpers.grid.clearImg(objectList[object]);
-        if (objectList[object].constructor === PlayerCharacter)
-            objectList[object].clearLighting();
-        delete objectList[object];
+        helpers.grid.clearImg(objectList[objectKey]);
+        if (objectList[objectKey].constructor === PlayerCharacter)
+            objectList[objectKey].clearLighting();
+        delete objectList[objectKey];
     }
 }

@@ -4,7 +4,7 @@
 
 class QueenMonster extends Monster {
     constructor(gridOptions, monsterOptions, helpers) {
-        super(gridOptions, monsterOptions);
+        super(gridOptions, monsterOptions, helpers);
         this.oldPos = '';
         this.gridOptions = gridOptions;
         this.helpers = helpers;
@@ -18,10 +18,9 @@ class QueenMonster extends Monster {
         let minionOptions = {
             "name" : "Minion",
             "health" : 1,
-            "row" : this.helpers.setRowCol(this.oldPos).row,
-            "col" : this.helpers.setRowCol(this.oldPos).col,
+            "pos" : this.oldPos,
             "image" : "minion.png"
         };
-        return new MinionMonster(this.gridOptions, minionOptions);
+        return new MinionMonster(this.gridOptions, minionOptions, this.helpers);
     }
 }
