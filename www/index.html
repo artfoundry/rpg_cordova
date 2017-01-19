@@ -20,6 +20,21 @@
     </head>
     <body>
         <div id="app" data-role="page">
+            <div id="statusbar">
+                <span id="title">Monsters!</span>
+                <span id="pc-health"></span>
+                <span id="kills"></span>
+            </div>
+            <div class="dialog">
+                <div class="dialog-container">
+                    <header id="dialog-header"></header>
+                    <section class="dialog-body"></section>
+                    <footer id="dialog-footer">
+                        <button id="button-start">Start!</button>
+                        <button id="button-ok">Ok</button>
+                    </footer>
+                </div>
+            </div>
             <button id="light-low" class="light-button">A little light</button>
             <button id="light-med" class="light-button">More light</button>
             <button id="light-high" class="light-button">Bright light!</button>
@@ -28,6 +43,7 @@
         <!--<script type="text/javascript" src="cordova.js"></script>-->
         <script type="text/javascript" src="js/helpers.js"></script>
         <script type="text/javascript" src="js/grid-class.js"></script>
+        <script type="text/javascript" src="js/ui-class.js"></script>
         <script type="text/javascript" src="js/pc-class.js"></script>
         <script type="text/javascript" src="js/monster-class.js"></script>
         <script type="text/javascript" src="js/events-class.js"></script>

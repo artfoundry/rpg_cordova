@@ -12,9 +12,10 @@
  */
 
 class TurnController {
-    constructor(grid, players, monsters, helpers) {
+    constructor(grid, ui, players, monsters, helpers) {
         this.helpers = helpers;
         this.grid = grid;
+        this.ui = ui;
         this.players = players;
         this.monsters = monsters;
         this.events = new Events();

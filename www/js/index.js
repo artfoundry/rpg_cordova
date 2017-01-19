@@ -33,6 +33,7 @@ var app = {
 
         let grid = new Grid(gridOptions);
         let helpers = new Helpers(grid);
+        let ui = new UI();
         let players = {
             player1: new PlayerCharacter(gridOptions, playerOptions.player1, helpers)
         };
@@ -40,7 +41,7 @@ var app = {
             monster1 : new Monster(gridOptions, monsterOptions.monster1),
             monster2 : new Monster(gridOptions, monsterOptions.monster2)
         };
-        let turnController = new TurnController(grid, players, monsters, helpers);
+        let turnController = new TurnController(grid, ui, players, monsters, helpers);
 
         grid.drawGrid();
 

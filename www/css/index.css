@@ -13,9 +13,39 @@ body {
     padding: 0;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+}
+
+div {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+figure {
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    top: 0;
+    font-size: 2em;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin: auto;
+}
+
 /* Portrait layout (default) */
 #app {
-    width: 97%;
     text-align:center;
     padding: 3%;
     margin: 30px auto 0;
@@ -59,21 +89,43 @@ body {
     position: absolute;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
+.dialog {
+    display: none;
+    position: absolute;
+    z-index: 5;
+    width: 60%;
+    height: 60%;
+    padding: 10px;
+    margin: 0 0 0 -30%;
+    left: 50%;
+    border-radius: 4px;
+    border: 2px darkviolet solid;
+    background-color: lightblue;
+    box-shadow: 0 0 10px 10px black;
 }
 
-div {
-    width: auto;
-    margin: 0;
-    padding: 0;
-    white-space: nowrap;
+.dialog-container {
+    position: relative;
+    height: 100%;
 }
 
-figure {
-    width: auto;
-    margin: 0;
-    padding: 0;
+.dialog-body {
+    padding: 20px;
+}
+
+.dialog button {
+    display: none;
+    width: 100px;
+    line-height: 2em;
+    margin: 10px;
+    background-color: darkviolet;
+    color: white;
+    border: 1px darkgray solid;
+    border-radius: 6px;
+    box-shadow: 0 0 8px 2px gray;
+    cursor: pointer;
+}
+
+.dialog button:active {
+    box-shadow: 0 0 4px 2px black;
 }
