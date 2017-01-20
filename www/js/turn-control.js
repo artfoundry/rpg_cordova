@@ -91,7 +91,8 @@ class TurnController {
                 },
                 "impassable" : player,
                 "monster" : {
-                    "targets" : this.monsters
+                    "targets" : this.monsters,
+                    "player" : player
                 }
             };
         this.events.setUpClickListener(this.listenerTarget, targetActions, params);
@@ -125,7 +126,7 @@ class TurnController {
                 if (this.monsters[monster].name === "Queen") {
                     this.monsters[monster].saveCurrentPos();
                 } else {
-                    let nearbyPlayerTiles = this._checkForNearbyPlayers(this.monsters[monster]);
+                    let nearbyPlayerTiles = this._checkForNearbyCharacters(this.monsters[monster], 'player');
                     if (nearbyPlayerTiles) {
                         attackParams = { "targets" : this.players };
                         this._attack(nearbyPlayerTiles[0], attackParams);
@@ -158,52 +159,79 @@ class TurnController {
         }
     }
 
-    _checkForNearbyPlayers(monster) {
-        let monsterLoc = monster.pos,
-            colIndex = monsterLoc.indexOf('col'),
-            monsterRow = monsterLoc.slice(3, colIndex),
-            monsterCol = monsterLoc.slice(colIndex + 3),
-            $playerLoc = null,
-            $surroundingTiles = this.helpers.findSurroundingTiles(monsterRow, monsterCol, 1);
+    _checkForNearbyCharacters(character, charSearchType) {
+        let characterLoc = character.pos,
+            colIndex = characterLoc.indexOf('col'),
+            characterRow = characterLoc.slice(3, colIndex),
+            characterCol = characterLoc.slice(colIndex + 3),
+            $nearbyCharLoc = null,
+            $surroundingTiles = this.helpers.findSurroundingTiles(characterRow, characterCol, 1);
 
-        if ($surroundingTiles.hasClass('player')) {
-            $playerLoc = $.grep($surroundingTiles, function(tile){
-                return $(tile).hasClass('player');
+        if ($surroundingTiles.hasClass(charSearchType)) {
+            $nearbyCharLoc = $.grep($surroundingTiles, function(tile){
+                return $(tile).hasClass(charSearchType);
             });
         }
-        return $playerLoc;
+        return $nearbyCharLoc;
     }
 
     _attack(targetTile, params) {
         let objectList = params.targets,
+            nearbyMonsterList,
             targetObject = {},
             targetNum;
 
+        // need to check this new code - attacked monster isn't dying
         for (targetNum in objectList) {
             if (Object.prototype.hasOwnProperty.call(objectList, targetNum)) {
                 if (objectList[targetNum].pos === targetTile.id) {
-                    targetObject = objectList[targetNum];
-                    break;
+                    if (params.player) {
+                        nearbyMonsterList = this._checkForNearbyCharacters(params.player, 'monster');
+                    }
+                    if (!params.player || (nearbyMonsterList.indexOf($('#' + objectList[targetNum].pos)) !== -1)) {
+                        targetObject = objectList[targetNum];
+                        break;
+                    }
                 }
             }
         }
 
-        $('#' + targetObject.pos + '> .light-img').css("background-color", "red");
-        window.setTimeout(function() {
-            $('#' + targetObject.pos + '> .light-img').css("background-color", "unset");
-        }, 400);
+        this._animateHighlight(targetObject, 'attack', {objects: objectList, index: targetNum});
 
+        if (this.isPlayerTurn) {
+            this.endTurn();
+        }
+    }
+
+    _animateHighlight(targetObject, type, targetListParams) {
+        let target = '#' + targetObject.pos + '> .content',
+            animateParams = [];
+        switch (type) {
+            case 'attack':
+                animateParams = animateParams.concat([{
+                    'type': {marginLeft: "+=10"},
+                    'time': 100
+                }, {
+                    'type' : {borderWidth : "-=30"},
+                    'time' : 100
+                }, {
+                    'type' : {borderWidth : "+=20"},
+                    'time' : 100
+                }]);
+                this.grid.animateTile(target, animateParams, this._updateHealth.bind(this), targetObject, targetListParams);
+                break;
+        }
+    }
+
+    _updateHealth(targetObject, listParams) {
         targetObject.health -= 1;
         if (targetObject.health < 1) {
-            this.helpers.killObject(objectList, targetNum);
+            this.helpers.killObject(listParams.objects, listParams.index);
             this.monsterCount = this._checkCharactersAlive(this.monsters);
             this.playerCount = this._checkCharactersAlive(this.players);
             if (this.playerCount === 0) {
                 this._endGameLost();
             }
-        }
-        if (this.isPlayerTurn) {
-            this.endTurn();
         }
     }
 

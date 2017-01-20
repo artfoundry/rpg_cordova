@@ -13,6 +13,25 @@ body {
     padding: 0;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+}
+
+div {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+figure {
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
 /* Portrait layout (default) */
 #app {
     width: 97%;
@@ -59,21 +78,8 @@ body {
     position: absolute;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-}
-
-div {
-    width: auto;
-    margin: 0;
-    padding: 0;
-    white-space: nowrap;
-}
-
-figure {
-    width: auto;
-    margin: 0;
-    padding: 0;
+.monster {
+    border-radius: 10%;
+    border-color: darkred;
+    border-width: 0;
 }

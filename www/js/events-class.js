@@ -4,6 +4,7 @@
  * Events for responding to:
  * - tile changes
  * - player clicks
+ * - removing click handler
  */
 
 class Events {

@@ -75,4 +75,22 @@ class Grid {
             marginLeft: "+=20"
         }, 100);
     }
+
+    /**
+     * function animateTile
+     * @param target - tile to be animated
+     * @param params - animation type and time
+     * @param callback - updateHealth function
+     * @param targetObject - object for callback
+     * @param targetListParams - list of objects to which targetObject belongs and index for finding the targetObject in that list
+     */
+    animateTile(target, params, callback, targetObject, targetListParams) {
+        for (let i=0; i < params.length; i++) {
+            if (i === params.length - 1) {
+                $(target).animate(params[i].type, params[i].time, callback(targetObject, targetListParams));
+            } else {
+                $(target).animate(params[i].type, params[i].time);
+            }
+        }
+    }
 }
