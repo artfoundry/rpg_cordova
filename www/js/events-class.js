@@ -4,14 +4,15 @@
  * Events for responding to:
  * - tile changes
  * - player clicks
+ * - removing click handler
  */
 
 class Events {
-    setUpClickListener(target, actions, params) {
+    setUpClickListener(target, targetActions, params) {
         $(target).click((e) => {
-            for (let targetType in actions) {
-                if (Object.prototype.hasOwnProperty.call(actions, targetType) && $(e.currentTarget).hasClass(targetType)) {
-                    actions[targetType](e.currentTarget, params[targetType]);
+            for (let tileType in targetActions) {
+                if (Object.prototype.hasOwnProperty.call(targetActions, tileType) && $(e.currentTarget).hasClass(tileType)) {
+                    targetActions[tileType](e.currentTarget, params[tileType]);
                     break;
                 }
             }

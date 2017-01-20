@@ -18,10 +18,11 @@ class PlayerCharacter {
         this.gridHeight = gridOptions.height;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
+        this.image = playerOptions.image;
         this.health = playerOptions.health;
         this.row = 0;
         this.col = 0;
-        this.playerTileIdColIndex = 0;
+        this.playerTileIdColIndex = helpers.getTileIdColIndex(this.pos);
         this.lightRadius = 2;
         // radius x = 2x + 1 sqs
         // 0 = 1x1 sqs
@@ -31,7 +32,6 @@ class PlayerCharacter {
     }
 
     initialize() {
-        this._setPlayerTileIdColIndex(this.pos);
         this._setPlayer(this.pos);
         this._setLighting(this.pos);
     }
@@ -46,23 +46,20 @@ class PlayerCharacter {
     _brTile(row, col) { return 'row' + (row + 1) + 'col' + (col + 1); }
 
     _setPlayer(newTileId, oldTileId) {
-        if (oldTileId)
-            $('#' + oldTileId).removeClass('player impassable');
+        if (oldTileId) {
+            $('#' + oldTileId)
+                .addClass('walkable')
+                .trigger('tileChange', ['player', '<img class="content" src="img/trans.png">'])
+                .removeClass(this.name + ' player impassable');
+        }
 
         $('#' + newTileId)
             .addClass(this.name + ' player impassable')
-            .trigger('tileChange', ['player', '<img class="content" src="img/character-color.png">']);
+            .trigger('tileChange', ['player', '<img class="content" src="img/' + this.image + '">'])
+            .removeClass('walkable');
 
-        this._setPlayerRowCol();
-    }
-
-    _setPlayerTileIdColIndex(tileId) {
-        this.playerTileIdColIndex = tileId.indexOf('col');
-    }
-
-    _setPlayerRowCol() {
-        this.row = +this.pos.slice(3,this.playerTileIdColIndex);
-        this.col = +this.pos.slice(this.playerTileIdColIndex + 3);
+        this.row = this.helpers.setRowCol(this.pos).row;
+        this.col = this.helpers.setRowCol(this.pos).col;
     }
 
     _setLighting(centerTile) {
@@ -147,8 +144,7 @@ class PlayerCharacter {
             (newTilePos === (player._brTile(currentRow, currentCol))) ||
             (newTilePos === (player._blTile(currentRow, currentCol)))
         ) {
-            player._setPlayerTileIdColIndex(newTilePos);
-            $('#' + currentPos).trigger('tileChange', ['player', '<img class="content" src="img/trans.png">']);
+            player.playerTileIdColIndex = this.helpers.getTileIdColIndex(newTilePos);
             player._setLighting(newTilePos);
             player.pos = newTilePos;
             player._setPlayer(newTilePos, currentPos);
