@@ -8,6 +8,7 @@ body {
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     background-color: black;
+    color: white;
     font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -32,9 +33,20 @@ figure {
     padding: 0;
 }
 
+header {
+    top: 0;
+    font-size: 2em;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin: auto;
+}
+
 /* Portrait layout (default) */
 #app {
-    width: 97%;
     text-align:center;
     padding: 3%;
     margin: 30px auto 0;
@@ -46,10 +58,52 @@ figure {
     }
 }
 
+#statusbar {
+    position: relative;
+    padding: 10px;
+    margin: 0 0 20px;
+    text-align: left;
+    background: linear-gradient(to bottom, rgba(96,173,188,1) 0%,rgba(10,8,9,1) 100%);
+    color: orangered;
+    text-shadow: 1px 1px 2px black;
+    border-bottom: 2px solid darkslategray;
+}
+
+#statusbar span {
+    display: inline-block;
+}
+
+#statusbar #title {
+    left: 0;
+}
+
+#stats {
+    position: absolute;
+    right: 0;
+    width: 250px;
+}
+
+#stats #pc-health {
+    width: 150px;
+}
+
+.status-value {
+    margin: 0 4px;
+}
+
+.life-bubble {
+    width: 10px;
+    height: 10px;
+    margin: 0 3px;
+    background-color: green;
+    border: 1px solid darkgreen;
+    border-radius: 50%;
+    box-shadow: 1px 1px 2px black;
+}
+
 .grid {
-    background-color:black;
-    color: white;
     margin: auto;
+    background-color:black;
 }
 
 .row {
@@ -82,4 +136,51 @@ figure {
     border-radius: 10%;
     border-color: darkred;
     border-width: 0;
+}
+
+.modal {
+    display: none;
+    position: absolute;
+    z-index: 5;
+    width: 60%;
+    height: 60%;
+    max-width: 400px;
+    max-height: 400px;
+    min-width: 200px;
+    min-height: 200px;
+    padding: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 4px;
+    border: 2px darkslateblue solid;
+    background-color: slategray;
+    box-shadow: 0 0 10px 6px black;
+    color: black;
+}
+
+.dialog-container {
+    position: relative;
+    height: 100%;
+    white-space: normal;
+}
+
+.dialog-body {
+    padding: 20px;
+}
+
+.modal button {
+    display: none;
+    width: 100px;
+    line-height: 2em;
+    margin: 10px;
+    color: lightgray;
+    background-color: darkslateblue;
+    border: 1px lightgray solid;
+    border-radius: 6px;
+    box-shadow: 0 0 8px 2px darkslategray;
+    cursor: pointer;
+}
+
+.modal button:active {
+    box-shadow: 0 0 4px 2px black;
 }

@@ -12,16 +12,16 @@
  *****************************/
 
 class TurnController {
-
     /*****************************
      *
      * Public Functions
      *
      *****************************/
 
-    constructor(grid, players, monsters, helpers) {
+    constructor(grid, ui, players, monsters, helpers) {
         this.helpers = helpers;
         this.grid = grid;
+        this.ui = ui;
         this.players = players;
         this.playerCount = this._checkCharactersAlive(this.players);
         this.monsters = monsters;
