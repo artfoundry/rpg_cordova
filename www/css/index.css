@@ -8,6 +8,7 @@ body {
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     background-color: black;
+    color: white;
     font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -57,10 +58,39 @@ footer {
     }
 }
 
+#statusbar {
+    position: relative;
+    padding: 10px;
+    margin: 0 0 20px;
+    text-align: left;
+    background: linear-gradient(to bottom, rgba(96,173,188,1) 0%,rgba(10,8,9,1) 100%);
+    color: orangered;
+    text-shadow: 1px 1px 2px black;
+    border-bottom: 2px solid darkslategray;
+}
+
+#statusbar #title {
+    left: 0;
+}
+
+#statusbar #pc-health {
+    position: absolute;
+    right: 150px;
+}
+
+#statusbar #kills {
+    position: absolute;
+    right: 50px;
+}
+
+.status-value {
+    position: fixed;
+    margin: 0 4px;
+}
+
 .grid {
-    background-color:black;
-    color: white;
     margin: auto;
+    background-color:black;
 }
 
 .row {
@@ -89,7 +119,7 @@ footer {
     position: absolute;
 }
 
-.dialog {
+.modal {
     display: none;
     position: absolute;
     z-index: 5;
@@ -100,8 +130,9 @@ footer {
     left: 50%;
     border-radius: 4px;
     border: 2px darkviolet solid;
-    background-color: lightblue;
+    background-color: slategray;
     box-shadow: 0 0 10px 10px black;
+    color: black;
 }
 
 .dialog-container {
@@ -111,21 +142,21 @@ footer {
 
 .dialog-body {
     padding: 20px;
+    white-space: normal;
 }
 
-.dialog button {
+.modal button {
     display: none;
     width: 100px;
     line-height: 2em;
     margin: 10px;
     background-color: darkviolet;
-    color: white;
     border: 1px darkgray solid;
     border-radius: 6px;
-    box-shadow: 0 0 8px 2px gray;
+    box-shadow: 0 0 8px 2px darkslategray;
     cursor: pointer;
 }
 
-.dialog button:active {
+.modal button:active {
     box-shadow: 0 0 4px 2px black;
 }
