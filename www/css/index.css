@@ -69,23 +69,36 @@ footer {
     border-bottom: 2px solid darkslategray;
 }
 
+#statusbar span {
+    display: inline-block;
+}
+
 #statusbar #title {
     left: 0;
 }
 
-#statusbar #pc-health {
+#stats {
     position: absolute;
-    right: 150px;
+    right: 0;
+    width: 250px;
 }
 
-#statusbar #kills {
-    position: absolute;
-    right: 50px;
+#stats #pc-health {
+    width: 150px;
 }
 
 .status-value {
-    position: fixed;
     margin: 0 4px;
+}
+
+.life-bubble {
+    width: 10px;
+    height: 10px;
+    margin: 0 3px;
+    background-color: green;
+    border: 1px solid darkgreen;
+    border-radius: 50%;
+    box-shadow: 1px 1px 2px black;
 }
 
 .grid {
@@ -125,24 +138,28 @@ footer {
     z-index: 5;
     width: 60%;
     height: 60%;
+    max-width: 400px;
+    max-height: 400px;
+    min-width: 200px;
+    min-height: 200px;
     padding: 10px;
-    margin: 0 0 0 -30%;
     left: 50%;
+    transform: translateX(-50%);
     border-radius: 4px;
-    border: 2px darkviolet solid;
+    border: 2px darkslateblue solid;
     background-color: slategray;
-    box-shadow: 0 0 10px 10px black;
+    box-shadow: 0 0 10px 6px black;
     color: black;
 }
 
 .dialog-container {
     position: relative;
     height: 100%;
+    white-space: normal;
 }
 
 .dialog-body {
     padding: 20px;
-    white-space: normal;
 }
 
 .modal button {
@@ -150,8 +167,9 @@ footer {
     width: 100px;
     line-height: 2em;
     margin: 10px;
-    background-color: darkviolet;
-    border: 1px darkgray solid;
+    color: lightgray;
+    background-color: darkslateblue;
+    border: 1px lightgray solid;
     border-radius: 6px;
     box-shadow: 0 0 8px 2px darkslategray;
     cursor: pointer;

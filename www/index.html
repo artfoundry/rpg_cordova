@@ -22,16 +22,19 @@
         <div id="app" data-role="page">
             <div id="statusbar">
                 <span id="title">Monsters!</span>
-                <span id="pc-health">Health: <span class="status-value"></span></span>
-                <span id="kills">Kills: <span class="status-value"></span></span>
+                <span id="stats">
+                    <span id="pc-health">Health: <span class="status-value"></span></span>
+                    <span id="kills">Kills: <span class="status-value">0</span></span>
+                </span>
             </div>
             <div class="modal">
                 <div class="dialog-container">
                     <header id="dialog-header"></header>
                     <section class="dialog-body"></section>
                     <footer id="dialog-footer">
+                        <button id="button-tips">Tips</button>
+                        <button id="button-restart">Restart</button>
                         <button id="button-start">Start!</button>
-                        <button id="button-ok">Ok</button>
                     </footer>
                 </div>
             </div>
