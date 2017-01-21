@@ -175,21 +175,30 @@ class TurnController {
         return $nearbyCharLoc;
     }
 
+    /**
+     * function _attack
+     * For registering an attack by a monster on a player or vice versa
+     * @param targetTile - jquery element target of attack
+     * @param params - object in which targets key contains list of game characters, either players or monsters
+     * @private
+     */
     _attack(targetTile, params) {
-        let objectList = params.targets,
+        let characterList = params.targets,
             nearbyMonsterList,
             targetObject = {},
             targetNum;
 
         // need to check this new code - attacked monster isn't dying
-        for (targetNum in objectList) {
-            if (Object.prototype.hasOwnProperty.call(objectList, targetNum)) {
-                if (objectList[targetNum].pos === targetTile.id) {
+        for (targetNum in characterList) {
+            if (Object.prototype.hasOwnProperty.call(characterList, targetNum)) {
+                if (characterList[targetNum].pos === targetTile.id) {
+                    // if player is attacking, check if there are actually monsters nearby
                     if (params.player) {
                         nearbyMonsterList = this._checkForNearbyCharacters(params.player, 'monster');
                     }
-                    if (!params.player || (nearbyMonsterList.indexOf($('#' + objectList[targetNum].pos)) !== -1)) {
-                        targetObject = objectList[targetNum];
+                    // if monster is attacking or if player is attacking and attack target matches monster in list of nearby monsters, then we have our target
+                    if (!params.player || (nearbyMonsterList.indexOf($('#' + characterList[targetNum].pos)) !== -1)) {
+                        targetObject = characterList[targetNum];
                         break;
                     }
                 }

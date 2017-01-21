@@ -13,7 +13,6 @@ class UI {
             "gameOverWin"   : "You've finally slaughtered every last creature and make it out alive!"
         };
         this.kills = 0;
-        $("#pc-health span").on()
 
         //temp
         let self = this;
