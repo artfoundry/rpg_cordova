@@ -1,11 +1,11 @@
 /*****************************
  * Created by David on 11/29/16.
  *
- * Controller should set up turn loop that:
- * 1) sets up player listeners
+ * Controller sets up turn loop that:
+ * 1) sets up click and grid listeners
  * 2) waits for player move
  * 3) if player attacks, checks monster's health
- * 4) tears down player listeners
+ * 4) tears down click listeners
  * 5) moves monsters
  * 6) if monster attacks, checks player's health
  * 7) if players dead, ends game, else runs cycle again
@@ -81,7 +81,7 @@ class TurnController {
     _setupListeners(player) {
         let targetActions = {
                 "walkable" : player.movePlayer.bind(this),
-                "impassable" : this.grid.jiggle.bind(this),
+                "impassable" : this.grid.animateHighlight.bind(this),
                 "monster" : this._attack.bind(this)
             },
             params = {
@@ -89,7 +89,10 @@ class TurnController {
                     "player" : player,
                     "callback" : this.endTurn.bind(this)
                 },
-                "impassable" : player,
+                "impassable" : {
+                    "targetObject": player,
+                    "type" : "impassable"
+                },
                 "monster" : {
                     "targets" : this.monsters,
                     "player" : player
@@ -184,52 +187,41 @@ class TurnController {
      */
     _attack(targetTile, params) {
         let characterList = params.targets,
+            characterNum,
             nearbyMonsterList,
+            targetLoc,
             targetObject = {},
-            targetNum;
+            controller = this,
+            animateParams = {};
 
-        // need to check this new code - attacked monster isn't dying
-        for (targetNum in characterList) {
-            if (Object.prototype.hasOwnProperty.call(characterList, targetNum)) {
-                if (characterList[targetNum].pos === targetTile.id) {
+        for (characterNum in characterList) {
+            if (Object.prototype.hasOwnProperty.call(characterList, characterNum)) {
+                if (characterList[characterNum].pos === targetTile.id) {
+                    targetLoc = $('#' + characterList[characterNum].pos)[0];
                     // if player is attacking, check if there are actually monsters nearby
                     if (params.player) {
                         nearbyMonsterList = this._checkForNearbyCharacters(params.player, 'monster');
                     }
                     // if monster is attacking or if player is attacking and attack target matches monster in list of nearby monsters, then we have our target
-                    if (!params.player || (nearbyMonsterList.indexOf($('#' + characterList[targetNum].pos)) !== -1)) {
-                        targetObject = characterList[targetNum];
+                    if (!params.player || (nearbyMonsterList.indexOf(targetLoc) !== -1)) {
+                        targetObject = characterList[characterNum];
                         break;
                     }
                 }
             }
         }
 
-        this._animateHighlight(targetObject, 'attack', {objects: objectList, index: targetNum});
-
-        if (this.isPlayerTurn) {
-            this.endTurn();
-        }
-    }
-
-    _animateHighlight(targetObject, type, targetListParams) {
-        let target = '#' + targetObject.pos + '> .content',
-            animateParams = [];
-        switch (type) {
-            case 'attack':
-                animateParams = animateParams.concat([{
-                    'type': {marginLeft: "+=10"},
-                    'time': 100
-                }, {
-                    'type' : {borderWidth : "-=30"},
-                    'time' : 100
-                }, {
-                    'type' : {borderWidth : "+=20"},
-                    'time' : 100
-                }]);
-                this.grid.animateTile(target, animateParams, this._updateHealth.bind(this), targetObject, targetListParams);
-                break;
-        }
+        animateParams = {
+            "targetObject" : targetObject,
+            "type" : "attack",
+            "callback" : function() {
+                controller._updateHealth(targetObject, {objects: characterList, index: characterNum});
+                if (controller.isPlayerTurn) {
+                    controller.endTurn();
+                }
+            }
+        };
+        this.grid.animateHighlight(null, animateParams);
     }
 
     _updateHealth(targetObject, listParams) {
