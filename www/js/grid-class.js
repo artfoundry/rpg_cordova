@@ -10,10 +10,6 @@ class Grid {
         this.gridWidth = gridOptions.width;
     }
 
-    _insertString(baseString, toInsert, position) {
-        return baseString.slice(0, position) + toInsert + baseString.slice(position);
-    }
-
     drawGrid() {
         let self = this,
             markup = '',
@@ -59,38 +55,31 @@ class Grid {
         $('.' + tileClass + '>img.light-img').replaceWith(image);
     }
 
-    /*
-     * function jiggle
-     * Jiggles character back and forth indicating interaction with another object
-     * Parameters:
-     * - params: Object sent by TurnController containing player/monster object under "impassable" key
-     * (tile clicked on is also passed in but not used)
-     */
-    jiggle(e, targetObject) {
-        $('#' + targetObject.pos + '> .content').animate({
-            marginLeft: "+=10"
-        }, 100).animate({
-            marginLeft: "-=30"
-        }, 100).animate({
-            marginLeft: "+=20"
-        }, 100);
+    animateHighlight(e, params) {
+        let $target = $('#' + params.targetObject.pos + '> .content'),
+            type = params.type,
+            callback = params.callback;
+
+        switch (type) {
+            case 'attack':
+                $target.animate({marginLeft: "+=10"}, 100);
+                $target.animate({marginLeft: "-=30"}, 100);
+                $target.animate({marginLeft: "+=20"}, 100);
+                break;
+            case 'impassable':
+                $target.animate({marginLeft: "+=10"}, 100);
+                $target.animate({marginLeft: "-=30"}, 100);
+                $target.animate({marginLeft: "+=20"}, 100);
+                break;
+        }
+        if (callback) {
+            $target.promise().done(function() {
+                callback();
+            });
+        }
     }
 
-    /**
-     * function animateTile
-     * @param target - tile to be animated
-     * @param params - animation type and time
-     * @param callback - updateHealth function
-     * @param targetObject - object for callback
-     * @param targetListParams - list of objects to which targetObject belongs and index for finding the targetObject in that list
-     */
-    animateTile(target, params, callback, targetObject, targetListParams) {
-        for (let i=0; i < params.length; i++) {
-            if (i === params.length - 1) {
-                $(target).animate(params[i].type, params[i].time, callback(targetObject, targetListParams));
-            } else {
-                $(target).animate(params[i].type, params[i].time);
-            }
-        }
+    _insertString(baseString, toInsert, position) {
+        return baseString.slice(0, position) + toInsert + baseString.slice(position);
     }
 }
