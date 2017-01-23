@@ -7,12 +7,21 @@
  * - removing click handler
  */
 
+
 class Events {
+
+    /**
+     * function setUpClickListener
+     *
+     * @param target - element selector for click handler
+     * @param targetActions - callback function
+     * @param params - parameters to pass to callback
+     */
     setUpClickListener(target, targetActions, params) {
         $(target).click((e) => {
-            for (let tileType in targetActions) {
-                if (Object.prototype.hasOwnProperty.call(targetActions, tileType) && $(e.currentTarget).hasClass(tileType)) {
-                    targetActions[tileType](e.currentTarget, params[tileType]);
+            for (let actionType in targetActions) {
+                if (Object.prototype.hasOwnProperty.call(targetActions, actionType) && $(e.currentTarget).hasClass(actionType)) {
+                    targetActions[actionType](e.currentTarget, params[actionType]);
                     break;
                 }
             }

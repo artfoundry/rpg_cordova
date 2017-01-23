@@ -18,7 +18,7 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, monsters, helpers) {
+    constructor(grid, ui, players, monsters, helpers, events) {
         this.helpers = helpers;
         this.grid = grid;
         this.ui = ui;
@@ -26,18 +26,38 @@ class TurnController {
         this.playerCount = this._checkCharactersAlive(this.players);
         this.monsters = monsters;
         this.monsterCount = Object.keys(this.monsters).length;
-        this.events = new Events();
+        this.events = events;
         this.isPlayerTurn = true;
-        this.listenerTarget = '.tile';
+        this.tileListenerTarget = '.tile';
     }
 
     initialize() {
-        this.events.setUpTileChangeListener(this.listenerTarget, this.grid.updateTileImage);
-        this.events.setUpLightChangeListener(this.listenerTarget, this.grid.updateLightingImage);
+        this.grid.drawGrid();
+        this.events.setUpTileChangeListener(this.tileListenerTarget, this.grid.updateTileImage);
+        this.events.setUpLightChangeListener(this.tileListenerTarget, this.grid.updateLightingImage);
+        this.players.player1.initialize();
+        this.monsters.monster1.initialize();
+        this.startGame();
+    }
+
+    startGame() {
+        let messages = [
+                {"class" : "modal-header", "text" : "dialogHeader"},
+                {"class" : "modal-body", "text" : "gameIntro", "hidden" : false},
+                {"class" : "modal-body", "text" : "instructions", "hidden" : false},
+                {"class" : "modal-tips", "text" : "tips", "hidden" : true}
+            ],
+            buttons = [
+                {"label" : "Tips", "action" : this.ui.visibilityToggle, "params" : ".modal-tips", "hidden" : false},
+                {"label" : "Start!", "action" : this.ui.modalClose, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
+            ];
+
+        this.ui.modalOpen(messages, buttons);
     }
 
     runTurnCycle() {
         let controller = this;
+
         if (controller.isPlayerTurn) {
             controller._movePlayers();
         } else {
@@ -98,7 +118,7 @@ class TurnController {
                     "player" : player
                 }
             };
-        this.events.setUpClickListener(this.listenerTarget, targetActions, params);
+        this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
 
         //temp listener for buttons
         $('.light-button').click(function(e) {
@@ -115,7 +135,7 @@ class TurnController {
     }
 
     _tearDownListeners() {
-        this.events.removeClickListener(this.listenerTarget);
+        this.events.removeClickListener(this.tileListenerTarget);
     }
 
     _moveMonsters() {
