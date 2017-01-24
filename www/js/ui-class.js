@@ -73,12 +73,20 @@ class UI {
     }
 
     updateValue(params) {
-        let $element = $(params.id),
-            $bubble = $(params.id + " .life-bubble:last"),
+        let $element = $(params.id + " .status-value"),
+            bubbleElements,
+            difference = 0,
             newBubble = "<span class='life-bubble'></span>";
 
         if (params.id.includes("#pc-health")) {
-            params.value < 0 ? $bubble.remove() : $element.append(newBubble);
+            bubbleElements = $element.children(".life-bubble");
+            difference = params.value - bubbleElements.length;
+            for (let i=0; i < Math.abs(difference); i++) {
+                if (difference < 0)
+                    bubbleElements.last().remove();
+                else
+                    $element.append(newBubble);
+            }
         }
         else
             $element.text(params.value);

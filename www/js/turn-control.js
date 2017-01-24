@@ -23,7 +23,7 @@ class TurnController {
         this.grid = grid;
         this.ui = ui;
         this.players = players;
-        this.playerCount = this._checkCharactersAlive(this.players);
+        this.playerCount = this._checkNumCharactersAlive(this.players);
         this.monsters = monsters;
         this.monsterCount = Object.keys(this.monsters).length;
         this.events = events;
@@ -52,6 +52,7 @@ class TurnController {
                 {"label" : "Start!", "action" : this.ui.modalClose, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
             ];
 
+        this.ui.updateValue({id: "#pc-health", value: this.players.player1.health});
         this.ui.modalOpen(messages, buttons);
     }
 
@@ -212,7 +213,7 @@ class TurnController {
             targetLoc,
             targetObject = {},
             controller = this,
-            animateParams = {};
+            animateParams;
 
         for (characterNum in characterList) {
             if (Object.prototype.hasOwnProperty.call(characterList, characterNum)) {
@@ -246,17 +247,23 @@ class TurnController {
 
     _updateHealth(targetObject, listParams) {
         targetObject.health -= 1;
+        if (targetObject instanceof PlayerCharacter)
+            this.ui.updateValue({id: "#pc-health", value: targetObject.health});
         if (targetObject.health < 1) {
             this.helpers.killObject(listParams.objects, listParams.index);
-            this.monsterCount = this._checkCharactersAlive(this.monsters);
-            this.playerCount = this._checkCharactersAlive(this.players);
+            if (targetObject instanceof Monster) {
+                this.ui.kills += 1;
+                this.ui.updateValue({id: "#kills", value: this.ui.kills});
+            }
+            this.monsterCount = this._checkNumCharactersAlive(this.monsters);
+            this.playerCount = this._checkNumCharactersAlive(this.players);
             if (this.playerCount === 0) {
                 this._endGameLost();
             }
         }
     }
 
-    _checkCharactersAlive(objectsList) {
+    _checkNumCharactersAlive(objectsList) {
         return Object.keys(objectsList).length;
     }
 
