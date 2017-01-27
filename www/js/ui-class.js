@@ -67,7 +67,7 @@ class UI {
     modalClose(e, params) {
         this.events.removeClickListener(".modal-button");
         $(".dynamic").remove();
-        $(".modal").hide().trigger("modalHide");
+        $(".modal").hide();
         if (params.callback)
             params.callback();
     }

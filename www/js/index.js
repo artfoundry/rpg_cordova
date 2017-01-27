@@ -48,6 +48,3 @@ var app = {
 };
 
 $(app.initialize());
-
-// for testing
-// $('.light-img').remove()

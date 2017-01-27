@@ -29,10 +29,16 @@ class TurnController {
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
+        this.deferredCBs = $.Deferred();
+        this.gameOver = false;
     }
 
     initialize() {
         this.grid.drawGrid();
+
+        // for testing
+        $('.light-img').remove();
+
         this.events.setUpTileChangeListener(this.tileListenerTarget, this.grid.updateTileImage);
         this.events.setUpLightChangeListener(this.tileListenerTarget, this.grid.updateLightingImage);
         this.players.player1.initialize();
@@ -60,11 +66,14 @@ class TurnController {
         let controller = this;
 
         if (controller.isPlayerTurn) {
+            controller.deferredCBs.done(function() {
+               controller.endTurn();
+            });
             controller._movePlayers();
         } else {
             controller._tearDownListeners();
             controller._moveMonsters();
-            this.endTurn();
+            controller.endTurn();
         }
     }
 
@@ -102,13 +111,13 @@ class TurnController {
     _setupListeners(player) {
         let targetActions = {
                 "walkable" : player.movePlayer.bind(this),
-                "impassable" : this.grid.animateHighlight.bind(this),
+                "impassable" : this.grid.animateTile.bind(this),
                 "monster" : this._attack.bind(this)
             },
             params = {
                 "walkable" : {
                     "player" : player,
-                    "callback" : this.endTurn.bind(this)
+                    "callback" : this.deferredCBs.resolve.bind(this)
                 },
                 "impassable" : {
                     "targetObject": player,
@@ -122,16 +131,16 @@ class TurnController {
         this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
 
         //temp listener for buttons
-        $('.light-button').click(function(e) {
-            if (e.currentTarget.id === "light-low")
-                player.lightRadius = 1;
-            else if (e.currentTarget.id === "light-med")
-                player.lightRadius = 2;
-            else if (e.currentTarget.id === "light-high")
-                player.lightRadius = 3;
-        });
-        player.clearLighting();
-        player._setLighting(player.pos);
+        // $('.light-button').click(function(e) {
+        //     if (e.currentTarget.id === "light-low")
+        //         player.lightRadius = 1;
+        //     else if (e.currentTarget.id === "light-med")
+        //         player.lightRadius = 2;
+        //     else if (e.currentTarget.id === "light-high")
+        //         player.lightRadius = 3;
+        // });
+        // player.clearLighting();
+        // player._setLighting(player.pos);
         //end temp
     }
 
@@ -232,20 +241,22 @@ class TurnController {
             }
         }
 
+        this._updateHealth(targetObject, {objects: characterList, index: characterNum});
         animateParams = {
             "targetObject" : targetObject,
             "type" : "attack",
             "callback" : function() {
-                controller._updateHealth(targetObject, {objects: characterList, index: characterNum});
-                if (controller.isPlayerTurn) {
-                    controller.endTurn();
+                if (controller.isPlayerTurn && !controller.gameOver) {
+                    controller.deferredCBs.resolve();
                 }
             }
         };
-        this.grid.animateHighlight(null, animateParams);
+        this.grid.animateTile(null, animateParams);
     }
 
     _updateHealth(targetObject, listParams) {
+        let controller = this;
+
         targetObject.health -= 1;
         if (targetObject instanceof PlayerCharacter)
             this.ui.updateValue({id: "#pc-health", value: targetObject.health});
@@ -258,7 +269,10 @@ class TurnController {
             this.monsterCount = this._checkNumCharactersAlive(this.monsters);
             this.playerCount = this._checkNumCharactersAlive(this.players);
             if (this.playerCount === 0) {
-                this._endGameLost();
+                this.gameOver = true;
+                this.deferredCBs.done(function() {
+                    controller._endGameLost();
+                });
             }
         }
     }
