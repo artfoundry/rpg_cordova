@@ -66,7 +66,7 @@ class TurnController {
         let controller = this;
 
         if (controller.isPlayerTurn) {
-            controller.deferredCBs.done(function() {
+            controller.deferredCBs.progress(function() {
                controller.endTurn();
             });
             controller._movePlayers();
@@ -81,6 +81,7 @@ class TurnController {
         if (this.isPlayerTurn) {
             if (this.monsterCount > 0) {
                 this.isPlayerTurn = false;
+                this.deferredCBs = $.Deferred();
             } else {
                 this._endGameWon();
             }
@@ -117,7 +118,7 @@ class TurnController {
             params = {
                 "walkable" : {
                     "player" : player,
-                    "callback" : this.deferredCBs.resolve.bind(this)
+                    "callback" : this.deferredCBs.notify.bind(this)
                 },
                 "impassable" : {
                     "targetObject": player,
@@ -244,13 +245,19 @@ class TurnController {
         this._updateHealth(targetObject, {objects: characterList, index: characterNum});
         animateParams = {
             "targetObject" : targetObject,
-            "type" : "attack",
-            "callback" : function() {
-                if (controller.isPlayerTurn && !controller.gameOver) {
-                    controller.deferredCBs.resolve();
-                }
-            }
+            "type" : "attack"
         };
+        if (controller.isPlayerTurn) {
+            animateParams.callback = function() {
+                controller.deferredCBs.notify(); //call the progress callback to end the turn
+            };
+        } else {
+            if (controller.gameOver) {
+                animateParams.callback = function () {
+                    controller.deferredCBs.resolve(); //bypass progress callback and call done callback which ends game
+                };
+            }
+        }
         this.grid.animateTile(null, animateParams);
     }
 
