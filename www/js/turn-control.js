@@ -37,7 +37,7 @@ class TurnController {
         this.grid.drawGrid();
 
         // for testing
-        $('.light-img').remove();
+        // $('.light-img').remove();
 
         this.events.setUpTileChangeListener(this.tileListenerTarget, this.grid.updateTileImage);
         this.events.setUpLightChangeListener(this.tileListenerTarget, this.grid.updateLightingImage);
@@ -82,13 +82,15 @@ class TurnController {
             if (this.monsterCount > 0) {
                 this.isPlayerTurn = false;
                 this.deferredCBs = $.Deferred();
+                this.runTurnCycle();
             } else {
+                this._tearDownListeners();
                 this._endGameWon();
             }
         } else {
             this.isPlayerTurn = true;
+            this.runTurnCycle();
         }
-        this.runTurnCycle();
     }
 
     /*****************************
@@ -130,19 +132,6 @@ class TurnController {
                 }
             };
         this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
-
-        //temp listener for buttons
-        // $('.light-button').click(function(e) {
-        //     if (e.currentTarget.id === "light-low")
-        //         player.lightRadius = 1;
-        //     else if (e.currentTarget.id === "light-med")
-        //         player.lightRadius = 2;
-        //     else if (e.currentTarget.id === "light-high")
-        //         player.lightRadius = 3;
-        // });
-        // player.clearLighting();
-        // player._setLighting(player.pos);
-        //end temp
     }
 
     _tearDownListeners() {
@@ -242,18 +231,24 @@ class TurnController {
             }
         }
 
-        this._updateHealth(targetObject, {objects: characterList, index: characterNum});
+        this._updateHealth(targetObject);
+        if (targetObject.health < 1) {
+            this._removeCharacter(targetObject, {objects: characterList, index: characterNum});
+        }
+
         animateParams = {
             "targetObject" : targetObject,
             "type" : "attack"
         };
         if (controller.isPlayerTurn) {
             animateParams.callback = function() {
+                controller._checkNclearImg(targetObject);
                 controller.deferredCBs.notify(); //call the progress callback to end the turn
             };
         } else {
             if (controller.gameOver) {
                 animateParams.callback = function () {
+                    controller._checkNclearImg(targetObject);
                     controller.deferredCBs.resolve(); //bypass progress callback and call done callback which ends game
                 };
             }
@@ -261,26 +256,35 @@ class TurnController {
         this.grid.animateTile(null, animateParams);
     }
 
-    _updateHealth(targetObject, listParams) {
+    _checkNclearImg(target) {
+        if (target.health < 1) {
+            this.grid.clearImg(target);
+        }
+    }
+
+    _updateHealth(targetObject) {
+        targetObject.health -= 1;
+        if (targetObject instanceof PlayerCharacter) {
+            this.ui.updateValue({id: "#pc-health", value: targetObject.health});
+        }
+    }
+
+    _removeCharacter(targetObject, listParams) {
         let controller = this;
 
-        targetObject.health -= 1;
-        if (targetObject instanceof PlayerCharacter)
-            this.ui.updateValue({id: "#pc-health", value: targetObject.health});
-        if (targetObject.health < 1) {
-            this.helpers.killObject(listParams.objects, listParams.index);
-            if (targetObject instanceof Monster) {
-                this.ui.kills += 1;
-                this.ui.updateValue({id: "#kills", value: this.ui.kills});
-            }
-            this.monsterCount = this._checkNumCharactersAlive(this.monsters);
-            this.playerCount = this._checkNumCharactersAlive(this.players);
-            if (this.playerCount === 0) {
-                this.gameOver = true;
-                this.deferredCBs.done(function() {
-                    controller._endGameLost();
-                });
-            }
+        this.helpers.killObject(listParams.objects, listParams.index);
+        if (targetObject instanceof Monster) {
+            this.ui.kills += 1;
+            this.ui.updateValue({id: "#kills", value: this.ui.kills});
+        }
+        this.monsterCount = this._checkNumCharactersAlive(this.monsters);
+        this.playerCount = this._checkNumCharactersAlive(this.players);
+        if (this.playerCount === 0) {
+            this.gameOver = true;
+            this.deferredCBs.done(function() {
+                controller._tearDownListeners();
+                controller._endGameLost();
+            });
         }
     }
 
