@@ -18,32 +18,62 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, monsters, helpers) {
+    constructor(grid, ui, players, monsters, helpers, events) {
         this.helpers = helpers;
         this.grid = grid;
         this.ui = ui;
         this.players = players;
-        this.playerCount = this._checkCharactersAlive(this.players);
+        this.playerCount = this._checkNumCharactersAlive(this.players);
         this.monsters = monsters;
         this.monsterCount = Object.keys(this.monsters).length;
-        this.events = new Events();
+        this.events = events;
         this.isPlayerTurn = true;
-        this.listenerTarget = '.tile';
+        this.tileListenerTarget = '.tile';
+        this.deferredCBs = $.Deferred();
+        this.gameOver = false;
     }
 
     initialize() {
-        this.events.setUpTileChangeListener(this.listenerTarget, this.grid.updateTileImage);
-        this.events.setUpLightChangeListener(this.listenerTarget, this.grid.updateLightingImage);
+        this.grid.drawGrid();
+
+        // for testing
+        // $('.light-img').remove();
+
+        this.events.setUpTileChangeListener(this.tileListenerTarget, this.grid.updateTileImage);
+        this.events.setUpLightChangeListener(this.tileListenerTarget, this.grid.updateLightingImage);
+        this.players.player1.initialize();
+        this.monsters.monster1.initialize();
+        this.startGame();
+    }
+
+    startGame() {
+        let messages = [
+                {"class" : "modal-header", "text" : "dialogHeader"},
+                {"class" : "modal-body", "text" : "gameIntro", "hidden" : false},
+                {"class" : "modal-body", "text" : "instructions", "hidden" : false},
+                {"class" : "modal-tips", "text" : "tips", "hidden" : true}
+            ],
+            buttons = [
+                {"label" : "Tips", "action" : this.ui.visibilityToggle, "params" : ".modal-tips", "hidden" : false},
+                {"label" : "Start!", "action" : this.ui.modalClose, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
+            ];
+
+        this.ui.updateValue({id: "#pc-health", value: this.players.player1.health});
+        this.ui.modalOpen(messages, buttons);
     }
 
     runTurnCycle() {
         let controller = this;
+
         if (controller.isPlayerTurn) {
+            controller.deferredCBs.progress(function() {
+               controller.endTurn();
+            });
             controller._movePlayers();
         } else {
             controller._tearDownListeners();
             controller._moveMonsters();
-            this.endTurn();
+            controller.endTurn();
         }
     }
 
@@ -51,13 +81,16 @@ class TurnController {
         if (this.isPlayerTurn) {
             if (this.monsterCount > 0) {
                 this.isPlayerTurn = false;
+                this.deferredCBs = $.Deferred();
+                this.runTurnCycle();
             } else {
+                this._tearDownListeners();
                 this._endGameWon();
             }
         } else {
             this.isPlayerTurn = true;
+            this.runTurnCycle();
         }
-        this.runTurnCycle();
     }
 
     /*****************************
@@ -81,13 +114,13 @@ class TurnController {
     _setupListeners(player) {
         let targetActions = {
                 "walkable" : player.movePlayer.bind(this),
-                "impassable" : this.grid.animateHighlight.bind(this),
+                "impassable" : this.grid.animateTile.bind(this),
                 "monster" : this._attack.bind(this)
             },
             params = {
                 "walkable" : {
                     "player" : player,
-                    "callback" : this.endTurn.bind(this)
+                    "callback" : this.deferredCBs.notify.bind(this)
                 },
                 "impassable" : {
                     "targetObject": player,
@@ -98,24 +131,11 @@ class TurnController {
                     "player" : player
                 }
             };
-        this.events.setUpClickListener(this.listenerTarget, targetActions, params);
-
-        //temp listener for buttons
-        $('.light-button').click(function(e) {
-            if (e.currentTarget.id === "light-low")
-                player.lightRadius = 1;
-            else if (e.currentTarget.id === "light-med")
-                player.lightRadius = 2;
-            else if (e.currentTarget.id === "light-high")
-                player.lightRadius = 3;
-        });
-        player.clearLighting();
-        player._setLighting(player.pos);
-        //end temp
+        this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
     }
 
     _tearDownListeners() {
-        this.events.removeClickListener(this.listenerTarget);
+        this.events.removeClickListener(this.tileListenerTarget);
     }
 
     _moveMonsters() {
@@ -192,7 +212,7 @@ class TurnController {
             targetLoc,
             targetObject = {},
             controller = this,
-            animateParams = {};
+            animateParams;
 
         for (characterNum in characterList) {
             if (Object.prototype.hasOwnProperty.call(characterList, characterNum)) {
@@ -211,32 +231,64 @@ class TurnController {
             }
         }
 
+        this._updateHealth(targetObject);
+        if (targetObject.health < 1) {
+            this._removeCharacter(targetObject, {objects: characterList, index: characterNum});
+        }
+
         animateParams = {
             "targetObject" : targetObject,
-            "type" : "attack",
-            "callback" : function() {
-                controller._updateHealth(targetObject, {objects: characterList, index: characterNum});
-                if (controller.isPlayerTurn) {
-                    controller.endTurn();
-                }
-            }
+            "type" : "attack"
         };
-        this.grid.animateHighlight(null, animateParams);
+        if (controller.isPlayerTurn) {
+            animateParams.callback = function() {
+                controller._checkNclearImg(targetObject);
+                controller.deferredCBs.notify(); //call the progress callback to end the turn
+            };
+        } else {
+            if (controller.gameOver) {
+                animateParams.callback = function () {
+                    controller._checkNclearImg(targetObject);
+                    controller.deferredCBs.resolve(); //bypass progress callback and call done callback which ends game
+                };
+            }
+        }
+        this.grid.animateTile(null, animateParams);
     }
 
-    _updateHealth(targetObject, listParams) {
-        targetObject.health -= 1;
-        if (targetObject.health < 1) {
-            this.helpers.killObject(listParams.objects, listParams.index);
-            this.monsterCount = this._checkCharactersAlive(this.monsters);
-            this.playerCount = this._checkCharactersAlive(this.players);
-            if (this.playerCount === 0) {
-                this._endGameLost();
-            }
+    _checkNclearImg(target) {
+        if (target.health < 1) {
+            this.grid.clearImg(target);
         }
     }
 
-    _checkCharactersAlive(objectsList) {
+    _updateHealth(targetObject) {
+        targetObject.health -= 1;
+        if (targetObject instanceof PlayerCharacter) {
+            this.ui.updateValue({id: "#pc-health", value: targetObject.health});
+        }
+    }
+
+    _removeCharacter(targetObject, listParams) {
+        let controller = this;
+
+        this.helpers.killObject(listParams.objects, listParams.index);
+        if (targetObject instanceof Monster) {
+            this.ui.kills += 1;
+            this.ui.updateValue({id: "#kills", value: this.ui.kills});
+        }
+        this.monsterCount = this._checkNumCharactersAlive(this.monsters);
+        this.playerCount = this._checkNumCharactersAlive(this.players);
+        if (this.playerCount === 0) {
+            this.gameOver = true;
+            this.deferredCBs.done(function() {
+                controller._tearDownListeners();
+                controller._endGameLost();
+            });
+        }
+    }
+
+    _checkNumCharactersAlive(objectsList) {
         return Object.keys(objectsList).length;
     }
 

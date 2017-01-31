@@ -33,11 +33,6 @@ figure {
     padding: 0;
 }
 
-header {
-    top: 0;
-    font-size: 2em;
-}
-
 footer {
     position: absolute;
     bottom: 0;
@@ -144,10 +139,7 @@ footer {
     z-index: 5;
     width: 60%;
     height: 60%;
-    max-width: 400px;
-    max-height: 400px;
-    min-width: 200px;
-    min-height: 200px;
+    max-width: 600px;
     padding: 10px;
     left: 50%;
     transform: translateX(-50%);
@@ -158,18 +150,23 @@ footer {
     color: black;
 }
 
-.dialog-container {
+.modal-container {
     position: relative;
     height: 100%;
+}
+
+#modal-header {
+    top: 0;
+    font-size: 2em;
+}
+
+.modal-section {
+    text-align: left;
+    padding: 20px;
     white-space: normal;
 }
 
-.dialog-body {
-    padding: 20px;
-}
-
-.modal button {
-    display: none;
+.modal-button {
     width: 100px;
     line-height: 2em;
     margin: 10px;
@@ -181,6 +178,6 @@ footer {
     cursor: pointer;
 }
 
-.modal button:active {
+.modal-button:active {
     box-shadow: 0 0 4px 2px black;
 }

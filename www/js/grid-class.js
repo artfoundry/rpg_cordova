@@ -55,7 +55,7 @@ class Grid {
         $('.' + tileClass + '>img.light-img').replaceWith(image);
     }
 
-    animateHighlight(e, params) {
+    animateTile(e, params) {
         let $target = $('#' + params.targetObject.pos + '> .content'),
             type = params.type,
             callback = params.callback;

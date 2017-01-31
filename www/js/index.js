@@ -16,7 +16,7 @@ var app = {
             "player1" : {
                 "name" : "Player1",
                 "startPos" : "row1col1",
-                "health" : 1,
+                "health" : 3,
                 "image" : "character-color.png"
             }
         };
@@ -31,27 +31,20 @@ var app = {
 
         let grid = new Grid(gridOptions);
         let helpers = new Helpers(grid);
-        let ui = new UI();
+        let events = new Events();
+        let ui = new UI(events);
         let players = {
             player1: new PlayerCharacter(gridOptions, playerOptions.player1, helpers)
         };
         let monsters = {
             monster1 : new QueenMonster(gridOptions, monsterOptions.monster1, helpers)
         };
-        let turnController = new TurnController(grid, ui, players, monsters, helpers);
+        let turnController = new TurnController(grid, ui, players, monsters, helpers, events);
 
-        grid.drawGrid();
+        ui.initialize(turnController);
 
         turnController.initialize();
-        turnController.runTurnCycle();
-
-        players.player1.initialize();
-
-        monsters.monster1.initialize();
     }
 };
 
 $(app.initialize());
-
-// for testing
-// $('.light-img').remove()
