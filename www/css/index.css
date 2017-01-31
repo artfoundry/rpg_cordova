@@ -140,6 +140,7 @@ footer {
     width: 60%;
     height: 60%;
     max-width: 600px;
+    min-height: 300px;
     padding: 10px;
     left: 50%;
     transform: translateX(-50%);
@@ -158,6 +159,12 @@ footer {
 #modal-header {
     top: 0;
     font-size: 2em;
+}
+
+#modal-body-container {
+    height: 70%;
+    overflow: scroll;
+    border-bottom: 1px darkslateblue solid;
 }
 
 .modal-section {

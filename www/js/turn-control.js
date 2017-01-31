@@ -85,7 +85,7 @@ class TurnController {
                 this.runTurnCycle();
             } else {
                 this._tearDownListeners();
-                this._endGameWon();
+                this._endGame("win");
             }
         } else {
             this.isPlayerTurn = true;
@@ -283,7 +283,7 @@ class TurnController {
             this.gameOver = true;
             this.deferredCBs.done(function() {
                 controller._tearDownListeners();
-                controller._endGameLost();
+                controller._endGame("lose");
             });
         }
     }
@@ -292,11 +292,23 @@ class TurnController {
         return Object.keys(objectsList).length;
     }
 
-    _endGameLost() {
-        alert("You're dead! Game over!");
-    }
+    _endGame(message) {
+        let controller = this,
+            restartCallback = function() {
+                controller.ui.updateValue({id: "#pc-health", value: controller.players.player1.health});
+                controller.ui.runTurnCycle.bind(controller);
+            },
+            messages = [
+                {"class" : "modal-header", "text" : "dialogHeader"},
+                {"class" : "modal-body", "text" : "gameOverWin", "hidden" : false},
+            ],
+            buttons = [
+                {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
+            ];
 
-    _endGameWon() {
-        alert("You've killed every monster! You win!");
+        if (message === "lose")
+            messages[1].text = "gameOverDead";
+
+        this.ui.modalOpen(messages, buttons);
     }
 }
