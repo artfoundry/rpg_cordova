@@ -294,20 +294,18 @@ class TurnController {
 
     _endGame(message) {
         let controller = this,
+            endMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
             restartCallback = function() {
                 controller.ui.updateValue({id: "#pc-health", value: controller.players.player1.health});
                 controller.ui.runTurnCycle.bind(controller);
             },
             messages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body", "text" : "gameOverWin", "hidden" : false},
+                {"class" : "modal-body", "text" : endMessage, "hidden" : false},
             ],
             buttons = [
                 {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
             ];
-
-        if (message === "lose")
-            messages[1].text = "gameOverDead";
 
         this.ui.modalOpen(messages, buttons);
     }
