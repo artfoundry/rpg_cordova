@@ -34,6 +34,10 @@ class Grid {
         });
     }
 
+    clearGrid() {
+        $('.grid').children().remove();
+    }
+
     clearImg(target) {
         let targetType = '';
         if (target.constructor === PlayerCharacter)

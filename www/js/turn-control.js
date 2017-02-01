@@ -296,8 +296,8 @@ class TurnController {
         let controller = this,
             endMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
             restartCallback = function() {
-                controller.ui.updateValue({id: "#pc-health", value: controller.players.player1.health});
-                controller.ui.runTurnCycle.bind(controller);
+                controller.grid.clearGrid();
+                app.initialize();
             },
             messages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
