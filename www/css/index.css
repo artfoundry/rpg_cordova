@@ -141,7 +141,7 @@ figure {
     border: 2px darkslateblue solid;
     background: linear-gradient(to bottom, rgba(96, 173, 188, 1) 0%, rgba(50, 50, 50, 1) 97%, rgba(150, 150, 180, 1) 100%);
     box-shadow: 0 0 10px 6px black;
-    color: gray;
+    color: black;
 }
 
 .modal-container {
