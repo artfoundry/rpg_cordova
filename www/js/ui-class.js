@@ -34,9 +34,9 @@ class UI {
         $(".modal").show();
         for (let i = 0; i < messages.length; i++) {
             if (messages[i].class === "modal-header")
-                $("#modal-header").text(this.dialogs[messages[i].text]);
+                $(".modal-header").text(this.dialogs[messages[i].text]);
             else {
-                $("#modal-body-container").append(section);
+                $(".modal-body-container").append(section);
                 $(".modal-section:last-child").addClass(messages[i].class).text(this.dialogs[messages[i].text]);
                 if (messages[i].hidden)
                     $("." + messages[i].class + ":last-child").hide();
@@ -51,7 +51,7 @@ class UI {
                 },
                 $button;
 
-            $("#modal-footer").append(button);
+            $(".modal-footer").append(button);
             $button = $(".modal-button:last-child");
             $button.text(buttons[i].label);
             this.events.setUpClickListener(".modal-button:last-child", action, params);
