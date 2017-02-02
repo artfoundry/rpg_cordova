@@ -33,13 +33,6 @@ figure {
     padding: 0;
 }
 
-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    margin: auto;
-}
-
 /* Portrait layout (default) */
 #app {
     text-align:center;
@@ -62,6 +55,7 @@ footer {
     color: orangered;
     text-shadow: 1px 1px 2px black;
     border-bottom: 2px solid darkslategray;
+    border-radius: 20px 20px 0 0;
 }
 
 #statusbar span {
@@ -69,6 +63,8 @@ footer {
 }
 
 #statusbar #title {
+    font-family: 'Creepster', serif;
+    font-size: 22px;
     left: 0;
 }
 
@@ -138,14 +134,12 @@ footer {
     position: absolute;
     z-index: 5;
     width: 60%;
-    height: 60%;
     max-width: 600px;
-    padding: 10px;
     left: 50%;
     transform: translateX(-50%);
-    border-radius: 4px;
+    border-radius: 20px;
     border: 2px darkslateblue solid;
-    background-color: slategray;
+    background: linear-gradient(to bottom, rgba(96, 173, 188, 1) 0%, rgba(50, 50, 50, 1) 97%, rgba(150, 150, 180, 1) 100%);
     box-shadow: 0 0 10px 6px black;
     color: black;
 }
@@ -155,9 +149,27 @@ footer {
     height: 100%;
 }
 
-#modal-header {
+.modal-header {
     top: 0;
     font-size: 2em;
+    white-space: normal;
+    padding: 10px;
+    font-family: 'Creepster', serif;
+    color: orangered;
+    text-shadow: 1px 1px 2px black;
+    border-radius: 20px 20px 0 0;
+}
+
+.modal-footer {
+    margin: auto;
+    padding: 10px;
+    border-radius: 0 0 20px 20px;
+}
+
+.modal-body-container {
+    height: 70%;
+    max-height: 400px;
+    overflow: auto;
 }
 
 .modal-section {

@@ -25,6 +25,7 @@ class TurnController {
         this.players = players;
         this.playerCount = this._checkNumCharactersAlive(this.players);
         this.monsters = monsters;
+        this.targetCharacterObj = {};
         this.monsterCount = Object.keys(this.monsters).length;
         this.events = events;
         this.isPlayerTurn = true;
@@ -85,7 +86,7 @@ class TurnController {
                 this.runTurnCycle();
             } else {
                 this._tearDownListeners();
-                this._endGameWon();
+                this._endGame("win");
             }
         } else {
             this.isPlayerTurn = true;
@@ -210,7 +211,6 @@ class TurnController {
             characterNum,
             nearbyMonsterList,
             targetLoc,
-            targetObject = {},
             controller = this,
             animateParams;
 
@@ -224,31 +224,31 @@ class TurnController {
                     }
                     // if monster is attacking or if player is attacking and attack target matches monster in list of nearby monsters, then we have our target
                     if (!params.player || (nearbyMonsterList.indexOf(targetLoc) !== -1)) {
-                        targetObject = characterList[characterNum];
+                        this.targetCharacterObj = characterList[characterNum];
                         break;
                     }
                 }
             }
         }
 
-        this._updateHealth(targetObject);
-        if (targetObject.health < 1) {
-            this._removeCharacter(targetObject, {objects: characterList, index: characterNum});
+        this._updateHealth();
+        if (this.targetCharacterObj.health < 1) {
+            this._removeCharacter({objects: characterList, index: characterNum});
         }
 
         animateParams = {
-            "targetObject" : targetObject,
+            "targetObject" : this.targetCharacterObj,
             "type" : "attack"
         };
         if (controller.isPlayerTurn) {
             animateParams.callback = function() {
-                controller._checkNclearImg(targetObject);
+                controller._checkNclearImg(controller.targetCharacterObj);
                 controller.deferredCBs.notify(); //call the progress callback to end the turn
             };
         } else {
             if (controller.gameOver) {
                 animateParams.callback = function () {
-                    controller._checkNclearImg(targetObject);
+                    controller._checkNclearImg(controller.targetCharacterObj);
                     controller.deferredCBs.resolve(); //bypass progress callback and call done callback which ends game
                 };
             }
@@ -262,18 +262,18 @@ class TurnController {
         }
     }
 
-    _updateHealth(targetObject) {
-        targetObject.health -= 1;
-        if (targetObject instanceof PlayerCharacter) {
-            this.ui.updateValue({id: "#pc-health", value: targetObject.health});
+    _updateHealth() {
+        this.targetCharacterObj.health -= 1;
+        if (this.targetCharacterObj instanceof PlayerCharacter) {
+            this.ui.updateValue({id: "#pc-health", value: this.targetCharacterObj.health});
         }
     }
 
-    _removeCharacter(targetObject, listParams) {
+    _removeCharacter(listParams) {
         let controller = this;
 
         this.helpers.killObject(listParams.objects, listParams.index);
-        if (targetObject instanceof Monster) {
+        if (this.targetCharacterObj instanceof Monster) {
             this.ui.kills += 1;
             this.ui.updateValue({id: "#kills", value: this.ui.kills});
         }
@@ -283,7 +283,7 @@ class TurnController {
             this.gameOver = true;
             this.deferredCBs.done(function() {
                 controller._tearDownListeners();
-                controller._endGameLost();
+                controller._endGame("lose");
             });
         }
     }
@@ -292,11 +292,21 @@ class TurnController {
         return Object.keys(objectsList).length;
     }
 
-    _endGameLost() {
-        alert("You're dead! Game over!");
-    }
+    _endGame(message) {
+        let controller = this,
+            endMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
+            restartCallback = function() {
+                controller.grid.clearGrid();
+                app.initialize();
+            },
+            messages = [
+                {"class" : "modal-header", "text" : "dialogHeader"},
+                {"class" : "modal-body", "text" : endMessage, "hidden" : false},
+            ],
+            buttons = [
+                {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
+            ];
 
-    _endGameWon() {
-        alert("You've killed every monster! You win!");
+        this.ui.modalOpen(messages, buttons);
     }
 }

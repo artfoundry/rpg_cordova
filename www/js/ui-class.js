@@ -8,10 +8,10 @@ class UI {
         this.dialogs = {
             "dialogHeader"  : "Welcome to Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
-            "instructions"  : "You must kill all the creatures to survive and leave with your life! If you are attacked more than three times, you will die.  Good luck!",
+            "instructions"  : "You must kill all the creatures to survive and leave with your life. If you are attacked three times, you will die.  Good luck!",
             "tips"          : "There are two types of monsters: a Queen, and her minions.  The Queen spawns a minion every turn and must be attacked three times to kill her.  While she cannot attack, her minions can.  Each minion will attack if you approach within one square of it, but can be killed with one hit.",
-            "gameOverDead"  : "The hideous monster sucks the life out of you.  You are dead.",
-            "gameOverWin"   : "You've finally slaughtered every last creature and make it out alive!"
+            "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
+            "gameOverWin"   : "You've slaughtered every last creature. You make it out alive!"
         };
         this.kills = 0;
         this.runTurnCycle = function() {};
@@ -34,9 +34,9 @@ class UI {
         $(".modal").show();
         for (let i = 0; i < messages.length; i++) {
             if (messages[i].class === "modal-header")
-                $("#modal-header").text(this.dialogs[messages[i].text]);
+                $(".modal-header").text(this.dialogs[messages[i].text]);
             else {
-                $("#modal-body-container").append(section);
+                $(".modal-body-container").append(section);
                 $(".modal-section:last-child").addClass(messages[i].class).text(this.dialogs[messages[i].text]);
                 if (messages[i].hidden)
                     $("." + messages[i].class + ":last-child").hide();
@@ -51,7 +51,7 @@ class UI {
                 },
                 $button;
 
-            $("#modal-footer").append(button);
+            $(".modal-footer").append(button);
             $button = $(".modal-button:last-child");
             $button.text(buttons[i].label);
             this.events.setUpClickListener(".modal-button:last-child", action, params);
