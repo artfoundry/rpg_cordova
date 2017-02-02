@@ -15,7 +15,6 @@ body {
 }
 
 img {
-    max-width: 100%;
     height: auto;
     width: auto;
 }
@@ -48,6 +47,7 @@ figure {
 
 #statusbar {
     position: relative;
+    z-index: 4;
     padding: 10px;
     margin: 0 0 20px;
     text-align: left;
@@ -103,6 +103,7 @@ figure {
 
 .tile {
     display: inline-block;
+    position: relative;
     width: 9%;
     max-width: 64px;
     max-height: 64px;
@@ -121,6 +122,13 @@ figure {
 .light-img {
     z-index: 2;
     position: absolute;
+}
+
+.light-img-radius {
+    left: -128px;
+    top: -128px;
+    width: 320px;
+    z-index: 1;
 }
 
 .monster {

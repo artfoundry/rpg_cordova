@@ -66,58 +66,33 @@ class PlayerCharacter {
         let newRow = +centerTile.slice(3,this.playerTileIdColIndex),
             newCol = +centerTile.slice(this.playerTileIdColIndex + 3),
             $lightRadiusTiles,
-            lightBrightness = '',
-            $centerTile = $('#' + centerTile),
-            classIndex = $centerTile.attr('class').indexOf('light'),
-            centerLighting = $centerTile.attr('class').slice(classIndex, classIndex + 10);
+            $centerTile = $('#' + centerTile);
 
-        $centerTile
-            .removeClass(centerLighting)
-            .addClass('light-wht')
-            .trigger('lightChange', ['light-wht', '<img class="light-img" src="img/light-wht.png">']);
+        $('#' + this.pos)
+            .trigger('lightChange', ['light-ctr', '<img class="light-img" src="img/trans.png">'])
+            .removeClass('light-ctr');
 
         for (let i = this.lightRadius; i >= 1; i--) {
             $lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
-            if (this.lightRadius < 3) {
-                if (i === 1)
-                    lightBrightness = 'light-med';
-                else
-                    lightBrightness = 'light-drk';
-            } else {
-                if (i === 1)
-                    lightBrightness = 'light-brt';
-                else if (i === 2)
-                    lightBrightness = 'light-med';
-                else
-                    lightBrightness = 'light-drk';
-            }
+
             // when moving, set previous outer light circle to darkness
             if (centerTile !== this.pos && i === this.lightRadius) {
                 let $lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
                 $lastLightRadius
-                    .removeClass(lightBrightness)
+                    .removeClass('light')
                     .addClass('light-non')
                     .trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
             }
-            // remove previous light class
-            $lightRadiusTiles.removeClass(function(index) {
-                let classIndex = $(this).attr('class').indexOf('light');
-                return $(this).attr('class').slice(classIndex, classIndex+9);
-            });
             $lightRadiusTiles
-                .addClass(lightBrightness)
-                .trigger('lightChange', [lightBrightness, '<img class="light-img" src="img/' + lightBrightness + '.png">']);
+                .removeClass('light-non')
+                .addClass('light')
+                .trigger('lightChange', ['light', '<img class="light-img" src="img/trans.png">']);
         }
-    }
 
-    clearLighting() {
-        $('.light-drk, .light-med, .light-brt, .light-wht')
-            .removeClass('light-drk')
-            .removeClass('light-med')
-            .removeClass('light-brt')
-            .removeClass('light-wht')
-            .addClass('light-non')
-            .trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
+        $centerTile
+            .removeClass('light-non')
+            .addClass('light light-ctr')
+            .trigger('lightChange', ['light-ctr', '<img class="light-img-radius light-img" src="img/light-radius.png">']);
     }
 
     /*

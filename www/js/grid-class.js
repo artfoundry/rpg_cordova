@@ -15,7 +15,7 @@ class Grid {
             markup = '',
             id = '',
             blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>',
-            borderTile = '<figure id="" class="tile tile-wall impassable"><img class="content" src="img/trans.png"></figure>';
+            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>';
 
         $('.grid').prepend(() => {
             for(let rowNum=0; rowNum <= self.gridHeight + 1; rowNum++) {

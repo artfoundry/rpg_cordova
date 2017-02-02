@@ -24,22 +24,22 @@ class Helpers {
 
         for (let r = firstRow; r <= lastRow; r++) {
             // if on the first or last row, and that row is inside the grid...
-            if ((r === firstRow && firstRow >= 1) || (r === lastRow && lastRow <= this.grid.gridHeight)){
+            if ((r === firstRow && firstRow >= 0) || (r === lastRow && lastRow <= (this.grid.gridHeight + 1))){
                 // ...then add all tiles for that row (as long as the tile is inside the grid as well
                 for (let c = firstCol; c <= lastCol; c++) {
-                    if (c >= 1 && c <= this.grid.gridWidth) {
+                    if (c >= 0 && c <= (this.grid.gridWidth + 1)) {
                         tileToAdd = 'row' + r + 'col' + c;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
                 }
             } else {
                 // add the left and right tiles for the middle rows as long as they're inside the grid
-                if (r >= 1 && r <= this.grid.gridHeight) {
-                    if (firstCol >= 1) {
+                if (r >= 0 && r <= (this.grid.gridHeight + 1)) {
+                    if (firstCol >= 0) {
                         tileToAdd = 'row' + r + 'col' + firstCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
-                    if (lastCol <= this.grid.gridWidth) {
+                    if (lastCol <= (this.grid.gridWidth + 1)) {
                         tileToAdd = 'row' + r + 'col' + lastCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
