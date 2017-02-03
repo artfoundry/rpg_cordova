@@ -68,9 +68,7 @@ class PlayerCharacter {
             $lightRadiusTiles,
             $centerTile = $('#' + centerTile);
 
-        $('#' + this.pos)
-            .trigger('lightChange', ['light-ctr', '<img class="light-img" src="img/trans.png">'])
-            .removeClass('light-ctr');
+        this.removeCenterLighting();
 
         for (let i = this.lightRadius; i >= 1; i--) {
             $lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
@@ -93,6 +91,12 @@ class PlayerCharacter {
             .removeClass('light-non')
             .addClass('light light-ctr')
             .trigger('lightChange', ['light-ctr', '<img class="light-img-radius light-img" src="img/light-radius.png">']);
+    }
+
+    removeCenterLighting() {
+        $('#' + this.pos)
+            .trigger('lightChange', ['light-ctr', '<img class="light-img" src="img/trans.png">'])
+            .removeClass('light-ctr');
     }
 
     /*

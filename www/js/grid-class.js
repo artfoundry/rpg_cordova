@@ -60,24 +60,32 @@ class Grid {
     }
 
     animateTile(e, params) {
-        let $target = $('#' + params.targetObject.pos + '> .content'),
+        let $target = $('#' + params.targetObject.pos),
+            $targetContent = $target.children('.content'),
             type = params.type,
-            callback = params.callback;
+            callback = params.callback,
+            rotation = Math.random() * 360;
 
         switch (type) {
             case 'attack':
-                $target.animate({marginLeft: "+=10"}, 100);
-                $target.animate({marginLeft: "-=30"}, 100);
-                $target.animate({marginLeft: "+=20"}, 100);
+                $target.prepend("<img class='blood' src='img/blood.png'>");
+                $(".blood")
+                    .css("transform", "rotate(" + rotation + "deg)")
+                    .animate({opacity: 1}, 100)
+                    .animate({opacity: 0.8}, 100)
+                    .animate({opacity: 0}, 300, function() {
+                        $(".blood").remove();
+                    });
                 break;
             case 'impassable':
-                $target.animate({marginLeft: "+=10"}, 100);
-                $target.animate({marginLeft: "-=30"}, 100);
-                $target.animate({marginLeft: "+=20"}, 100);
+                $targetContent
+                    .animate({marginLeft: "+=10"}, 100)
+                    .animate({marginLeft: "-=30"}, 100)
+                    .animate({marginLeft: "+=20"}, 100);
                 break;
         }
         if (callback) {
-            $target.promise().done(function() {
+            $targetContent.promise().done(function() {
                 callback();
             });
         }

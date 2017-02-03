@@ -125,16 +125,10 @@ figure {
 }
 
 .light-img-radius {
-    left: -128px;
-    top: -128px;
-    width: 320px;
+    left: -158px;
+    top: -158px;
+    width: 380px;
     z-index: 1;
-}
-
-.monster {
-    border-radius: 10%;
-    border-color: darkred;
-    border-width: 0;
 }
 
 .modal {
@@ -200,4 +194,11 @@ figure {
 
 .modal-button:active {
     box-shadow: 0 0 4px 2px black;
+}
+
+.blood {
+    position: absolute;
+    width: 64px;
+    opacity: 0;
+    z-index: 1;
 }
