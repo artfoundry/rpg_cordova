@@ -66,9 +66,10 @@ class PlayerCharacter {
         let newRow = +centerTile.slice(3,this.playerTileIdColIndex),
             newCol = +centerTile.slice(this.playerTileIdColIndex + 3),
             $lightRadiusTiles,
-            $centerTile = $('#' + centerTile);
+            $oldCenterTile = $('#' + this.pos),
+            $newCenterTile = $('#' + centerTile);
 
-        this.removeCenterLighting();
+        this.removeLighting($oldCenterTile, 'light-ctr', 'light-img-radius');
 
         for (let i = this.lightRadius; i >= 1; i--) {
             $lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
@@ -76,27 +77,25 @@ class PlayerCharacter {
             // when moving, set previous outer light circle to darkness
             if (centerTile !== this.pos && i === this.lightRadius) {
                 let $lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
-                $lastLightRadius
-                    .removeClass('light')
-                    .addClass('light-non')
-                    .trigger('lightChange', ['light-non', '<img class="light-img" src="img/light-non.png">']);
+                this.removeLighting($lastLightRadius, 'light', 'light-img-trans');
+                this.addLighting($lastLightRadius, 'light-non', 'light-img-non');
             }
-            $lightRadiusTiles
-                .removeClass('light-non')
-                .addClass('light')
-                .trigger('lightChange', ['light', '<img class="light-img" src="img/trans.png">']);
+            this.removeLighting($lightRadiusTiles, 'light-non', 'light-img-non');
+            this.addLighting($lightRadiusTiles, 'light', 'light-img-trans');
         }
 
-        $centerTile
-            .removeClass('light-non')
-            .addClass('light light-ctr')
-            .trigger('lightChange', ['light-ctr', '<img class="light-img-radius light-img" src="img/light-radius.png">']);
+        this.removeLighting($newCenterTile, '', 'light-img-trans');
+        this.addLighting($newCenterTile, 'light light-ctr', 'light-img-radius');
     }
 
-    removeCenterLighting() {
-        $('#' + this.pos)
-            .trigger('lightChange', ['light-ctr', '<img class="light-img" src="img/trans.png">'])
-            .removeClass('light-ctr');
+    addLighting($tile, lightClass, lightImgClass) {
+        $tile.addClass(lightClass);
+        $tile.children('.light-img').addClass(lightImgClass);
+    }
+
+    removeLighting($tile, lightClass, lightImgClass) {
+        $tile.removeClass(lightClass);
+        $tile.children('.light-img').removeClass(lightImgClass);
     }
 
     /*
