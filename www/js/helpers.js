@@ -49,16 +49,17 @@ class Helpers {
         return tiles;
     }
 
-    getTileIdColIndex(tileId) {
-        return tileId.indexOf('col');
-    }
-
     setRowCol(pos) {
-        let colIndex = this.getTileIdColIndex(pos);
+        let colIndex = pos.indexOf('col');
+
         return {
             row : +pos.slice(3, colIndex),
             col : +pos.slice(colIndex + 3)
         }
+    }
+
+    checkNumCharactersAlive(objectsList) {
+        return Object.keys(objectsList).length;
     }
 
     killObject(objectList, objectKey) {

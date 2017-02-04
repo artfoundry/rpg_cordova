@@ -34,12 +34,14 @@ var app = {
         let events = new Events();
         let ui = new UI(events);
         let players = {
-            player1: new PlayerCharacter(gridOptions, playerOptions.player1, helpers)
+            player1: new PlayerCharacter(playerOptions.player1, helpers)
         };
+        let playerActions = new PlayerActions();
+        let commonActions = new CommonActions(helpers);
         let monsters = {
             monster1 : new QueenMonster(gridOptions, monsterOptions.monster1, helpers)
         };
-        let turnController = new TurnController(grid, ui, players, monsters, helpers, events);
+        let turnController = new TurnController(grid, ui, players, playerActions, commonActions, monsters, helpers, events);
 
         ui.initialize(turnController);
 
