@@ -15,7 +15,6 @@ body {
 }
 
 img {
-    max-width: 100%;
     height: auto;
     width: auto;
 }
@@ -48,6 +47,7 @@ figure {
 
 #statusbar {
     position: relative;
+    z-index: 4;
     padding: 10px;
     margin: 0 0 20px;
     text-align: left;
@@ -103,6 +103,7 @@ figure {
 
 .tile {
     display: inline-block;
+    position: relative;
     width: 9%;
     max-width: 64px;
     max-height: 64px;
@@ -123,10 +124,11 @@ figure {
     position: absolute;
 }
 
-.monster {
-    border-radius: 10%;
-    border-color: darkred;
-    border-width: 0;
+.light-img-radius {
+    left: -158px;
+    top: -158px;
+    width: 380px;
+    z-index: 1;
 }
 
 .modal {
@@ -192,4 +194,11 @@ figure {
 
 .modal-button:active {
     box-shadow: 0 0 4px 2px black;
+}
+
+.blood {
+    position: absolute;
+    width: 64px;
+    opacity: 0;
+    z-index: 1;
 }
