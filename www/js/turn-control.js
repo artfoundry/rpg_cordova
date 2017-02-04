@@ -41,7 +41,6 @@ class TurnController {
         // $('.light-img').remove();
 
         this.events.setUpTileChangeListener(this.tileListenerTarget, this.grid.updateTileImage);
-        this.events.setUpLightChangeListener(this.tileListenerTarget, this.grid.updateLightingImage);
         this.players.player1.initialize();
         this.monsters.monster1.initialize();
         this.startGame();

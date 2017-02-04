@@ -14,8 +14,8 @@ class Grid {
         let self = this,
             markup = '',
             id = '',
-            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>',
-            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><img class="light-img" src="img/light-non.png"><img class="content" src="img/trans.png"></figure>';
+            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>',
+            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>';
 
         $('.grid').prepend(() => {
             for(let rowNum=0; rowNum <= self.gridHeight + 1; rowNum++) {
@@ -55,10 +55,6 @@ class Grid {
         $('.' + tileClass + '>img.content').replaceWith(image);
     }
 
-    updateLightingImage(e, tileClass, image) {
-        $('.' + tileClass + '>img.light-img').replaceWith(image);
-    }
-
     animateTile(e, params) {
         let $target = $('#' + params.targetObject.pos),
             $targetContent = $target.children('.content'),
@@ -68,7 +64,7 @@ class Grid {
 
         switch (type) {
             case 'attack':
-                $target.prepend("<img class='blood' src='img/blood.png'>");
+                $target.prepend("<div class='blood'></div>");
                 $(".blood")
                     .css("transform", "rotate(" + rotation + "deg)")
                     .animate({opacity: 1}, 100)

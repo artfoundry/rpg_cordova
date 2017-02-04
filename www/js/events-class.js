@@ -35,8 +35,4 @@ class Events {
     setUpTileChangeListener(target, action) {
         $(target).on('tileChange', (e, tileClass, image) => { action(e, tileClass, image); });
     }
-
-    setUpLightChangeListener(target, action) {
-        $(target).on('lightChange', (e, tileClass, image) => { action(e, tileClass, image); });
-    }
 }

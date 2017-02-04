@@ -45,6 +45,10 @@ figure {
     }
 }
 
+/**
+ *  Status bar
+ */
+
 #statusbar {
     position: relative;
     z-index: 4;
@@ -92,6 +96,10 @@ figure {
     box-shadow: 1px 1px 2px black;
 }
 
+/**
+ *  Grid
+ */
+
 .grid {
     margin: auto;
     background-color:black;
@@ -119,17 +127,43 @@ figure {
     background-size: contain;
 }
 
+/**
+ *  Lighting
+ */
+
 .light-img {
-    z-index: 2;
     position: absolute;
 }
 
+.light-img-trans {
+    background-image: url('../img/trans.png');
+    width: 64px;
+    height: 64px;
+    z-index: 2;
+}
+
+.light-img-non {
+    background-image: url('../img/light-non.png');
+    width: 64px;
+    height: 64px;
+    z-index: 2;
+}
+
 .light-img-radius {
-    left: -158px;
-    top: -158px;
-    width: 380px;
+    background-image: url('../img/light-radius.png');
+    background-size: 360px 360px;
+    background-repeat: no-repeat;
+    background-position: -20px -20px;
+    left: -128px;
+    top: -128px;
+    width: 320px;
+    height: 320px;
     z-index: 1;
 }
+
+/**
+ *  Modal
+ */
 
 .modal {
     display: none;
@@ -198,7 +232,11 @@ figure {
 
 .blood {
     position: absolute;
+    background-image: url('../img/blood.png');
+    background-size: 64px 64px;
+    background-repeat: no-repeat;
     width: 64px;
+    height: 64px;
     opacity: 0;
     z-index: 1;
 }
