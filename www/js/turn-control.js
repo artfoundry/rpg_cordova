@@ -29,6 +29,7 @@ class TurnController {
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
         this.deferredCBs = $.Deferred();
+        this.gameOver = false;
     }
 
     initialize() {
@@ -69,7 +70,7 @@ class TurnController {
             controller._setupPlayerClickHandlers();
         } else {
             controller._tearDownListeners();
-            controller.commonActions.moveMonsters(this.deferredCBs, this.isPlayerTurn);
+            controller.commonActions.moveMonsters(this.deferredCBs, this.isPlayerTurn, this.gameOver);
             controller.endTurn();
         }
     }
@@ -85,8 +86,13 @@ class TurnController {
                 this._endGame("win");
             }
         } else {
-            this.isPlayerTurn = true;
-            this.runTurnCycle();
+            if (this.gameOver) {
+                this._tearDownListeners();
+                this._endGame("lose");
+            } else {
+                this.isPlayerTurn = true;
+                this.runTurnCycle();
+            }
         }
     }
 
@@ -132,6 +138,7 @@ class TurnController {
                         "targets": this.monsters,
                         "player": player,
                         "isPlayerTurn": this.isPlayerTurn,
+                        "gameOver": this.gameOver,
                         "callbacks": this.deferredCBs
                     }
                 };
@@ -143,8 +150,6 @@ class TurnController {
     _tearDownListeners() {
         this.events.removeClickListener(this.tileListenerTarget);
     }
-
-
 
     _endGame(message) {
         let controller = this,
