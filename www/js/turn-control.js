@@ -18,22 +18,17 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, playerActions, commonActions, monsters, helpers, events) {
-        this.helpers = helpers;
+    constructor(grid, ui, players, playerActions, commonActions, monsters, events) {
         this.grid = grid;
         this.ui = ui;
         this.players = players;
         this.playerActions = playerActions;
         this.commonActions = commonActions;
-        this.playerCount = this.helpers.checkNumCharactersAlive(this.players);
         this.monsters = monsters;
-        this.targetCharacterObj = {};
-        this.monsterCount = Object.keys(this.monsters).length;
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
         this.deferredCBs = $.Deferred();
-        this.gameOver = false;
     }
 
     initialize() {
@@ -74,14 +69,14 @@ class TurnController {
             controller._setupPlayerClickHandlers();
         } else {
             controller._tearDownListeners();
-            controller.commonActions.moveMonsters();
+            controller.commonActions.moveMonsters(this.deferredCBs, this.isPlayerTurn);
             controller.endTurn();
         }
     }
 
     endTurn() {
         if (this.isPlayerTurn) {
-            if (this.monsterCount > 0) {
+            if (this.commonActions.monsterCount > 0) {
                 this.isPlayerTurn = false;
                 this.deferredCBs = $.Deferred();
                 this.runTurnCycle();
@@ -120,9 +115,9 @@ class TurnController {
         for (let player in this.players) {
             if (Object.prototype.hasOwnProperty.call(this.players, player)) {
                 targetActions = {
-                    "walkable": this.playerActions.movePlayer,
+                    "walkable": this.playerActions.movePlayer.bind(this.playerActions),
                     "impassable": this.grid.animateTile.bind(this),
-                    "monster": this.commonActions.attack.bind(this)
+                    "monster": this.commonActions.attack.bind(this.commonActions)
                 };
                 params = {
                     "walkable": {
@@ -135,7 +130,9 @@ class TurnController {
                     },
                     "monster": {
                         "targets": this.monsters,
-                        "player": player
+                        "player": player,
+                        "isPlayerTurn": this.isPlayerTurn,
+                        "callbacks": this.deferredCBs
                     }
                 };
                 this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);

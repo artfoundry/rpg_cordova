@@ -3,6 +3,9 @@
  */
 
 class PlayerActions {
+    constructor(players) {
+        this.players = players;
+    }
 
     /**
      * function movePlayer
@@ -12,7 +15,7 @@ class PlayerActions {
      * - newTile: String of tile's id in the format "row#col#"
      */
     movePlayer(newTile, params) {
-        let player = params.player,
+        let player = this.players[params.player],
             currentPos = player.pos,
             currentRow = player.row,
             currentCol = player.col,

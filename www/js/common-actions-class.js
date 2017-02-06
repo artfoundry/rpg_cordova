@@ -3,11 +3,19 @@
  */
 
 class CommonActions {
-    constructor(helpers) {
+    constructor(grid, ui, players, monsters, helpers) {
+        this.grid = grid;
+        this.ui = ui;
+        this.players = players;
+        this.monsters = monsters;
         this.helpers = helpers;
+        this.targetCharacterObj = {};
+        this.playerCount = this.helpers.checkNumCharactersAlive(this.players);
+        this.monsterCount = Object.keys(this.monsters).length;
+        this.gameOver = false;
     }
 
-    moveMonsters() {
+    moveMonsters(deferredCBs, isPlayerTurn) {
         let newMinion = null,
             newMinionNum = "",
             attackParams = {};
@@ -20,7 +28,11 @@ class CommonActions {
                 } else {
                     let nearbyPlayerTiles = this._checkForNearbyCharacters(this.monsters[monster], 'player');
                     if (nearbyPlayerTiles) {
-                        attackParams = { "targets" : this.players };
+                        attackParams = {
+                            "targets" : this.players,
+                            "callback": deferredCBs,
+                            "isPlayerTurn" : isPlayerTurn
+                        };
                         this.attack(nearbyPlayerTiles[0], attackParams);
                         minionAttacked = true;
                     }
@@ -55,8 +67,10 @@ class CommonActions {
             characterNum,
             nearbyMonsterList,
             targetLoc,
-            controller = this,
-            animateParams;
+            animateParams,
+            deferredCBs = params.callbacks,
+            isPlayerTurn = params.isPlayerTurn,
+            commonActions = this;
 
         for (characterNum in characterList) {
             if (Object.prototype.hasOwnProperty.call(characterList, characterNum)) {
@@ -64,7 +78,7 @@ class CommonActions {
                     targetLoc = $('#' + characterList[characterNum].pos)[0];
                     // if player is attacking, check if there are actually monsters nearby
                     if (params.player) {
-                        nearbyMonsterList = this._checkForNearbyCharacters(params.player, 'monster');
+                        nearbyMonsterList = this._checkForNearbyCharacters(this.players[params.player], 'monster');
                     }
                     // if monster is attacking or if player is attacking and attack target matches monster in list of nearby monsters, then we have our target
                     if (!params.player || (nearbyMonsterList.indexOf(targetLoc) !== -1)) {
@@ -77,23 +91,23 @@ class CommonActions {
 
         this._updateHealth();
         if (this.targetCharacterObj.health < 1) {
-            this._removeCharacter({objects: characterList, index: characterNum});
+            this._removeCharacter({objects: characterList, index: characterNum, callback: deferredCBs});
         }
 
         animateParams = {
             "targetObject" : this.targetCharacterObj,
             "type" : "attack"
         };
-        if (controller.isPlayerTurn) {
+        if (isPlayerTurn) {
             animateParams.callback = function() {
-                controller._checkNclearImg(controller.targetCharacterObj);
-                controller.deferredCBs.notify(); //call the progress callback to end the turn
+                commonActions._checkNclearImg(commonActions.targetCharacterObj);
+                deferredCBs.notify(); //call the progress callback to end the turn
             };
         } else {
-            if (controller.gameOver) {
+            if (commonActions.gameOver) {
                 animateParams.callback = function () {
-                    controller._checkNclearImg(controller.targetCharacterObj);
-                    controller.deferredCBs.resolve(); //bypass progress callback and call done callback which ends game
+                    commonActions._checkNclearImg(commonActions.targetCharacterObj);
+                    deferredCBs.resolve(); //bypass progress callback and call done callback which ends game
                 };
             }
         }
@@ -131,7 +145,8 @@ class CommonActions {
     }
 
     _removeCharacter(listParams) {
-        let controller = this;
+        let commonActions = this,
+            deferredCBs = listParams.deferredCBs;
 
         this.helpers.killObject(listParams.objects, listParams.index);
         if (this.targetCharacterObj instanceof Monster) {
@@ -141,10 +156,10 @@ class CommonActions {
         this.monsterCount = this.helpers.checkNumCharactersAlive(this.monsters);
         this.playerCount = this.helpers.checkNumCharactersAlive(this.players);
         if (this.playerCount === 0) {
-            this.gameOver = true;
-            this.deferredCBs.done(function() {
-                controller._tearDownListeners();
-                controller._endGame("lose");
+            commonActions.gameOver = true;
+            deferredCBs.done(function() {
+                commonActions._tearDownListeners();
+                commonActions._endGame("lose");
             });
         }
     }
