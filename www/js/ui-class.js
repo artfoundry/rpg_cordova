@@ -13,7 +13,6 @@ class UI {
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last creature. You make it out alive!"
         };
-        this.kills = 0;
         this.runTurnCycle = function() {};
     }
 

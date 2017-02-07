@@ -16,6 +16,7 @@ class PlayerCharacter {
         this.row = 0;
         this.col = 0;
         this.lightRadius = 2;
+        this.kills = 0;
         // radius x = 2x + 1 sqs
         // 0 = 1x1 sqs
         // 1 = 3x3 sqs
@@ -26,6 +27,14 @@ class PlayerCharacter {
     initialize() {
         this._setPlayer(this.pos);
         this._setLighting(this.pos);
+    }
+
+    updateKills() {
+        this.kills += 1;
+    }
+
+    getKills() {
+        return this.kills;
     }
 
     _setPlayer(newTileId, oldTileId) {

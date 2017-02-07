@@ -18,18 +18,18 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, playerActions, commonActions, monsters, events) {
+    constructor(grid, ui, players, playerActions, monsterActions, monsters, events) {
         this.grid = grid;
         this.ui = ui;
         this.players = players;
         this.playerActions = playerActions;
-        this.commonActions = commonActions;
+        this.monsterActions = monsterActions;
         this.monsters = monsters;
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
         this.deferredCBs = $.Deferred();
-        this.gameOver = false;
+        this.isGameOver = false;
     }
 
     initialize() {
@@ -61,36 +61,50 @@ class TurnController {
     }
 
     runTurnCycle() {
-        let controller = this;
-
-        if (controller.isPlayerTurn) {
-            controller.deferredCBs.progress(function() {
-               controller.endTurn();
-            });
-            controller._setupPlayerClickHandlers();
+        if (this.getIsPlayerTurn() === true) {
+            // this.deferredCBs.progress(function() {
+            //    this.endTurn();
+            // });
+            this._setupPlayerClickHandlers();
         } else {
-            controller._tearDownListeners();
-            controller.commonActions.moveMonsters(this.deferredCBs, this.isPlayerTurn, this.gameOver);
-            controller.endTurn();
+            this._tearDownListeners();
+            this.monsterActions.moveMonsters(this.getIsGameOver.bind(this), this.setIsGameOver.bind(this));
+            this.endTurn();
         }
     }
 
+    getIsPlayerTurn() {
+        return this.isPlayerTurn;
+    }
+
+    setIsPlayerTurn(playerTurnSetting) {
+        this.isPlayerTurn = playerTurnSetting;
+    }
+
+    getIsGameOver() {
+        return this.isGameOver;
+    }
+
+    setIsGameOver() {
+        this.isGameOver = true;
+    }
+
     endTurn() {
-        if (this.isPlayerTurn) {
-            if (this.commonActions.monsterCount > 0) {
-                this.isPlayerTurn = false;
-                this.deferredCBs = $.Deferred();
+        if (this.getIsPlayerTurn() === true) {
+            if (Object.keys(this.monsters).length > 0) {
+                this.setIsPlayerTurn(false);
+                // this.deferredCBs = $.Deferred();
                 this.runTurnCycle();
             } else {
                 this._tearDownListeners();
                 this._endGame("win");
             }
         } else {
-            if (this.gameOver) {
+            if (this.getIsGameOver() === true) {
                 this._tearDownListeners();
                 this._endGame("lose");
             } else {
-                this.isPlayerTurn = true;
+                this.setIsPlayerTurn(true);
                 this.runTurnCycle();
             }
         }
@@ -123,23 +137,19 @@ class TurnController {
                 targetActions = {
                     "walkable": this.playerActions.movePlayer.bind(this.playerActions),
                     "impassable": this.grid.animateTile.bind(this),
-                    "monster": this.commonActions.attack.bind(this.commonActions)
+                    "monster": this.playerActions.playerAttack.bind(this.playerActions)
                 };
                 params = {
                     "walkable": {
                         "player": player,
-                        "callback": this.deferredCBs.notify.bind(this)
+                        "callback": this.endTurn.bind(this)
                     },
                     "impassable": {
-                        "targetObject": player,
+                        "targetObject": this.players[player],
                         "type": "impassable"
                     },
                     "monster": {
-                        "targets": this.monsters,
-                        "player": player,
-                        "isPlayerTurn": this.isPlayerTurn,
-                        "gameOver": this.gameOver,
-                        "callbacks": this.deferredCBs
+                        "player": player
                     }
                 };
                 this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
