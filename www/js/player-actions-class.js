@@ -56,6 +56,7 @@ class PlayerActions {
             targetLoc,
             targetMonster,
             currentPlayer = playerActions.players[params.player],
+            callback = params.callback,
             animateParams;
 
         for (monsterNum in this.monsters) {
@@ -68,18 +69,21 @@ class PlayerActions {
                     // if attack target matches monster in list of nearby monsters, then we have our target
                     if (nearbyMonsterList.indexOf(targetLoc) !== -1) {
                         targetMonster.health -= 1;
-                        this.helpers.killObject(this.monsters, monsterNum);
-                        currentPlayer.updateKills();
                         animateParams = {
                             "targetObject" : targetMonster,
-                            "type" : "attack",
-                            "callback" : function() {
-                                if (targetMonster.health < 1) {
-                                    playerActions.ui.updateValue({id: "#kills", value: currentPlayer.getKills()});
-                                    playerActions.grid.clearImg(targetMonster);
-                                }
-                            }
+                            "type" : "attack"
                         };
+                        if (targetMonster.health < 1) {
+                            this.helpers.killObject(this.monsters, monsterNum);
+                            currentPlayer.updateKills();
+                            animateParams.callback = function() {
+                                playerActions.ui.updateValue({id: "#kills", value: currentPlayer.getKills()});
+                                playerActions.grid.clearImg(targetMonster);
+                                callback();
+                            };
+                        } else {
+                            animateParams.callback = callback;
+                        }
                         this.grid.animateTile(null, animateParams);
                         break;
                     }

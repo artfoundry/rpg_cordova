@@ -11,21 +11,21 @@ class Grid {
     }
 
     drawGrid() {
-        let self = this,
+        let grid = this,
             markup = '',
             id = '',
             blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>',
             borderTile = '<figure id="" class="tile tile-wall impassable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>';
 
         $('.grid').prepend(() => {
-            for(let rowNum=0; rowNum <= self.gridHeight + 1; rowNum++) {
+            for (let rowNum = 0; rowNum <= grid.gridHeight + 1; rowNum++) {
                 markup += '<div class="row">';
-                for(let colNum=0; colNum <= self.gridWidth + 1; colNum++) {
+                for (let colNum = 0; colNum <= grid.gridWidth + 1; colNum++) {
                     id = "row" + rowNum + "col" + colNum;
-                    if (rowNum === 0 || rowNum === self.gridHeight + 1 || colNum === 0 || colNum === self.gridWidth + 1) {
-                        markup += self._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
+                    if (rowNum === 0 || rowNum === grid.gridHeight + 1 || colNum === 0 || colNum === grid.gridWidth + 1) {
+                        markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
                     } else {
-                        markup += self._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                        markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
                     }
                 }
                 markup += '</div>';

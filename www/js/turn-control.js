@@ -149,7 +149,8 @@ class TurnController {
                         "type": "impassable"
                     },
                     "monster": {
-                        "player": player
+                        "player": player,
+                        "callback" : this.endTurn.bind(this)
                     }
                 };
                 this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);

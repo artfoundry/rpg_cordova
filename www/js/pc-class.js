@@ -55,14 +55,13 @@ class PlayerCharacter {
     }
 
     _setLighting(centerTile) {
-        let playerTileIdColIndex = this.pos.indexOf('col'),
+        let playerTileIdColIndex = centerTile.indexOf('col'),
             newRow = +centerTile.slice(3, playerTileIdColIndex),
             newCol = +centerTile.slice(playerTileIdColIndex + 3),
             $lightRadiusTiles,
+            $lastLightRadius,
             $oldCenterTile = $('#' + this.pos),
             $newCenterTile = $('#' + centerTile);
-
-
 
         this._removeLighting($oldCenterTile, 'light-ctr', 'light-img-radius');
 
@@ -71,7 +70,7 @@ class PlayerCharacter {
 
             // when moving, set previous outer light circle to darkness
             if (centerTile !== this.pos && i === this.lightRadius) {
-                let $lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
+                $lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
                 this._removeLighting($lastLightRadius, 'light', 'light-img-trans');
                 this._addLighting($lastLightRadius, 'light-non', 'light-img-non');
             }
