@@ -10,8 +10,9 @@
  */
 
 class Helpers {
-    constructor(grid) {
+    constructor(grid, ui) {
         this.grid = grid;
+        this.ui = ui;
     }
 
     findSurroundingTiles(centerRow, centerCol, searchRadius) {
@@ -49,12 +50,9 @@ class Helpers {
         return tiles;
     }
 
-    getTileIdColIndex(tileId) {
-        return tileId.indexOf('col');
-    }
-
     setRowCol(pos) {
-        let colIndex = this.getTileIdColIndex(pos);
+        let colIndex = pos.indexOf('col');
+
         return {
             row : +pos.slice(3, colIndex),
             col : +pos.slice(colIndex + 3)
@@ -63,5 +61,21 @@ class Helpers {
 
     killObject(objectList, objectKey) {
         delete objectList[objectKey];
+    }
+
+    checkForNearbyCharacters(character, charSearchType) {
+        let characterLoc = character.pos,
+            colIndex = characterLoc.indexOf('col'),
+            characterRow = characterLoc.slice(3, colIndex),
+            characterCol = characterLoc.slice(colIndex + 3),
+            $nearbyCharLoc = null,
+            $surroundingTiles = this.findSurroundingTiles(characterRow, characterCol, 1);
+
+        if ($surroundingTiles.hasClass(charSearchType)) {
+            $nearbyCharLoc = $.grep($surroundingTiles, function(tile){
+                return $(tile).hasClass(charSearchType);
+            });
+        }
+        return $nearbyCharLoc;
     }
 }

@@ -18,20 +18,18 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, monsters, helpers, events) {
-        this.helpers = helpers;
+    constructor(grid, ui, players, playerActions, monsterActions, monsters, events) {
         this.grid = grid;
         this.ui = ui;
         this.players = players;
-        this.playerCount = this._checkNumCharactersAlive(this.players);
+        this.playerActions = playerActions;
+        this.monsterActions = monsterActions;
         this.monsters = monsters;
-        this.targetCharacterObj = {};
-        this.monsterCount = Object.keys(this.monsters).length;
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
         this.deferredCBs = $.Deferred();
-        this.gameOver = false;
+        this.isGameOver = false;
     }
 
     initialize() {
@@ -63,33 +61,52 @@ class TurnController {
     }
 
     runTurnCycle() {
-        let controller = this;
-
-        if (controller.isPlayerTurn) {
-            controller.deferredCBs.progress(function() {
-               controller.endTurn();
-            });
-            controller._movePlayers();
+        if (this.getIsPlayerTurn() === true) {
+            // this.deferredCBs.progress(function() {
+            //    this.endTurn();
+            // });
+            this._setupPlayerClickHandlers();
         } else {
-            controller._tearDownListeners();
-            controller._moveMonsters();
-            controller.endTurn();
+            this._tearDownListeners();
+            this.monsterActions.moveMonsters(this.getIsGameOver.bind(this), this.setIsGameOver.bind(this));
+            this.endTurn();
         }
     }
 
+    getIsPlayerTurn() {
+        return this.isPlayerTurn;
+    }
+
+    setIsPlayerTurn(playerTurnSetting) {
+        this.isPlayerTurn = playerTurnSetting;
+    }
+
+    getIsGameOver() {
+        return this.isGameOver;
+    }
+
+    setIsGameOver() {
+        this.isGameOver = true;
+    }
+
     endTurn() {
-        if (this.isPlayerTurn) {
-            if (this.monsterCount > 0) {
-                this.isPlayerTurn = false;
-                this.deferredCBs = $.Deferred();
+        if (this.getIsPlayerTurn() === true) {
+            if (Object.keys(this.monsters).length > 0) {
+                this.setIsPlayerTurn(false);
+                // this.deferredCBs = $.Deferred();
                 this.runTurnCycle();
             } else {
                 this._tearDownListeners();
                 this._endGame("win");
             }
         } else {
-            this.isPlayerTurn = true;
-            this.runTurnCycle();
+            if (this.getIsGameOver() === true) {
+                this._tearDownListeners();
+                this._endGame("lose");
+            } else {
+                this.setIsPlayerTurn(true);
+                this.runTurnCycle();
+            }
         }
     }
 
@@ -101,7 +118,7 @@ class TurnController {
 
 
     /*****************************
-     * function _setupListeners
+     * function _setupPlayerClickHandlers
      *
      * Sets up click handlers through events class with these parameters:
      *
@@ -111,184 +128,38 @@ class TurnController {
      * -player object
      * -callback function to run after player move action is finished
      ****************************/
-    _setupListeners(player) {
-        let targetActions = {
-                "walkable" : player.movePlayer.bind(this),
-                "impassable" : this.grid.animateTile.bind(this),
-                "monster" : this._attack.bind(this)
-            },
-            params = {
-                "walkable" : {
-                    "player" : player,
-                    "callback" : this.deferredCBs.notify.bind(this)
-                },
-                "impassable" : {
-                    "targetObject": player,
-                    "type" : "impassable"
-                },
-                "monster" : {
-                    "targets" : this.monsters,
-                    "player" : player
-                }
-            };
-        this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
+    _setupPlayerClickHandlers() {
+        let targetActions = {},
+            params = {};
+
+        for (let player in this.players) {
+            if (Object.prototype.hasOwnProperty.call(this.players, player)) {
+                targetActions = {
+                    "walkable": this.playerActions.movePlayer.bind(this.playerActions),
+                    "impassable": this.grid.animateTile.bind(this),
+                    "monster": this.playerActions.playerAttack.bind(this.playerActions)
+                };
+                params = {
+                    "walkable": {
+                        "player": player,
+                        "callback": this.endTurn.bind(this)
+                    },
+                    "impassable": {
+                        "targetObject": this.players[player],
+                        "type": "impassable"
+                    },
+                    "monster": {
+                        "player": player,
+                        "callback" : this.endTurn.bind(this)
+                    }
+                };
+                this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
+            }
+        }
     }
 
     _tearDownListeners() {
         this.events.removeClickListener(this.tileListenerTarget);
-    }
-
-    _moveMonsters() {
-        let newMinion = null,
-            newMinionNum = "",
-            attackParams = {};
-
-        for (let monster in this.monsters) {
-            let minionAttacked = false;
-            if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
-                if (this.monsters[monster].name === "Queen") {
-                    this.monsters[monster].saveCurrentPos();
-                } else {
-                    let nearbyPlayerTiles = this._checkForNearbyCharacters(this.monsters[monster], 'player');
-                    if (nearbyPlayerTiles) {
-                        attackParams = { "targets" : this.players };
-                        this._attack(nearbyPlayerTiles[0], attackParams);
-                        minionAttacked = true;
-                    }
-                }
-                if (!minionAttacked) {
-                    this.grid.clearImg(this.monsters[monster]);
-                    this.monsters[monster].randomMove();
-                    if (this.monsters[monster].name === "Queen" && $('#' + this.monsters[monster].oldPos).hasClass('walkable')) {
-                        newMinion = this.monsters[monster].spawn();
-                    }
-                }
-            }
-        }
-        if (newMinion) {
-            this.monsterCount += 1;
-            newMinionNum = "monster" + this.monsterCount;
-            this.monsters[newMinionNum] = newMinion;
-            this.monsters[newMinionNum].name = "Minion" + this.monsterCount;
-            this.monsters[newMinionNum].initialize();
-        }
-    }
-
-    _movePlayers() {
-        for (let player in this.players) {
-            if (Object.prototype.hasOwnProperty.call(this.players, player)) {
-                this._setupListeners(this.players[player]);
-            }
-        }
-    }
-
-    _checkForNearbyCharacters(character, charSearchType) {
-        let characterLoc = character.pos,
-            colIndex = characterLoc.indexOf('col'),
-            characterRow = characterLoc.slice(3, colIndex),
-            characterCol = characterLoc.slice(colIndex + 3),
-            $nearbyCharLoc = null,
-            $surroundingTiles = this.helpers.findSurroundingTiles(characterRow, characterCol, 1);
-
-        if ($surroundingTiles.hasClass(charSearchType)) {
-            $nearbyCharLoc = $.grep($surroundingTiles, function(tile){
-                return $(tile).hasClass(charSearchType);
-            });
-        }
-        return $nearbyCharLoc;
-    }
-
-    /**
-     * function _attack
-     * For registering an attack by a monster on a player or vice versa
-     * @param targetTile - jquery element target of attack
-     * @param params - object in which targets key contains list of game characters, either players or monsters
-     * @private
-     */
-    _attack(targetTile, params) {
-        let characterList = params.targets,
-            characterNum,
-            nearbyMonsterList,
-            targetLoc,
-            controller = this,
-            animateParams;
-
-        for (characterNum in characterList) {
-            if (Object.prototype.hasOwnProperty.call(characterList, characterNum)) {
-                if (characterList[characterNum].pos === targetTile.id) {
-                    targetLoc = $('#' + characterList[characterNum].pos)[0];
-                    // if player is attacking, check if there are actually monsters nearby
-                    if (params.player) {
-                        nearbyMonsterList = this._checkForNearbyCharacters(params.player, 'monster');
-                    }
-                    // if monster is attacking or if player is attacking and attack target matches monster in list of nearby monsters, then we have our target
-                    if (!params.player || (nearbyMonsterList.indexOf(targetLoc) !== -1)) {
-                        this.targetCharacterObj = characterList[characterNum];
-                        break;
-                    }
-                }
-            }
-        }
-
-        this._updateHealth();
-        if (this.targetCharacterObj.health < 1) {
-            this._removeCharacter({objects: characterList, index: characterNum});
-        }
-
-        animateParams = {
-            "targetObject" : this.targetCharacterObj,
-            "type" : "attack"
-        };
-        if (controller.isPlayerTurn) {
-            animateParams.callback = function() {
-                controller._checkNclearImg(controller.targetCharacterObj);
-                controller.deferredCBs.notify(); //call the progress callback to end the turn
-            };
-        } else {
-            if (controller.gameOver) {
-                animateParams.callback = function () {
-                    controller._checkNclearImg(controller.targetCharacterObj);
-                    controller.deferredCBs.resolve(); //bypass progress callback and call done callback which ends game
-                };
-            }
-        }
-        this.grid.animateTile(null, animateParams);
-    }
-
-    _checkNclearImg(target) {
-        if (target.health < 1) {
-            this.grid.clearImg(target);
-        }
-    }
-
-    _updateHealth() {
-        this.targetCharacterObj.health -= 1;
-        if (this.targetCharacterObj instanceof PlayerCharacter) {
-            this.ui.updateValue({id: "#pc-health", value: this.targetCharacterObj.health});
-        }
-    }
-
-    _removeCharacter(listParams) {
-        let controller = this;
-
-        this.helpers.killObject(listParams.objects, listParams.index);
-        if (this.targetCharacterObj instanceof Monster) {
-            this.ui.kills += 1;
-            this.ui.updateValue({id: "#kills", value: this.ui.kills});
-        }
-        this.monsterCount = this._checkNumCharactersAlive(this.monsters);
-        this.playerCount = this._checkNumCharactersAlive(this.players);
-        if (this.playerCount === 0) {
-            this.gameOver = true;
-            this.deferredCBs.done(function() {
-                controller._tearDownListeners();
-                controller._endGame("lose");
-            });
-        }
-    }
-
-    _checkNumCharactersAlive(objectsList) {
-        return Object.keys(objectsList).length;
     }
 
     _endGame(message) {
