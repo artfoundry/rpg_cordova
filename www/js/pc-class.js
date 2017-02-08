@@ -27,6 +27,11 @@ class PlayerCharacter {
     initialize() {
         this._setPlayer(this.pos);
         this._setLighting(this.pos);
+        this.resetKills();
+    }
+
+    resetKills() {
+        this.kills = 0;
     }
 
     updateKills() {
