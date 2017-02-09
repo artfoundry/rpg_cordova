@@ -28,7 +28,6 @@ class TurnController {
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
-        this.deferredCBs = $.Deferred();
         this.isGameOver = false;
     }
 
@@ -56,16 +55,13 @@ class TurnController {
                 {"label" : "Start!", "action" : this.ui.modalClose, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
             ];
 
-        this.ui.updateValue({id: "#kills", value: 0});
-        this.ui.updateValue({id: "#pc-health", value: this.players.player1.health});
+        this.ui.updateValue({id: ".kills", value: 0});
+        this.ui.updateValue({id: ".pc-health", value: this.players.player1.health});
         this.ui.modalOpen(messages, buttons);
     }
 
     runTurnCycle() {
         if (this.getIsPlayerTurn() === true) {
-            // this.deferredCBs.progress(function() {
-            //    this.endTurn();
-            // });
             this._setupPlayerClickHandlers();
         } else {
             this._tearDownListeners();
@@ -94,7 +90,6 @@ class TurnController {
         if (this.getIsPlayerTurn() === true) {
             if (Object.keys(this.monsters).length > 0) {
                 this.setIsPlayerTurn(false);
-                // this.deferredCBs = $.Deferred();
                 this.runTurnCycle();
             } else {
                 this._tearDownListeners();
