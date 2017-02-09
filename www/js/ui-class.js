@@ -77,7 +77,7 @@ class UI {
             difference = 0,
             newBubble = "<span class='life-bubble'></span>";
 
-        if (params.id.includes("#pc-health")) {
+        if (params.id.includes(".pc-health")) {
             bubbleElements = $element.children(".life-bubble");
             difference = params.value - bubbleElements.length;
             for (let i=0; i < Math.abs(difference); i++) {

@@ -77,7 +77,7 @@ class PlayerActions {
                             this.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
                             animateParams.callback = function() {
-                                playerActions.ui.updateValue({id: "#kills", value: currentPlayer.getKills()});
+                                playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
                                 playerActions.grid.clearImg(targetMonster);
                                 callback();
                             };

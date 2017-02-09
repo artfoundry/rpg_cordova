@@ -49,7 +49,7 @@ figure {
  *  Status bar
  */
 
-#statusbar {
+.statusbar {
     position: relative;
     z-index: 4;
     padding: 10px;
@@ -62,23 +62,23 @@ figure {
     border-radius: 20px 20px 0 0;
 }
 
-#statusbar span {
+.statusbar span {
     display: inline-block;
 }
 
-#statusbar #title {
+.statusbar .title {
     font-family: 'Creepster', serif;
     font-size: 22px;
     left: 0;
 }
 
-#stats {
+.stats {
     position: absolute;
     right: 0;
     width: 250px;
 }
 
-#stats #pc-health {
+.stats .pc-health {
     width: 150px;
 }
 
@@ -170,6 +170,7 @@ figure {
     position: absolute;
     z-index: 5;
     width: 60%;
+    min-width: 300px;
     max-width: 600px;
     left: 50%;
     transform: translateX(-50%);
