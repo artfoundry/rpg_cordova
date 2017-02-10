@@ -55,8 +55,8 @@ class PlayerCharacter {
             .trigger('tileChange', ['player', '<img class="content" src="img/' + this.image + '">'])
             .removeClass('walkable');
 
-        this.row = this.helpers.setRowCol(this.pos).row;
-        this.col = this.helpers.setRowCol(this.pos).col;
+        this.row = this.helpers.getRowCol(newTileId).row;
+        this.col = this.helpers.getRowCol(newTileId).col;
     }
 
     _setLighting(centerTile) {

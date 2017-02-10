@@ -5,9 +5,11 @@
  */
 
 class Grid {
-    constructor(gridOptions) {
+    constructor(gridOptions, helpers) {
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
+        this.helpers = helpers;
+        this.tileSize = '64';
     }
 
     drawGrid() {
@@ -60,13 +62,35 @@ class Grid {
             $targetContent = $target.children('.content'),
             type = params.type,
             callback = params.callback,
-            rotation = Math.random() * 360;
+            imageRotation = Math.random() * 360;
 
         switch (type) {
+            case 'move':
+                if (params.destinationId) {
+                    let destinationPosValues = this.helpers.getRowCol(params.destinationId),
+                        currentPosValues = this.helpers.getRowCol(params.targetObject.pos),
+                        moveDirection = {
+                            vertMov : destinationPosValues.row - currentPosValues.row,
+                            horizMov : destinationPosValues.col - currentPosValues.col
+                        },
+                        widthChange = 0,
+                        heightChange = 0;
+
+                    if (moveDirection.vertMov > 0)
+                        heightChange = "+=" + this.tileSize;
+                    if (moveDirection.vertMov < 0)
+                        heightChange = "-=" + this.tileSize;
+                    if (moveDirection.horizMov > 0)
+                        widthChange = "+=" + this.tileSize;
+                    if (moveDirection.horizMov < 0)
+                        widthChange = "-=" + this.tileSize;
+                    $targetContent.animate({left: widthChange, top: heightChange}, 500, callback);
+                }
+                break;
             case 'attack':
                 $target.prepend("<div class='blood'></div>");
                 $(".blood")
-                    .css("transform", "rotate(" + rotation + "deg)")
+                    .css("transform", "rotate(" + imageRotation + "deg)")
                     .animate({opacity: 1}, 100)
                     .animate({opacity: 0.8}, 100)
                     .animate({opacity: 0}, 300, function() {

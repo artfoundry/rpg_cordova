@@ -29,15 +29,15 @@ var app = {
             }
         };
 
-        let grid = new Grid(gridOptions);
-        let helpers = new Helpers(grid);
+        let helpers = new Helpers(gridOptions);
+        let grid = new Grid(gridOptions, helpers);
         let events = new Events();
         let ui = new UI(events);
         let players = {
             player1: new PlayerCharacter(playerOptions.player1, helpers)
         };
         let monsters = {
-            monster1 : new QueenMonster(gridOptions, monsterOptions.monster1, helpers)
+            monster1 : new QueenMonster(grid, gridOptions, monsterOptions.monster1, helpers)
         };
         let playerActions = new PlayerActions(grid, ui, players, monsters, helpers);
         let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers);

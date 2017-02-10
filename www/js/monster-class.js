@@ -3,12 +3,14 @@
  */
 
 class Monster {
-    constructor(gridOptions, monsterOptions, helpers) {
+    constructor(grid, gridOptions, monsterOptions, helpers) {
+        this.grid = grid;
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
         this.name = monsterOptions.name;
         this.image = monsterOptions.image;
         this.health = monsterOptions.health;
+        this.helpers = helpers;
         this.row = 0;
         this.col = 0;
         this.pos = '';
@@ -16,35 +18,43 @@ class Monster {
 
     initialize() {
         this._randomizeLoc();
-        this._setmonster();
+        this._setMonster(this.pos);
     }
 
     randomMove() {
-        let direction = Math.round((Math.random() * 40) / 10),
-            oldTileId = this.pos;
+        let direction = Math.floor((Math.random() * 40) / 10),
+            oldTileId = this.pos,
+            newTileId = '',
+            monster = this;
 
         switch (direction) {
-            case 1:
+            case 0:
                 if ($('#row' + (this.row - 1) + 'col' + this.col).hasClass('walkable'))
-                    this.pos = 'row' + (this.row - 1) + 'col' + this.col;
+                    newTileId = 'row' + (this.row - 1) + 'col' + this.col;
+                break;
+            case 1:
+                if ($('#row' + this.row + 'col' + (this.col + 1)).hasClass('walkable'))
+                    newTileId = 'row' + this.row + 'col' + (this.col + 1);
                 break;
             case 2:
-                if ($('#row' + this.row + 'col' + (this.col + 1)).hasClass('walkable'))
-                    this.pos = 'row' + this.row + 'col' + (this.col + 1);
+                if ($('#row' + (this.row + 1) + 'col' + this.col).hasClass('walkable'))
+                    newTileId = 'row' + (this.row + 1) + 'col' + this.col;
                 break;
             case 3:
-                if ($('#row' + (this.row + 1) + 'col' + this.col).hasClass('walkable'))
-                    this.pos = 'row' + (this.row + 1) + 'col' + this.col;
-                break;
-            case 4:
                 if ($('#row' + this.row + 'col' + (this.col - 1)).hasClass('walkable'))
-                    this.pos = 'row' + this.row + 'col' + (this.col - 1);
+                    newTileId = 'row' + this.row + 'col' + (this.col - 1);
                 break;
         }
-        this._setmonster(oldTileId);
+
+        if (newTileId !== '') {
+            this.grid.animateTile(null, {targetObject: monster, type: 'move', destinationId: newTileId, callback: function() {
+                monster._setMonster(newTileId, oldTileId);
+            }});
+        }
+
     }
 
-    _setmonster(oldTileId) {
+    _setMonster(newTileId, oldTileId) {
         if (oldTileId) {
             $('#' + oldTileId)
                 .addClass('walkable')
@@ -52,13 +62,14 @@ class Monster {
                 .removeClass(this.name + ' monster');
         }
 
-        $('#' + this.pos)
+        $('#' + newTileId)
             .addClass(this.name + ' monster')
             .trigger('tileChange', [this.name, '<img class="content" src="img/' + this.image + '">'])
             .removeClass('walkable');
 
-        this.row = this.helpers.setRowCol(this.pos).row;
-        this.col = this.helpers.setRowCol(this.pos).col;
+        this.row = this.helpers.getRowCol(newTileId).row;
+        this.col = this.helpers.getRowCol(newTileId).col;
+        this.pos = newTileId;
     }
 
     _randomizeLoc() {

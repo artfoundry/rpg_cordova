@@ -3,11 +3,12 @@
  */
 
 class QueenMonster extends Monster {
-    constructor(gridOptions, monsterOptions, helpers) {
-        super(gridOptions, monsterOptions, helpers);
+    constructor(grid, gridOptions, monsterOptions, helpers) {
+        super(grid, gridOptions, monsterOptions, helpers);
+        this.grid = grid;
+        this.helpers = helpers;
         this.oldPos = '';
         this.gridOptions = gridOptions;
-        this.helpers = helpers;
     }
 
     saveCurrentPos() {
@@ -21,6 +22,6 @@ class QueenMonster extends Monster {
             "pos" : this.oldPos,
             "image" : "minion.png"
         };
-        return new MinionMonster(this.gridOptions, minionOptions, this.helpers);
+        return new MinionMonster(this.grid, this.gridOptions, minionOptions, this.helpers);
     }
 }

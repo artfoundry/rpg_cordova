@@ -36,8 +36,10 @@ class PlayerActions {
             (newTilePos === (PlayerActions._blTile(currentRow, currentCol)))
         ) {
             player._setLighting(newTilePos);
+            this.grid.animateTile(null, {targetObject: player, type: 'move', destinationId: newTilePos, callback: function() {
+                player._setPlayer(newTilePos, currentPos);
+            }});
             player.pos = newTilePos;
-            player._setPlayer(newTilePos, currentPos);
             callback();
         }
     }
