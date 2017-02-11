@@ -63,11 +63,17 @@ class Grid {
             rotation = Math.random() * 360;
 
         switch (type) {
+            case 'fadeOut':
+                $targetContent.animate({opacity: 0}, 300);
+                break;
+            case 'fadeIn':
+                $targetContent.animate({opacity: 1}, 300);
+                break;
             case 'attack':
                 $target.prepend("<div class='blood'></div>");
                 $(".blood")
                     .css("transform", "rotate(" + rotation + "deg)")
-                    .animate({opacity: 1}, 100)
+                    .animate({opacity: 1}, 0)
                     .animate({opacity: 0.8}, 100)
                     .animate({opacity: 0}, 300, function() {
                         $(".blood").remove();
@@ -82,7 +88,9 @@ class Grid {
         }
         if (callback) {
             $targetContent.promise().done(function() {
-                callback();
+                setTimeout(function() {
+                    callback();
+                }, 300);
             });
         }
     }

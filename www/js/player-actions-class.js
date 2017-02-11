@@ -57,7 +57,8 @@ class PlayerActions {
             targetMonster,
             currentPlayer = playerActions.players[params.player],
             callback = params.callback,
-            animateParams;
+            animateAttackParams,
+            animateDeathParams;
 
         for (monsterNum in this.monsters) {
             if (Object.prototype.hasOwnProperty.call(this.monsters, monsterNum)) {
@@ -69,22 +70,29 @@ class PlayerActions {
                     // if attack target matches monster in list of nearby monsters, then we have our target
                     if (nearbyMonsterList.indexOf(targetLoc) !== -1) {
                         targetMonster.health -= 1;
-                        animateParams = {
+                        animateAttackParams = {
                             "targetObject" : targetMonster,
                             "type" : "attack"
+                        };
+                        animateDeathParams = {
+                            "targetObject" : targetMonster,
+                            "type" : "fadeOut",
+                            "callback" : function() {
+                                playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
+                                playerActions.grid.clearImg(targetMonster);
+                                callback();
+                            }
                         };
                         if (targetMonster.health < 1) {
                             this.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
-                            animateParams.callback = function() {
-                                playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
-                                playerActions.grid.clearImg(targetMonster);
-                                callback();
+                            animateAttackParams.callback = function() {
+                                playerActions.grid.animateTile(null, animateDeathParams);
                             };
                         } else {
-                            animateParams.callback = callback;
+                            animateAttackParams.callback = callback;
                         }
-                        this.grid.animateTile(null, animateParams);
+                        this.grid.animateTile(null, animateAttackParams);
                         break;
                     }
                 }
