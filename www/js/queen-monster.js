@@ -17,9 +17,9 @@ class QueenMonster extends Monster {
     spawn() {
         let minionOptions = {
             "name" : "Minion",
+            "type" : "minion",
             "health" : 1,
             "pos" : this.oldPos,
-            "image" : "minion.png"
         };
         return new MinionMonster(this.gridOptions, minionOptions, this.helpers);
     }

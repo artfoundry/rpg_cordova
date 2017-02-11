@@ -4,10 +4,11 @@
 
 class Monster {
     constructor(gridOptions, monsterOptions, helpers) {
+        this.helpers = helpers;
         this.gridWidth = gridOptions.width;
         this.gridHeight = gridOptions.height;
         this.name = monsterOptions.name;
-        this.image = monsterOptions.image;
+        this.type = monsterOptions.type;
         this.health = monsterOptions.health;
         this.row = 0;
         this.col = 0;
@@ -46,16 +47,12 @@ class Monster {
 
     _setmonster(oldTileId) {
         if (oldTileId) {
-            $('#' + oldTileId)
-                .addClass('walkable')
-                .trigger('tileChange', [this.name, '<img class="content" src="img/trans.png">'])
-                .removeClass(this.name + ' monster');
+            $('#' + oldTileId).addClass('walkable').removeClass(this.name + ' monster');
+            $('#' + oldTileId + ' .content').attr('class', 'content content-trans');
         }
 
-        $('#' + this.pos)
-            .addClass(this.name + ' monster')
-            .trigger('tileChange', [this.name, '<img class="content" src="img/' + this.image + '">'])
-            .removeClass('walkable');
+        $('#' + this.pos).addClass(this.name + ' monster').removeClass('walkable');
+        $('#' + this.pos + ' .content').attr('class', 'content content-' + this.type);
 
         this.row = this.helpers.setRowCol(this.pos).row;
         this.col = this.helpers.setRowCol(this.pos).col;

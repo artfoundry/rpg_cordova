@@ -14,8 +14,8 @@ class Grid {
         let grid = this,
             markup = '',
             id = '',
-            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>',
-            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>';
+            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><div class="light-img light-img-non"></div><div class="content content-trans"></div></figure>',
+            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><div class="light-img light-img-non"></div><div class="content content-trans"></div></figure>';
 
         $('.grid').prepend(() => {
             for (let rowNum = 0; rowNum <= grid.gridHeight + 1; rowNum++) {
@@ -45,14 +45,8 @@ class Grid {
         else
             targetType = 'monster';
 
-        $('#' + target.pos)
-            .addClass('walkable')
-            .trigger('tileChange', [target.name, '<img class="content" src="img/trans.png">'])
-            .removeClass(target.name + ' ' + targetType);
-    }
-
-    updateTileImage(e, tileClass, image) {
-        $('.' + tileClass + '>img.content').replaceWith(image);
+        $('#' + target.pos).addClass('walkable').removeClass(target.name + ' ' + targetType);
+        $('#' + target.pos + ' .content').attr( "class", "content content-trans" );
     }
 
     animateTile(e, params) {
@@ -88,9 +82,7 @@ class Grid {
         }
         if (callback) {
             $targetContent.promise().done(function() {
-                setTimeout(function() {
-                    callback();
-                }, 300);
+                callback();
             });
         }
     }

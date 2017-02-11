@@ -113,6 +113,7 @@ figure {
     display: inline-block;
     position: relative;
     width: 9%;
+    height: 64px;
     max-width: 64px;
     max-height: 64px;
 }
@@ -133,20 +134,17 @@ figure {
 
 .light-img {
     position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 2;
 }
 
 .light-img-trans {
     background-image: url('../img/trans.png');
-    width: 64px;
-    height: 64px;
-    z-index: 2;
 }
 
 .light-img-non {
     background-image: url('../img/light-non.png');
-    width: 64px;
-    height: 64px;
-    z-index: 2;
 }
 
 .light-img-radius {
@@ -159,6 +157,33 @@ figure {
     width: 320px;
     height: 320px;
     z-index: 1;
+}
+
+/**
+ *  Content
+ */
+
+.content {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 0;
+}
+
+.content-trans {
+    background-image: url('../img/trans.png');
+}
+
+.content-player {
+    background-image: url('../img/character-color.png');
+}
+
+.content-minion {
+    background-image: url('../img/minion.png');
+}
+
+.content-queen {
+    background-image: url('../img/queen.png');
 }
 
 /**

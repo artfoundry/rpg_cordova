@@ -9,7 +9,6 @@
 
 
 class Events {
-
     /**
      * function setUpClickListener
      *
@@ -30,9 +29,5 @@ class Events {
 
     removeClickListener(target) {
         $(target).off('click');
-    }
-
-    setUpTileChangeListener(target, action) {
-        $(target).on('tileChange', (e, tileClass, image) => { action(e, tileClass, image); });
     }
 }

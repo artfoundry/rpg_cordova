@@ -5,7 +5,7 @@
  * Instantiates major objects and events
  */
 
-var app = {
+let game = {
     initialize: function() {
         const gridOptions = {
             width: 10,
@@ -17,15 +17,14 @@ var app = {
                 "name" : "Player1",
                 "startPos" : "row1col1",
                 "health" : 3,
-                "image" : "character-color.png"
             }
         };
 
         const monsterOptions = {
             "monster1" : {
                 "name" : "Queen",
+                "type" : "queen",
                 "health" : 3,
-                "image" : "Queen.png"
             }
         };
 
@@ -49,4 +48,4 @@ var app = {
     }
 };
 
-$(app.initialize());
+$(game.initialize());

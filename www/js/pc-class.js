@@ -11,7 +11,6 @@ class PlayerCharacter {
         this.helpers = helpers;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
-        this.image = playerOptions.image;
         this.health = playerOptions.health;
         this.row = 0;
         this.col = 0;
@@ -44,16 +43,12 @@ class PlayerCharacter {
 
     _setPlayer(newTileId, oldTileId) {
         if (oldTileId) {
-            $('#' + oldTileId)
-                .addClass('walkable')
-                .trigger('tileChange', ['player', '<img class="content" src="img/trans.png">'])
-                .removeClass(this.name + ' player impassable');
+            $('#' + oldTileId).addClass('walkable').removeClass(this.name + ' player impassable');
+            $('#' + oldTileId + ' .content').attr('class', 'content content-trans');
         }
 
-        $('#' + newTileId)
-            .addClass(this.name + ' player impassable')
-            .trigger('tileChange', ['player', '<img class="content" src="img/' + this.image + '">'])
-            .removeClass('walkable');
+        $('#' + newTileId).addClass(this.name + ' player impassable').removeClass('walkable');
+        $('#' + newTileId + ' .content').attr('class', 'content content-player');
 
         this.row = this.helpers.setRowCol(this.pos).row;
         this.col = this.helpers.setRowCol(this.pos).col;
