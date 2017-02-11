@@ -33,7 +33,7 @@ let game = {
         let events = new Events();
         let ui = new UI(events);
         let players = {
-            player1: new PlayerCharacter(playerOptions.player1, helpers)
+            player1: new PlayerCharacter(playerOptions.player1, grid, helpers)
         };
         let monsters = {
             monster1 : new QueenMonster(gridOptions, monsterOptions.monster1, helpers)

@@ -35,9 +35,9 @@ class PlayerActions {
             (newTilePos === (PlayerActions._brTile(currentRow, currentCol))) ||
             (newTilePos === (PlayerActions._blTile(currentRow, currentCol)))
         ) {
-            player._setLighting(newTilePos);
+            player.setLighting(newTilePos);
+            player.setPlayer(newTilePos, currentPos);
             player.pos = newTilePos;
-            player._setPlayer(newTilePos, currentPos);
             callback();
         }
     }

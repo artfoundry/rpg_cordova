@@ -58,10 +58,10 @@ class Grid {
 
         switch (type) {
             case 'fadeOut':
-                $targetContent.animate({opacity: 0}, 300);
+                $targetContent.animate({opacity: 0}, 200);
                 break;
             case 'fadeIn':
-                $targetContent.animate({opacity: 1}, 300);
+                $targetContent.animate({opacity: 1}, 200);
                 break;
             case 'attack':
                 $target.prepend("<div class='blood'></div>");

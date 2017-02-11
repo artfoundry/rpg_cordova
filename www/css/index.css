@@ -176,6 +176,7 @@ figure {
 
 .content-player {
     background-image: url('../img/character-color.png');
+    opacity: 0;
 }
 
 .content-minion {

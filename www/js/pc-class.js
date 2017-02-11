@@ -7,7 +7,8 @@
  */
 
 class PlayerCharacter {
-    constructor(playerOptions, helpers) {
+    constructor(playerOptions, grid, helpers) {
+        this.grid = grid;
         this.helpers = helpers;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
@@ -24,8 +25,8 @@ class PlayerCharacter {
     }
 
     initialize() {
-        this._setPlayer(this.pos);
-        this._setLighting(this.pos);
+        this.setPlayer(this.pos);
+        this.setLighting(this.pos);
         this.resetKills();
     }
 
@@ -41,20 +42,36 @@ class PlayerCharacter {
         return this.kills;
     }
 
-    _setPlayer(newTileId, oldTileId) {
+    setPlayer(newTileId, oldTileId) {
+        let player = this,
+            animatefadeOutParams = {
+                "targetObject" : player,
+                "type" : "fadeOut",
+                "callback" : function() {
+                    $('#' + oldTileId + ' .content').attr('class', 'content content-trans');
+                    $('#' + newTileId + ' .content').attr('class', 'content content-player');
+                    player.grid.animateTile(null, animatefadeInParams);
+                }
+            },
+            animatefadeInParams = {
+                "targetObject" : player,
+                "type" : "fadeIn"
+            };
+
         if (oldTileId) {
             $('#' + oldTileId).addClass('walkable').removeClass(this.name + ' player impassable');
-            $('#' + oldTileId + ' .content').attr('class', 'content content-trans');
+            this.grid.animateTile(null, animatefadeOutParams);
+        } else {
+            $('#' + newTileId).addClass(this.name + ' player impassable').removeClass('walkable');
+            $('#' + newTileId + ' .content').attr('class', 'content content-player');
+            this.grid.animateTile(null, animatefadeInParams);
         }
 
-        $('#' + newTileId).addClass(this.name + ' player impassable').removeClass('walkable');
-        $('#' + newTileId + ' .content').attr('class', 'content content-player');
-
-        this.row = this.helpers.setRowCol(this.pos).row;
-        this.col = this.helpers.setRowCol(this.pos).col;
+        this.row = this.helpers.setRowCol(newTileId).row;
+        this.col = this.helpers.setRowCol(newTileId).col;
     }
 
-    _setLighting(centerTile) {
+    setLighting(centerTile) {
         let playerTileIdColIndex = centerTile.indexOf('col'),
             newRow = +centerTile.slice(3, playerTileIdColIndex),
             newCol = +centerTile.slice(playerTileIdColIndex + 3),
