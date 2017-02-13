@@ -19,7 +19,7 @@ class MonsterActions {
         for (let monster in this.monsters) {
             let minionAttacked = false;
             if (!getIsGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
-                if (this.monsters[monster].name === "Queen") {
+                if (this.monsters[monster].name === "Elder") {
                     this.monsters[monster].saveCurrentPos();
                 } else {
                     let nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(this.monsters[monster], 'player');
@@ -31,7 +31,7 @@ class MonsterActions {
                 if (!minionAttacked) {
                     this.grid.clearImg(this.monsters[monster]);
                     this.monsters[monster].randomMove();
-                    if (this.monsters[monster].name === "Queen" && $('#' + this.monsters[monster].oldPos).hasClass('walkable')) {
+                    if (this.monsters[monster].name === "Elder" && $('#' + this.monsters[monster].oldPos).hasClass('walkable')) {
                         newMinion = this.monsters[monster].spawn();
                     }
                 }

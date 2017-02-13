@@ -2,7 +2,7 @@
  * Created by David on 12/22/16.
  */
 
-class QueenMonster extends Monster {
+class ElderMonster extends Monster {
     constructor(gridOptions, monsterOptions, helpers) {
         super(gridOptions, monsterOptions, helpers);
         this.oldPos = '';
@@ -16,7 +16,7 @@ class QueenMonster extends Monster {
 
     spawn() {
         let minionOptions = {
-            "name" : "Minion",
+            "name" : "Shoggoth",
             "type" : "minion",
             "health" : 1,
             "pos" : this.oldPos,

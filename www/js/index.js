@@ -16,15 +16,15 @@ let game = {
             "player1" : {
                 "name" : "Player1",
                 "startPos" : "row1col1",
-                "health" : 3,
+                "health" : 3
             }
         };
 
         const monsterOptions = {
             "monster1" : {
-                "name" : "Queen",
-                "type" : "queen",
-                "health" : 3,
+                "name" : "Elder",
+                "type" : "elder",
+                "health" : 3
             }
         };
 
@@ -36,7 +36,7 @@ let game = {
             player1: new PlayerCharacter(playerOptions.player1, grid, helpers)
         };
         let monsters = {
-            monster1 : new QueenMonster(gridOptions, monsterOptions.monster1, helpers)
+            monster1 : new ElderMonster(gridOptions, monsterOptions.monster1, helpers)
         };
         let playerActions = new PlayerActions(grid, ui, players, monsters, helpers);
         let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers);
