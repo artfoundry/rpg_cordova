@@ -45,8 +45,8 @@ class Grid {
         else
             targetType = 'monster';
 
-        $('#' + target.pos).addClass('walkable').removeClass(target.name + ' ' + targetType);
-        $('#' + target.pos + ' .content').attr( "class", "content content-trans" );
+        $('#' + target.pos).addClass('walkable').removeClass(target.name + ' ' + targetType + ' impassable');
+        $('#' + target.pos + ' .content').attr( "class", "content content-trans" ).css('opacity', 'initial');
     }
 
     animateTile(e, params) {

@@ -162,7 +162,7 @@ class TurnController {
             endMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
             restartCallback = function() {
                 controller.grid.clearGrid();
-                app.initialize();
+                game.initialize();
             },
             messages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},

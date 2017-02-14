@@ -42,30 +42,30 @@ class PlayerCharacter {
         return this.kills;
     }
 
-    setPlayer(newTileId, oldTileId) {
+    setPlayer(newTileId, oldTileId, callback) {
         let player = this,
+            animatefadeInParams = {
+                "targetObject" : player,
+                "type" : "fadeIn",
+                "callback" : function () {
+                    if (callback)
+                        callback();
+                }
+            },
             animatefadeOutParams = {
                 "targetObject" : player,
                 "type" : "fadeOut",
                 "callback" : function() {
-                    $('#' + oldTileId + ' .content').attr('class', 'content content-trans');
+                    if (oldTileId)
+                        player.grid.clearImg(player);
+                    player.pos = newTileId;
+                    $('#' + newTileId).addClass(player.name + ' player impassable').removeClass('walkable');
                     $('#' + newTileId + ' .content').attr('class', 'content content-player');
                     player.grid.animateTile(null, animatefadeInParams);
                 }
-            },
-            animatefadeInParams = {
-                "targetObject" : player,
-                "type" : "fadeIn"
             };
 
-        if (oldTileId) {
-            $('#' + oldTileId).addClass('walkable').removeClass(this.name + ' player impassable');
-            this.grid.animateTile(null, animatefadeOutParams);
-        } else {
-            $('#' + newTileId).addClass(this.name + ' player impassable').removeClass('walkable');
-            $('#' + newTileId + ' .content').attr('class', 'content content-player');
-            this.grid.animateTile(null, animatefadeInParams);
-        }
+        this.grid.animateTile(null, animatefadeOutParams);
 
         this.row = this.helpers.setRowCol(newTileId).row;
         this.col = this.helpers.setRowCol(newTileId).col;
