@@ -13,37 +13,43 @@ class MonsterActions {
     }
 
     moveMonsters(getIsGameOver, setIsGameOver) {
-        let newMinion = null,
-            newMinionNum = "";
+        let currentMonster,
+            monsterActions = this;
 
         for (let monster in this.monsters) {
             let minionAttacked = false;
+
             if (!getIsGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
-                if (this.monsters[monster].name === "Elder") {
-                    this.monsters[monster].saveCurrentPos();
+                currentMonster = this.monsters[monster];
+                if (currentMonster.name === "Elder") {
+                    currentMonster.saveCurrentPos();
                 } else {
-                    let nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(this.monsters[monster], 'player');
+                    let nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player');
                     if (nearbyPlayerTiles) {
                         this._monsterAttack(nearbyPlayerTiles[0], setIsGameOver);
                         minionAttacked = true;
                     }
                 }
                 if (!minionAttacked) {
-                    this.grid.clearImg(this.monsters[monster]);
-                    this.monsters[monster].randomMove();
-                    if (this.monsters[monster].name === "Elder" && $('#' + this.monsters[monster].oldPos).hasClass('walkable')) {
-                        newMinion = this.monsters[monster].spawn();
-                    }
+                    currentMonster.randomMove(function() {
+                        if (currentMonster.name === "Elder" && $('#' + currentMonster.oldPos).hasClass('walkable')) {
+                            monsterActions.addNewMinion(currentMonster);
+                        }
+                    });
                 }
             }
         }
-        if (newMinion) {
-            this.monsterCount += 1;
-            newMinionNum = "monster" + this.monsterCount;
-            this.monsters[newMinionNum] = newMinion;
-            this.monsters[newMinionNum].name = newMinion.name + this.monsterCount;
-            this.monsters[newMinionNum].initialize();
-        }
+    }
+
+    addNewMinion(currentMonster) {
+        let newMinion = currentMonster.spawn(),
+            newMinionNum;
+
+        this.monsterCount += 1;
+        newMinionNum = "monster" + this.monsterCount;
+        this.monsters[newMinionNum] = newMinion;
+        this.monsters[newMinionNum].name = newMinion.name + this.monsterCount;
+        this.monsters[newMinionNum].initialize();
     }
 
     /*********************

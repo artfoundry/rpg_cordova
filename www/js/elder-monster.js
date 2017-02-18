@@ -3,10 +3,10 @@
  */
 
 class ElderMonster extends Monster {
-    constructor(gridOptions, monsterOptions, helpers) {
-        super(gridOptions, monsterOptions, helpers);
+    constructor(monsterOptions, grid, helpers) {
+        super(monsterOptions, grid, helpers);
         this.oldPos = '';
-        this.gridOptions = gridOptions;
+        this.grid = grid;
         this.helpers = helpers;
     }
 
@@ -19,8 +19,8 @@ class ElderMonster extends Monster {
             "name" : "Shoggoth",
             "type" : "minion",
             "health" : 1,
-            "pos" : this.oldPos,
+            "pos" : this.oldPos
         };
-        return new MinionMonster(this.gridOptions, minionOptions, this.helpers);
+        return new MinionMonster(minionOptions, this.grid, this.helpers);
     }
 }

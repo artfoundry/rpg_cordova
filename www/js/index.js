@@ -36,7 +36,7 @@ let game = {
             player1: new PlayerCharacter(playerOptions.player1, grid, helpers)
         };
         let monsters = {
-            monster1 : new ElderMonster(gridOptions, monsterOptions.monster1, helpers)
+            monster1 : new ElderMonster(monsterOptions.monster1, grid, helpers)
         };
         let playerActions = new PlayerActions(grid, ui, players, monsters, helpers);
         let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers);
