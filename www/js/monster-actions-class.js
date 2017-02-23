@@ -12,14 +12,14 @@ class MonsterActions {
         this.monsterCount = Object.keys(this.monsters).length;
     }
 
-    moveMonsters(getIsGameOver, setIsGameOver) {
+    moveMonsters(isGameOver, setIsGameOver) {
         let currentMonster,
             monsterActions = this;
 
         for (let monster in this.monsters) {
             let minionAttacked = false;
 
-            if (!getIsGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
+            if (!isGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 currentMonster = this.monsters[monster];
                 if (currentMonster.name === "Elder") {
                     currentMonster.saveCurrentPos();
@@ -32,10 +32,10 @@ class MonsterActions {
                 }
                 if (!minionAttacked) {
                     currentMonster.randomMove(function() {
-                        if (currentMonster.name === "Elder" && $('#' + currentMonster.oldPos).hasClass('walkable')) {
-                            monsterActions.addNewMinion(currentMonster);
+                        if (this.name === "Elder" && $('#' + this.oldPos).hasClass('walkable')) {
+                            monsterActions.addNewMinion(this);
                         }
-                    });
+                    }.bind(currentMonster));
                 }
             }
         }

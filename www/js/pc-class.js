@@ -12,6 +12,7 @@ class PlayerCharacter {
         this.helpers = helpers;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
+        this.type = playerOptions.type;
         this.health = playerOptions.health;
         this.row = 0;
         this.col = 0;
@@ -42,10 +43,11 @@ class PlayerCharacter {
         return this.kills;
     }
 
-    setPlayer(newTileId, oldTileId, callback) {
+    setPlayer(newTileId, oldPos, callback) {
         let player = this,
+            oldTileId = oldPos ? oldPos : newTileId,
             animatefadeInParams = {
-                "targetObject" : player,
+                "position" : newTileId,
                 "type" : "fadeIn",
                 "callback" : function () {
                     if (callback)
@@ -53,22 +55,28 @@ class PlayerCharacter {
                 }
             },
             animatefadeOutParams = {
-                "targetObject" : player,
+                "position" : oldTileId,
                 "type" : "fadeOut",
                 "callback" : function() {
-                    if (oldTileId)
-                        player.grid.clearImg(player);
-                    player.pos = newTileId;
-                    $('#' + newTileId).addClass(player.name + ' player impassable').removeClass('walkable');
-                    $('#' + newTileId + ' .content').attr('class', 'content content-player');
+                    player.grid.changeTileImg(newTileId, player.type);
+                    player.grid.changeTileImg(oldTileId, "clear");
                     player.grid.animateTile(null, animatefadeInParams);
                 }
             };
 
-        this.grid.animateTile(null, animatefadeOutParams);
+        if (oldTileId !== newTileId) {
+            player.grid.setTileWalkable(oldTileId, player.name, player.type);
+            player.grid.changeTileSetting(newTileId, player.name, player.type);
+            player.grid.animateTile(null, animatefadeOutParams);
+        } else {
+            player.grid.changeTileImg(newTileId, player.type);
+            player.grid.setImgVisible(newTileId);
+            player.grid.changeTileSetting(newTileId, player.name, player.type);
+        }
 
-        this.row = this.helpers.setRowCol(newTileId).row;
-        this.col = this.helpers.setRowCol(newTileId).col;
+        player.pos = newTileId;
+        player.row = this.helpers.setRowCol(newTileId).row;
+        player.col = this.helpers.setRowCol(newTileId).col;
     }
 
     setLighting(centerTile) {

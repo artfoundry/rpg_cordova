@@ -15,6 +15,7 @@ let game = {
         const playerOptions = {
             "player1" : {
                 "name" : "Player1",
+                "type" : "player",
                 "startPos" : "row1col1",
                 "health" : 3
             }

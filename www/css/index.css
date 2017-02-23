@@ -181,10 +181,12 @@ figure {
 
 .content-minion {
     background-image: url('../img/minion.png');
+    opacity: 0;
 }
 
 .content-elder {
     background-image: url('../img/elder.png');
+    opacity: 0;
 }
 
 /**

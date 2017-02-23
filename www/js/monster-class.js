@@ -49,7 +49,7 @@ class Monster {
     _setmonster(newTileId, oldTileId, callback) {
         let monster = this,
             animatefadeInParams = {
-                "targetObject" : monster,
+                "position" : newTileId,
                 "type" : "fadeIn",
                 "callback" : function () {
                     if (callback)
@@ -57,22 +57,24 @@ class Monster {
                 }
             },
             animatefadeOutParams = {
-                "targetObject" : monster,
+                "position" : oldTileId,
                 "type" : "fadeOut",
                 "callback" : function() {
-                    if (oldTileId)
-                        monster.grid.clearImg(monster);
-                    monster.pos = newTileId;
-                    $('#' + newTileId).addClass(monster.name + ' monster').removeClass('walkable');
-                    $('#' + newTileId + ' .content').attr('class', 'content content-' + monster.type);
+                    monster.grid.changeTileImg(newTileId, monster.type);
+                    monster.grid.changeTileImg(oldTileId, "clear");
                     monster.grid.animateTile(null, animatefadeInParams);
                 }
             };
 
-        this.grid.animateTile(null, animatefadeOutParams);
+        if (oldTileId !== newTileId) {
+            monster.grid.setTileWalkable(oldTileId, monster.name, monster.type);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type);
+            monster.grid.animateTile(null, animatefadeOutParams);
+        }
 
-        this.row = this.helpers.setRowCol(newTileId).row;
-        this.col = this.helpers.setRowCol(newTileId).col;
+        monster.pos = newTileId;
+        monster.row = this.helpers.setRowCol(newTileId).row;
+        monster.col = this.helpers.setRowCol(newTileId).col;
     }
 
     _randomizeLoc() {

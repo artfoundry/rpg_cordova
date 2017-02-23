@@ -38,19 +38,28 @@ class Grid {
         $('.grid').children().remove();
     }
 
-    clearImg(target) {
-        let targetType = '';
-        if (target.constructor === PlayerCharacter)
-            targetType = 'player';
-        else
-            targetType = 'monster';
+    changeTileSetting(position, name, type) {
+        $('#' + position).addClass(name + ' ' + type).removeClass('walkable');
+    }
 
-        $('#' + target.pos).addClass('walkable').removeClass(target.name + ' ' + targetType + ' impassable');
-        $('#' + target.pos + ' .content').attr( "class", "content content-trans" ).css('opacity', 'initial');
+    changeTileImg(position, type) {
+        let $content = $('#' + position + ' .content');
+
+        $content.attr("class", "content content-" + type);
+        if (type === 'clear')
+            $content.css('opacity', 'initial');
+    }
+
+    setImgVisible(position) {
+        $('#' + position + ' .content').css('opacity', 1);
+    }
+
+    setTileWalkable(position, name, type) {
+        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' impassable');
     }
 
     animateTile(e, params) {
-        let $target = $('#' + params.targetObject.pos),
+        let $target = $('#' + params.position),
             $targetContent = $target.children('.content'),
             type = params.type,
             callback = params.callback,

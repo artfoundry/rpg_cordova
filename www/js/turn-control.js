@@ -43,7 +43,7 @@ class TurnController {
     }
 
     startGame() {
-        let messages = [
+        let startingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
                 {"class" : "modal-body", "text" : "gameIntro", "hidden" : false},
                 {"class" : "modal-body", "text" : "instructions", "hidden" : false},
@@ -56,7 +56,7 @@ class TurnController {
 
         this.ui.updateValue({id: ".kills", value: 0});
         this.ui.updateValue({id: ".pc-health", value: this.players.player1.health});
-        this.ui.modalOpen(messages, buttons);
+        this.ui.modalOpen(startingMessages, buttons);
     }
 
     runTurnCycle() {
@@ -159,19 +159,19 @@ class TurnController {
 
     _endGame(message) {
         let controller = this,
-            endMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
+            gameEndMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
             restartCallback = function() {
                 controller.grid.clearGrid();
                 game.initialize();
             },
-            messages = [
+            endingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body", "text" : endMessage, "hidden" : false},
+                {"class" : "modal-body", "text" : gameEndMessage, "hidden" : false},
             ],
             buttons = [
                 {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
             ];
 
-        this.ui.modalOpen(messages, buttons);
+        this.ui.modalOpen(endingMessages, buttons);
     }
 }
