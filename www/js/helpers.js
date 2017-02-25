@@ -10,9 +10,8 @@
  */
 
 class Helpers {
-    constructor(grid, ui) {
-        this.grid = grid;
-        this.ui = ui;
+    constructor(gridOptions) {
+        this.grid = gridOptions;
     }
 
     findSurroundingTiles(centerRow, centerCol, searchRadius) {
@@ -50,7 +49,7 @@ class Helpers {
         return tiles;
     }
 
-    setRowCol(pos) {
+    getRowCol(pos) {
         let colIndex = pos.indexOf('col');
 
         return {

@@ -5,7 +5,8 @@
  */
 
 class Grid {
-    constructor(gridOptions) {
+    constructor(helpers, gridOptions) {
+        this.helpers = helpers;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
     }
@@ -63,9 +64,30 @@ class Grid {
             $targetContent = $target.children('.content'),
             type = params.type,
             callback = params.callback,
-            rotation = Math.random() * 360;
+            imageRotation = Math.random() * 360;
 
         switch (type) {
+            case 'move':
+                if (params.destinationId) {
+                    let destinationPosValues = this.helpers.getRowCol(params.destinationId),
+                        currentPosValues = this.helpers.getRowCol(params.position),
+                        moveDirection = {
+                            vertMov : destinationPosValues.row - currentPosValues.row,
+                            horizMov : destinationPosValues.col - currentPosValues.col
+                        },
+                        horizChange = 0,
+                        vertChange = 0;
+                    if (moveDirection.vertMov > 0)
+                        vertChange = "+=" + this.tileSize;
+                    if (moveDirection.vertMov < 0)
+                        vertChange = "-=" + this.tileSize;
+                    if (moveDirection.horizMov > 0)
+                        horizChange = "+=" + this.tileSize;
+                    if (moveDirection.horizMov < 0)
+                        horizChange = "-=" + this.tileSize;
+                    $targetContent.animate({left: horizChange, top: vertChange}, 500, callback);
+                }
+                break;
             case 'fadeOut':
                 $targetContent.animate({opacity: 0}, 200);
                 break;
@@ -75,7 +97,7 @@ class Grid {
             case 'attack':
                 $target.prepend("<div class='blood'></div>");
                 $(".blood")
-                    .css("transform", "rotate(" + rotation + "deg)")
+                    .css("transform", "rotate(" + imageRotation + "deg)")
                     .animate({opacity: 1}, 0)
                     .animate({opacity: 0.8}, 100)
                     .animate({opacity: 0}, 300, function() {

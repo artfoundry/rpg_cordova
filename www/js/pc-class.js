@@ -45,29 +45,23 @@ class PlayerCharacter {
 
     setPlayer(newTileId, oldPos, callback) {
         let player = this,
-            oldTileId = oldPos ? oldPos : newTileId,
-            animatefadeInParams = {
-                "position" : newTileId,
-                "type" : "fadeIn",
-                "callback" : function () {
-                    if (callback)
-                        callback();
-                }
-            },
-            animatefadeOutParams = {
+            oldTileId = oldPos || newTileId,
+            animateMoveParams = {
                 "position" : oldTileId,
-                "type" : "fadeOut",
+                "destinationId" : newTileId,
+                "type" : "move",
                 "callback" : function() {
                     player.grid.changeTileImg(newTileId, player.type);
                     player.grid.changeTileImg(oldTileId, "clear");
-                    player.grid.animateTile(null, animatefadeInParams);
+                    if (callback)
+                        callback();
                 }
             };
 
         if (oldTileId !== newTileId) {
             player.grid.setTileWalkable(oldTileId, player.name, player.type);
             player.grid.changeTileSetting(newTileId, player.name, player.type);
-            player.grid.animateTile(null, animatefadeOutParams);
+            player.grid.animateTile(null, animateMoveParams);
         } else {
             player.grid.changeTileImg(newTileId, player.type);
             player.grid.setImgVisible(newTileId);
@@ -75,8 +69,8 @@ class PlayerCharacter {
         }
 
         player.pos = newTileId;
-        player.row = this.helpers.setRowCol(newTileId).row;
-        player.col = this.helpers.setRowCol(newTileId).col;
+        player.row = this.helpers.getRowCol(newTileId).row;
+        player.col = this.helpers.getRowCol(newTileId).col;
     }
 
     setLighting(centerTile) {

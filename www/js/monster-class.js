@@ -73,8 +73,8 @@ class Monster {
         }
 
         monster.pos = newTileId;
-        monster.row = this.helpers.setRowCol(newTileId).row;
-        monster.col = this.helpers.setRowCol(newTileId).col;
+        monster.row = this.helpers.getRowCol(newTileId).row;
+        monster.col = this.helpers.getRowCol(newTileId).col;
     }
 
     _randomizeLoc() {

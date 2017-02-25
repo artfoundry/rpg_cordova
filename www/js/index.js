@@ -29,8 +29,8 @@ let game = {
             }
         };
 
-        let grid = new Grid(gridOptions);
-        let helpers = new Helpers(grid);
+        let helpers = new Helpers(gridOptions);
+        let grid = new Grid(helpers, gridOptions);
         let events = new Events();
         let ui = new UI(events);
         let players = {
