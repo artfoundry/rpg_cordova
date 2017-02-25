@@ -73,11 +73,11 @@ class MonsterActions {
                     targetPlayer.health -= 1;
                     this.ui.updateValue({id: ".pc-health", value: targetPlayer.health});
                     animateParams = {
-                        "targetObject" : targetPlayer,
+                        "position" : targetPlayer.pos,
                         "type" : "attack",
                         "callback" : function() {
                             if (targetPlayer.health < 1) {
-                                monsterActions.grid.clearImg(targetPlayer);
+                                monsterActions.grid.changeTileImg(targetPlayer.pos, 'trans');
                                 monsterActions.helpers.killObject(monsterActions.players, playerNum);
                                 setIsGameOver();
                             }

@@ -43,36 +43,38 @@ class Monster {
                     newTileId = 'row' + this.row + 'col' + (this.col - 1);
                 break;
         }
-        this._setmonster(newTileId, oldTileId, callback);
+        if (oldTileId !== newTileId)
+            this._setmonster(newTileId, oldTileId, callback);
     }
 
     _setmonster(newTileId, oldTileId, callback) {
         let monster = this,
-            animatefadeInParams = {
-                "position" : newTileId,
-                "type" : "fadeIn",
-                "callback" : function () {
+            animateMoveParams = {};
+
+        if (oldTileId) {
+            animateMoveParams = {
+                "position" : oldTileId,
+                "destinationId" : newTileId,
+                "type" : "move",
+                "callback" : function() {
+                    monster.grid.changeTileImg(newTileId, monster.type);
+                    monster.grid.setImgVisible(newTileId);
+                    monster.grid.changeTileImg(oldTileId, "trans");
+                    monster.grid.resetImgPos(oldTileId);
                     if (callback)
                         callback();
                 }
-            },
-            animatefadeOutParams = {
-                "position" : oldTileId,
-                "type" : "fadeOut",
-                "callback" : function() {
-                    monster.grid.changeTileImg(newTileId, monster.type);
-                    monster.grid.changeTileImg(oldTileId, "clear");
-                    monster.grid.animateTile(null, animatefadeInParams);
-                }
             };
-
-        if (oldTileId !== newTileId) {
             monster.grid.setTileWalkable(oldTileId, monster.name, monster.type);
             monster.grid.changeTileSetting(newTileId, monster.name, monster.type);
-            monster.grid.animateTile(null, animatefadeOutParams);
+            monster.grid.animateTile(null, animateMoveParams);
+            monster.pos = newTileId;
+        } else {
+            monster.grid.changeTileImg(newTileId, monster.type);
+            monster.grid.setImgVisible(newTileId);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type);
         }
 
-        monster.pos = newTileId;
         monster.row = this.helpers.getRowCol(newTileId).row;
         monster.col = this.helpers.getRowCol(newTileId).col;
     }

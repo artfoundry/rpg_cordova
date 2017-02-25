@@ -9,7 +9,8 @@ let game = {
     initialize: function() {
         const gridOptions = {
             width: 10,
-            height: 10
+            height: 10,
+            tileSize: 64
         };
 
         const playerOptions = {
@@ -24,7 +25,7 @@ let game = {
         const monsterOptions = {
             "monster1" : {
                 "name" : "Elder",
-                "type" : "elder",
+                "type" : "elder monster",
                 "health" : 3
             }
         };

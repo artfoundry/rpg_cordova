@@ -36,7 +36,7 @@ class PlayerActions {
             (newTilePos === (PlayerActions._blTile(currentRow, currentCol)))
         ) {
             player.setLighting(newTilePos);
-            player.setPlayer(newTilePos, currentPos, callback);
+            player.setPlayer(currentPos, newTilePos, callback);
         }
     }
 
@@ -69,15 +69,16 @@ class PlayerActions {
                     if (nearbyMonsterList.indexOf(targetLoc) !== -1) {
                         targetMonster.health -= 1;
                         animateAttackParams = {
-                            "targetObject" : targetMonster,
+                            "position" : targetMonster.pos,
                             "type" : "attack"
                         };
                         animateDeathParams = {
-                            "targetObject" : targetMonster,
+                            "position" : targetMonster.pos,
                             "type" : "fadeOut",
                             "callback" : function() {
                                 playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
-                                playerActions.grid.clearImg(targetMonster);
+                                playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type);
+                                playerActions.grid.changeTileImg(targetMonster.pos, 'trans');
                                 callback();
                             }
                         };

@@ -9,6 +9,7 @@ class Grid {
         this.helpers = helpers;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
+        this.tileSize = gridOptions.tileSize;
     }
 
     drawGrid() {
@@ -59,6 +60,10 @@ class Grid {
         $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' impassable');
     }
 
+    resetImgPos(position) {
+        $('#' + position + ' .content').css('left', 'initial').css('top', 'initial').css('z-index', 'initial');
+    }
+
     animateTile(e, params) {
         let $target = $('#' + params.position),
             $targetContent = $target.children('.content'),
@@ -85,6 +90,7 @@ class Grid {
                         horizChange = "+=" + this.tileSize;
                     if (moveDirection.horizMov < 0)
                         horizChange = "-=" + this.tileSize;
+                    $targetContent.css('z-index', 1);
                     $targetContent.animate({left: horizChange, top: vertChange}, 500, callback);
                 }
                 break;

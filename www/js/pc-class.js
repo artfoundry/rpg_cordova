@@ -43,34 +43,36 @@ class PlayerCharacter {
         return this.kills;
     }
 
-    setPlayer(newTileId, oldPos, callback) {
+    setPlayer(currentPos, newPos, callback) {
         let player = this,
-            oldTileId = oldPos || newTileId,
+            newPosId = newPos || currentPos,
             animateMoveParams = {
-                "position" : oldTileId,
-                "destinationId" : newTileId,
+                "position" : currentPos,
+                "destinationId" : newPosId,
                 "type" : "move",
                 "callback" : function() {
-                    player.grid.changeTileImg(newTileId, player.type);
-                    player.grid.changeTileImg(oldTileId, "clear");
+                    player.grid.changeTileImg(newPosId, player.type);
+                    player.grid.setImgVisible(newPosId);
+                    player.grid.changeTileImg(currentPos, "trans");
+                    player.grid.resetImgPos(currentPos);
                     if (callback)
                         callback();
                 }
             };
 
-        if (oldTileId !== newTileId) {
-            player.grid.setTileWalkable(oldTileId, player.name, player.type);
-            player.grid.changeTileSetting(newTileId, player.name, player.type);
+        if (currentPos !== newPosId) {
+            player.grid.setTileWalkable(currentPos, player.name, player.type);
+            player.grid.changeTileSetting(newPosId, player.name, player.type);
             player.grid.animateTile(null, animateMoveParams);
+            player.pos = newPosId;
         } else {
-            player.grid.changeTileImg(newTileId, player.type);
-            player.grid.setImgVisible(newTileId);
-            player.grid.changeTileSetting(newTileId, player.name, player.type);
+            player.grid.changeTileImg(newPosId, player.type);
+            player.grid.setImgVisible(newPosId);
+            player.grid.changeTileSetting(newPosId, player.name, player.type);
         }
 
-        player.pos = newTileId;
-        player.row = this.helpers.getRowCol(newTileId).row;
-        player.col = this.helpers.getRowCol(newTileId).col;
+        player.row = this.helpers.getRowCol(newPosId).row;
+        player.col = this.helpers.getRowCol(newPosId).col;
     }
 
     setLighting(centerTile) {
