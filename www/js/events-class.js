@@ -52,7 +52,7 @@ class Events {
             case 37: // left arrow
                 return playerPos.replace(/col[\d]/, 'col' + (colNum-1));
             case 38: // up arrow
-                return playerPos.replace(/row[\d]/, 'row' + (rowNum+1));
+                return playerPos.replace(/row[\d]/, 'row' + (rowNum-1));
             case 40: // down arrow
                 return playerPos.replace(/row[\d]/, 'row' + (rowNum+1));
         }
