@@ -45,7 +45,7 @@ class TurnController {
     startGame() {
         let startingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body", "text" : "gameIntro", "hidden" : false},
+                {"class" : "modal-body subheader creepy-text", "text" : "gameIntro", "hidden" : false},
                 {"class" : "modal-body", "text" : "instructions", "hidden" : false},
                 {"class" : "modal-tips", "text" : "tips", "hidden" : true}
             ],

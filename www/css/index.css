@@ -68,7 +68,7 @@ figure {
 
 .statusbar .title {
     font-family: 'Creepster', serif;
-    font-size: 22px;
+    font-size: 1.4em;
     left: 0;
 }
 
@@ -211,6 +211,7 @@ figure {
     background: linear-gradient(to bottom, rgba(96, 173, 188, 1) 0%, rgba(50, 50, 50, 1) 97%, rgba(150, 150, 180, 1) 100%);
     box-shadow: 0 0 10px 6px black;
     color: black;
+    font-size: 1em;
 }
 
 .modal-container {
@@ -244,7 +245,7 @@ figure {
 .modal-section {
     text-align: left;
     padding: 20px;
-    white-space: normal;
+    white-space: pre-wrap;
 }
 
 .modal-button {
@@ -261,6 +262,14 @@ figure {
 
 .modal-button:active {
     box-shadow: 0 0 4px 2px black;
+}
+
+.creepy-text {
+    font-family: 'Creepster', serif;
+}
+
+.subheader {
+    font-size: 1.2em;
 }
 
 /**
