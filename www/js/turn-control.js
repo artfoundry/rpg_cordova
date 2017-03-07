@@ -35,7 +35,7 @@ class TurnController {
         this.grid.drawGrid();
 
         // for testing
-        // $('.light-img').remove();
+        $('.light-img').remove();
 
         this.players.player1.initialize();
         this.monsters.monster1.initialize();
@@ -86,6 +86,7 @@ class TurnController {
     }
 
     endTurn() {
+        // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
             if (Object.keys(this.monsters).length > 0) {
                 this.setIsPlayerTurn(false);
@@ -94,6 +95,7 @@ class TurnController {
                 this._tearDownListeners();
                 this._endGame("win");
             }
+        // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
                 this._tearDownListeners();
@@ -140,7 +142,7 @@ class TurnController {
                         "callback": this.endTurn.bind(this)
                     },
                     "impassable": {
-                        "targetObject": this.players[player],
+                        "targetObject": player,
                         "type": "impassable"
                     },
                     "monster": {
@@ -149,12 +151,14 @@ class TurnController {
                     }
                 };
                 this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
+                this.events.setUpArrowKeysListener(targetActions, params, this.players[player].pos);
             }
         }
     }
 
     _tearDownListeners() {
         this.events.removeClickListener(this.tileListenerTarget);
+        this.events.removeArrowKeysListener();
     }
 
     _endGame(message) {

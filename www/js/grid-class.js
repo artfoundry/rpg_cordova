@@ -85,7 +85,7 @@ class Grid {
                         horizChange = "+=" + this.tileSize;
                     if (moveDirection.horizMov < 0)
                         horizChange = "-=" + this.tileSize;
-                    $targetContent.animate({left: horizChange, top: vertChange}, 500, callback);
+                    $targetContent.animate({left: horizChange, top: vertChange}, 500);
                 }
                 break;
             case 'fadeOut':
