@@ -14,11 +14,12 @@ class Helpers {
         this.grid = gridOptions;
     }
 
-    findSurroundingTiles(centerRow, centerCol, searchRadius) {
-        let firstRow = +centerRow - searchRadius,
-            firstCol = +centerCol - searchRadius,
-            lastRow = +centerRow + searchRadius,
-            lastCol = +centerCol + searchRadius,
+    findSurroundingTiles(centerTile, searchRadius) {
+        let center = this.getRowCol(centerTile),
+            firstRow = center.row - searchRadius,
+            firstCol = center.col - searchRadius,
+            lastRow = center.row + searchRadius,
+            lastCol = center.col + searchRadius,
             tiles = $(),
             tileToAdd = '';
 
@@ -64,11 +65,8 @@ class Helpers {
 
     checkForNearbyCharacters(character, charSearchType) {
         let characterLoc = character.pos,
-            colIndex = characterLoc.indexOf('col'),
-            characterRow = characterLoc.slice(3, colIndex),
-            characterCol = characterLoc.slice(colIndex + 3),
             $nearbyCharLoc = null,
-            $surroundingTiles = this.findSurroundingTiles(characterRow, characterCol, 1);
+            $surroundingTiles = this.findSurroundingTiles(characterLoc, 1);
 
         if ($surroundingTiles.hasClass(charSearchType)) {
             $nearbyCharLoc = $.grep($surroundingTiles, function(tile){

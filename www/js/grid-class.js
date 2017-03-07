@@ -60,13 +60,11 @@ class Grid {
         $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' impassable');
     }
 
-    resetImgPos(position) {
-        $('#' + position + ' .content').css('left', 'initial').css('top', 'initial').css('z-index', 'initial');
-    }
-
-    animateTile(e, params) {
+    animateTile(params) {
         let $target = $('#' + params.position),
             $targetContent = $target.children('.content'),
+            $targetContentAndLight = $targetContent.add('#' + params.position + ' .light-img'),
+            isPlayer = $targetContent.hasClass('content-player'),
             type = params.type,
             callback = params.callback,
             imageRotation = Math.random() * 360;
@@ -80,18 +78,28 @@ class Grid {
                             vertMov : destinationPosValues.row - currentPosValues.row,
                             horizMov : destinationPosValues.col - currentPosValues.col
                         },
-                        horizChange = 0,
-                        vertChange = 0;
+                        movementClasses = '';
+
                     if (moveDirection.vertMov > 0)
-                        vertChange = "+=" + this.tileSize;
-                    if (moveDirection.vertMov < 0)
-                        vertChange = "-=" + this.tileSize;
+                        movementClasses = 'move-down';
+                    else if (moveDirection.vertMov < 0)
+                        movementClasses = 'move-up';
                     if (moveDirection.horizMov > 0)
-                        horizChange = "+=" + this.tileSize;
-                    if (moveDirection.horizMov < 0)
-                        horizChange = "-=" + this.tileSize;
-                    $targetContent.css('z-index', 1);
-                    $targetContent.animate({left: horizChange, top: vertChange}, 500, callback);
+                        movementClasses = movementClasses === '' ? 'move-right' : movementClasses + ' move-right';
+                    else if (moveDirection.horizMov < 0)
+                        movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
+
+                    $targetContent.addClass('content-zindex-raised');
+                    if (isPlayer) {
+                        $targetContentAndLight.addClass(movementClasses, function() {
+                            $targetContentAndLight.removeClass(movementClasses);
+                            $targetContent.removeClass('content-zindex-raised');
+                        });
+                    } else {
+                        $targetContent.addClass(movementClasses, function() {
+                            $targetContent.removeClass('content-zindex-raised', movementClasses);
+                        });
+                    }
                 }
                 break;
             case 'fadeOut':

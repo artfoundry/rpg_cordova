@@ -14,17 +14,19 @@ class MonsterActions {
 
     moveMonsters(isGameOver, setIsGameOver) {
         let currentMonster,
+            minionAttacked,
+            nearbyPlayerTiles = [],
             monsterActions = this;
 
         for (let monster in this.monsters) {
-            let minionAttacked = false;
+            minionAttacked = false;
 
             if (!isGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 currentMonster = this.monsters[monster];
                 if (currentMonster.name === "Elder") {
                     currentMonster.saveCurrentPos();
                 } else {
-                    let nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player');
+                    nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player');
                     if (nearbyPlayerTiles) {
                         this._monsterAttack(nearbyPlayerTiles[0], setIsGameOver);
                         minionAttacked = true;
@@ -83,7 +85,7 @@ class MonsterActions {
                             }
                         }
                     };
-                    this.grid.animateTile(null, animateParams);
+                    this.grid.animateTile(animateParams);
                     break;
                 }
             }

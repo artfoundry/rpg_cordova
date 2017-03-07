@@ -35,8 +35,8 @@ class PlayerActions {
             (newTilePos === (PlayerActions._brTile(currentRow, currentCol))) ||
             (newTilePos === (PlayerActions._blTile(currentRow, currentCol)))
         ) {
-            player.setLighting(newTilePos);
             player.setPlayer(currentPos, newTilePos, callback);
+            player.setLighting(newTilePos, currentPos);
         }
     }
 
@@ -86,12 +86,12 @@ class PlayerActions {
                             this.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
                             animateAttackParams.callback = function() {
-                                playerActions.grid.animateTile(null, animateDeathParams);
+                                playerActions.grid.animateTile(animateDeathParams);
                             };
                         } else {
                             animateAttackParams.callback = callback;
                         }
-                        this.grid.animateTile(null, animateAttackParams);
+                        this.grid.animateTile(animateAttackParams);
                         break;
                     }
                 }

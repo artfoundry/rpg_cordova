@@ -54,7 +54,6 @@ class PlayerCharacter {
                     player.grid.changeTileImg(newPosId, player.type);
                     player.grid.setImgVisible(newPosId);
                     player.grid.changeTileImg(currentPos, "trans");
-                    player.grid.resetImgPos(currentPos);
                     if (callback)
                         callback();
                 }
@@ -63,7 +62,7 @@ class PlayerCharacter {
         if (currentPos !== newPosId) {
             player.grid.setTileWalkable(currentPos, player.name, player.type);
             player.grid.changeTileSetting(newPosId, player.name, player.type);
-            player.grid.animateTile(null, animateMoveParams);
+            player.grid.animateTile(animateMoveParams);
             player.pos = newPosId;
         } else {
             player.grid.changeTileImg(newPosId, player.type);
@@ -75,23 +74,20 @@ class PlayerCharacter {
         player.col = this.helpers.getRowCol(newPosId).col;
     }
 
-    setLighting(centerTile) {
-        let playerTileIdColIndex = centerTile.indexOf('col'),
-            newRow = +centerTile.slice(3, playerTileIdColIndex),
-            newCol = +centerTile.slice(playerTileIdColIndex + 3),
-            $lightRadiusTiles,
+    setLighting(centerTile, oldPos) {
+        let $lightRadiusTiles,
             $lastLightRadius,
-            $oldCenterTile = $('#' + this.pos),
+            $oldCenterTile = $('#' + oldPos) || $('#' + this.pos),
             $newCenterTile = $('#' + centerTile);
 
         this._removeLighting($oldCenterTile, 'light-ctr', 'light-img-radius');
 
         for (let i = this.lightRadius; i >= 1; i--) {
-            $lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
+            $lightRadiusTiles = this.helpers.findSurroundingTiles(centerTile, i);
 
             // when moving, set previous outer light circle to darkness
-            if (centerTile !== this.pos && i === this.lightRadius) {
-                $lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
+            if (oldPos && i === this.lightRadius) {
+                $lastLightRadius = this.helpers.findSurroundingTiles(oldPos, i);
                 this._removeLighting($lastLightRadius, 'light', 'light-img-trans');
                 this._addLighting($lastLightRadius, 'light-non', 'light-img-non');
             }

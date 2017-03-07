@@ -87,11 +87,11 @@ class TurnController {
 
     endTurn() {
         if (this.getIsPlayerTurn() === true) {
+            this._tearDownListeners();
             if (Object.keys(this.monsters).length > 0) {
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
             } else {
-                this._tearDownListeners();
                 this._endGame("win");
             }
         } else {

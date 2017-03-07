@@ -136,7 +136,7 @@ figure {
     position: absolute;
     width: 64px;
     height: 64px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .light-img-trans {
@@ -156,7 +156,7 @@ figure {
     top: -128px;
     width: 320px;
     height: 320px;
-    z-index: 1;
+    z-index: 2;
 }
 
 /**
@@ -168,6 +168,10 @@ figure {
     width: 64px;
     height: 64px;
     z-index: 0;
+}
+
+.content-zindex-raised {
+    z-index: 1;
 }
 
 .content-trans {
@@ -196,7 +200,7 @@ figure {
 .modal {
     display: none;
     position: absolute;
-    z-index: 5;
+    z-index: 6;
     width: 60%;
     min-width: 300px;
     max-width: 600px;
@@ -257,6 +261,31 @@ figure {
 
 .modal-button:active {
     box-shadow: 0 0 4px 2px black;
+}
+
+/**
+ * Animations
+ */
+
+.center {
+    margin-top: 0;
+    margin-left: 0;
+}
+
+.move-up {
+    margin-top: -64px;
+}
+
+.move-down {
+    margin-top: 64px;
+}
+
+.move-right {
+    margin-left: 64px;
+}
+
+.move-left {
+    margin-left: -64px;
 }
 
 .blood {

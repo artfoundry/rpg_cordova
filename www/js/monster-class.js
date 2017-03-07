@@ -21,24 +21,24 @@ class Monster {
     }
 
     randomMove(callback) {
-        let direction = Math.round((Math.random() * 40) / 10),
+        let direction = Math.floor(Math.random() * 4),
             oldTileId = this.pos,
             newTileId = this.pos;
 
         switch (direction) {
-            case 1:
+            case 0:
                 if ($('#row' + (this.row - 1) + 'col' + this.col).hasClass('walkable'))
                     newTileId = 'row' + (this.row - 1) + 'col' + this.col;
                 break;
-            case 2:
+            case 1:
                 if ($('#row' + this.row + 'col' + (this.col + 1)).hasClass('walkable'))
                     newTileId = 'row' + this.row + 'col' + (this.col + 1);
                 break;
-            case 3:
+            case 2:
                 if ($('#row' + (this.row + 1) + 'col' + this.col).hasClass('walkable'))
                     newTileId = 'row' + (this.row + 1) + 'col' + this.col;
                 break;
-            case 4:
+            case 3:
                 if ($('#row' + this.row + 'col' + (this.col - 1)).hasClass('walkable'))
                     newTileId = 'row' + this.row + 'col' + (this.col - 1);
                 break;
@@ -60,14 +60,13 @@ class Monster {
                     monster.grid.changeTileImg(newTileId, monster.type);
                     monster.grid.setImgVisible(newTileId);
                     monster.grid.changeTileImg(oldTileId, "trans");
-                    monster.grid.resetImgPos(oldTileId);
                     if (callback)
                         callback();
                 }
             };
             monster.grid.setTileWalkable(oldTileId, monster.name, monster.type);
             monster.grid.changeTileSetting(newTileId, monster.name, monster.type);
-            monster.grid.animateTile(null, animateMoveParams);
+            monster.grid.animateTile(animateMoveParams);
             monster.pos = newTileId;
         } else {
             monster.grid.changeTileImg(newTileId, monster.type);
