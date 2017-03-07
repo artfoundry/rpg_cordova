@@ -9,7 +9,6 @@
 
 
 class Events {
-
     /**
      * function setUpClickListener
      *
@@ -19,20 +18,51 @@ class Events {
      */
     setUpClickListener(target, targetActions, params) {
         $(target).click((e) => {
-            for (let actionType in targetActions) {
-                if (Object.prototype.hasOwnProperty.call(targetActions, actionType) && $(e.currentTarget).hasClass(actionType)) {
-                    targetActions[actionType](e.currentTarget, params[actionType]);
-                    break;
-                }
-            }
+            this.processAction(targetActions, params, e.currentTarget);
         });
+    }
+
+    setUpArrowKeysListener(targetActions, params, playerPos) {
+        let destinationTile = '';
+
+        $('body').keyup((e) => {
+            destinationTile = document.getElementById(this.checkPlayerDestination(e.which, playerPos));
+            this.processAction(targetActions, params, destinationTile);
+        });
+    }
+
+    processAction(targetActions, params, destinationTile) {
+        for (let actionType in targetActions) {
+            if (Object.prototype.hasOwnProperty.call(targetActions, actionType) && $(destinationTile).hasClass(actionType)) {
+                targetActions[actionType](destinationTile, params[actionType]);
+                break;
+            }
+        }
+    }
+
+    checkPlayerDestination(keyCode, playerPos) {
+        let colIndex = playerPos.indexOf('col'),
+            rowIndex = playerPos.indexOf('row'),
+            rowNum = +playerPos.slice(rowIndex+3, colIndex),
+            colNum = +playerPos.slice(colIndex+3);
+
+        switch (keyCode) {
+            case 39: // right arrow
+                return playerPos.replace(/col[\d]/, 'col' + (colNum+1));
+            case 37: // left arrow
+                return playerPos.replace(/col[\d]/, 'col' + (colNum-1));
+            case 38: // up arrow
+                return playerPos.replace(/row[\d]/, 'row' + (rowNum-1));
+            case 40: // down arrow
+                return playerPos.replace(/row[\d]/, 'row' + (rowNum+1));
+        }
     }
 
     removeClickListener(target) {
         $(target).off('click');
     }
 
-    setUpTileChangeListener(target, action) {
-        $(target).on('tileChange', (e, tileClass, image) => { action(e, tileClass, image); });
+    removeArrowKeysListener() {
+        $('body').off('keyup');
     }
 }

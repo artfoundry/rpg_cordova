@@ -37,14 +37,13 @@ class TurnController {
         // for testing
         // $('.light-img').remove();
 
-        this.events.setUpTileChangeListener(this.tileListenerTarget, this.grid.updateTileImage);
         this.players.player1.initialize();
         this.monsters.monster1.initialize();
         this.startGame();
     }
 
     startGame() {
-        let messages = [
+        let startingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
                 {"class" : "modal-body", "text" : "gameIntro", "hidden" : false},
                 {"class" : "modal-body", "text" : "instructions", "hidden" : false},
@@ -57,7 +56,7 @@ class TurnController {
 
         this.ui.updateValue({id: ".kills", value: 0});
         this.ui.updateValue({id: ".pc-health", value: this.players.player1.health});
-        this.ui.modalOpen(messages, buttons);
+        this.ui.modalOpen(startingMessages, buttons);
     }
 
     runTurnCycle() {
@@ -87,14 +86,16 @@ class TurnController {
     }
 
     endTurn() {
+        // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
+            this._tearDownListeners();
             if (Object.keys(this.monsters).length > 0) {
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
             } else {
-                this._tearDownListeners();
                 this._endGame("win");
             }
+        // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
                 this._tearDownListeners();
@@ -141,7 +142,7 @@ class TurnController {
                         "callback": this.endTurn.bind(this)
                     },
                     "impassable": {
-                        "targetObject": this.players[player],
+                        "targetObject": player,
                         "type": "impassable"
                     },
                     "monster": {
@@ -150,29 +151,31 @@ class TurnController {
                     }
                 };
                 this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
+                this.events.setUpArrowKeysListener(targetActions, params, this.players[player].pos);
             }
         }
     }
 
     _tearDownListeners() {
         this.events.removeClickListener(this.tileListenerTarget);
+        this.events.removeArrowKeysListener();
     }
 
     _endGame(message) {
         let controller = this,
-            endMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
+            gameEndMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
             restartCallback = function() {
                 controller.grid.clearGrid();
-                app.initialize();
+                game.initialize();
             },
-            messages = [
+            endingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body", "text" : endMessage, "hidden" : false},
+                {"class" : "modal-body", "text" : gameEndMessage, "hidden" : false},
             ],
             buttons = [
                 {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
             ];
 
-        this.ui.modalOpen(messages, buttons);
+        this.ui.modalOpen(endingMessages, buttons);
     }
 }

@@ -113,6 +113,7 @@ figure {
     display: inline-block;
     position: relative;
     width: 9%;
+    height: 64px;
     max-width: 64px;
     max-height: 64px;
 }
@@ -133,20 +134,17 @@ figure {
 
 .light-img {
     position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 3;
 }
 
 .light-img-trans {
     background-image: url('../img/trans.png');
-    width: 64px;
-    height: 64px;
-    z-index: 2;
 }
 
 .light-img-non {
     background-image: url('../img/light-non.png');
-    width: 64px;
-    height: 64px;
-    z-index: 2;
 }
 
 .light-img-radius {
@@ -158,7 +156,41 @@ figure {
     top: -128px;
     width: 320px;
     height: 320px;
+    z-index: 2;
+}
+
+/**
+ *  Content
+ */
+
+.content {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 0;
+}
+
+.content-zindex-raised {
     z-index: 1;
+}
+
+.content-trans {
+    background-image: url('../img/trans.png');
+}
+
+.content-player {
+    background-image: url('../img/character-color.png');
+    opacity: 0;
+}
+
+.content-minion {
+    background-image: url('../img/shoggoth.png');
+    opacity: 0;
+}
+
+.content-elder {
+    background-image: url('../img/elder.png');
+    opacity: 0;
 }
 
 /**
@@ -168,7 +200,7 @@ figure {
 .modal {
     display: none;
     position: absolute;
-    z-index: 5;
+    z-index: 6;
     width: 60%;
     min-width: 300px;
     max-width: 600px;
@@ -229,6 +261,31 @@ figure {
 
 .modal-button:active {
     box-shadow: 0 0 4px 2px black;
+}
+
+/**
+ * Animations
+ */
+
+.center {
+    margin-top: 0;
+    margin-left: 0;
+}
+
+.move-up {
+    margin-top: -64px;
+}
+
+.move-down {
+    margin-top: 64px;
+}
+
+.move-right {
+    margin-left: 64px;
+}
+
+.move-left {
+    margin-left: -64px;
 }
 
 .blood {

@@ -5,39 +5,40 @@
  * Instantiates major objects and events
  */
 
-var app = {
+let game = {
     initialize: function() {
         const gridOptions = {
             width: 10,
-            height: 10
+            height: 10,
+            tileSize: 64
         };
 
         const playerOptions = {
             "player1" : {
                 "name" : "Player1",
+                "type" : "player",
                 "startPos" : "row1col1",
-                "health" : 3,
-                "image" : "character-color.png"
+                "health" : 3
             }
         };
 
         const monsterOptions = {
             "monster1" : {
-                "name" : "Queen",
-                "health" : 3,
-                "image" : "Queen.png"
+                "name" : "Elder",
+                "type" : "elder monster",
+                "health" : 3
             }
         };
 
-        let grid = new Grid(gridOptions);
-        let helpers = new Helpers(grid);
+        let helpers = new Helpers(gridOptions);
+        let grid = new Grid(helpers, gridOptions);
         let events = new Events();
         let ui = new UI(events);
         let players = {
-            player1: new PlayerCharacter(playerOptions.player1, helpers)
+            player1: new PlayerCharacter(playerOptions.player1, grid, helpers)
         };
         let monsters = {
-            monster1 : new QueenMonster(gridOptions, monsterOptions.monster1, helpers)
+            monster1 : new ElderMonster(monsterOptions.monster1, grid, helpers)
         };
         let playerActions = new PlayerActions(grid, ui, players, monsters, helpers);
         let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers);
@@ -49,4 +50,4 @@ var app = {
     }
 };
 
-$(app.initialize());
+$(game.initialize());

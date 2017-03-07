@@ -12,38 +12,46 @@ class MonsterActions {
         this.monsterCount = Object.keys(this.monsters).length;
     }
 
-    moveMonsters(getIsGameOver, setIsGameOver) {
-        let newMinion = null,
-            newMinionNum = "";
+    moveMonsters(isGameOver, setIsGameOver) {
+        let currentMonster,
+            minionAttacked,
+            nearbyPlayerTiles = [],
+            monsterActions = this;
 
         for (let monster in this.monsters) {
-            let minionAttacked = false;
-            if (!getIsGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
-                if (this.monsters[monster].name === "Queen") {
-                    this.monsters[monster].saveCurrentPos();
+            minionAttacked = false;
+
+            if (!isGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
+                currentMonster = this.monsters[monster];
+                if (currentMonster.name === "Elder") {
+                    currentMonster.saveCurrentPos();
                 } else {
-                    let nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(this.monsters[monster], 'player');
+                    nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player');
                     if (nearbyPlayerTiles) {
                         this._monsterAttack(nearbyPlayerTiles[0], setIsGameOver);
                         minionAttacked = true;
                     }
                 }
                 if (!minionAttacked) {
-                    this.grid.clearImg(this.monsters[monster]);
-                    this.monsters[monster].randomMove();
-                    if (this.monsters[monster].name === "Queen" && $('#' + this.monsters[monster].oldPos).hasClass('walkable')) {
-                        newMinion = this.monsters[monster].spawn();
-                    }
+                    currentMonster.randomMove(function() {
+                        if (this.name === "Elder" && $('#' + this.oldPos).hasClass('walkable')) {
+                            monsterActions.addNewMinion(this);
+                        }
+                    }.bind(currentMonster));
                 }
             }
         }
-        if (newMinion) {
-            this.monsterCount += 1;
-            newMinionNum = "monster" + this.monsterCount;
-            this.monsters[newMinionNum] = newMinion;
-            this.monsters[newMinionNum].name = "Minion" + this.monsterCount;
-            this.monsters[newMinionNum].initialize();
-        }
+    }
+
+    addNewMinion(currentMonster) {
+        let newMinion = currentMonster.spawn(),
+            newMinionNum;
+
+        this.monsterCount += 1;
+        newMinionNum = "monster" + this.monsterCount;
+        this.monsters[newMinionNum] = newMinion;
+        this.monsters[newMinionNum].name = newMinion.name + this.monsterCount;
+        this.monsters[newMinionNum].initialize();
     }
 
     /*********************
@@ -67,17 +75,17 @@ class MonsterActions {
                     targetPlayer.health -= 1;
                     this.ui.updateValue({id: ".pc-health", value: targetPlayer.health});
                     animateParams = {
-                        "targetObject" : targetPlayer,
+                        "position" : targetPlayer.pos,
                         "type" : "attack",
                         "callback" : function() {
                             if (targetPlayer.health < 1) {
-                                monsterActions.grid.clearImg(targetPlayer);
+                                monsterActions.grid.changeTileImg(targetPlayer.pos, 'trans');
                                 monsterActions.helpers.killObject(monsterActions.players, playerNum);
                                 setIsGameOver();
                             }
                         }
                     };
-                    this.grid.animateTile(null, animateParams);
+                    this.grid.animateTile(animateParams);
                     break;
                 }
             }

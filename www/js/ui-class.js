@@ -8,10 +8,10 @@ class UI {
         this.dialogs = {
             "dialogHeader"  : "Welcome to Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
-            "instructions"  : "You must kill all the creatures to survive and leave with your life. If you are attacked three times, you will die.  Good luck!",
-            "tips"          : "There are two types of monsters: a Queen, and her minions.  The Queen spawns a minion every turn and must be attacked three times to kill her.  While she cannot attack, her minions can.  Each minion will attack if you approach within one square of it, but can be killed with one hit.",
+            "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.  Good luck!",
+            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While it cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
-            "gameOverWin"   : "You've slaughtered every last creature. You make it out alive!"
+            "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!"
         };
         this.runTurnCycle = function() {};
     }

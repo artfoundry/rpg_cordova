@@ -7,11 +7,12 @@
  */
 
 class PlayerCharacter {
-    constructor(playerOptions, helpers) {
+    constructor(playerOptions, grid, helpers) {
+        this.grid = grid;
         this.helpers = helpers;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
-        this.image = playerOptions.image;
+        this.type = playerOptions.type;
         this.health = playerOptions.health;
         this.row = 0;
         this.col = 0;
@@ -25,8 +26,8 @@ class PlayerCharacter {
     }
 
     initialize() {
-        this._setPlayer(this.pos);
-        this._setLighting(this.pos);
+        this.setPlayer(this.pos);
+        this.setLighting(this.pos);
         this.resetKills();
     }
 
@@ -42,40 +43,51 @@ class PlayerCharacter {
         return this.kills;
     }
 
-    _setPlayer(newTileId, oldTileId) {
-        if (oldTileId) {
-            $('#' + oldTileId)
-                .addClass('walkable')
-                .trigger('tileChange', ['player', '<img class="content" src="img/trans.png">'])
-                .removeClass(this.name + ' player impassable');
+    setPlayer(currentPos, newPos, callback) {
+        let player = this,
+            newPosId = newPos || currentPos,
+            animateMoveParams = {
+                "position" : currentPos,
+                "destinationId" : newPosId,
+                "type" : "move",
+                "callback" : function() {
+                    player.grid.changeTileImg(newPosId, player.type);
+                    player.grid.setImgVisible(newPosId);
+                    player.grid.changeTileImg(currentPos, "trans");
+                    if (callback)
+                        callback();
+                }
+            };
+
+        if (currentPos !== newPosId) {
+            player.grid.setTileWalkable(currentPos, player.name, player.type);
+            player.grid.changeTileSetting(newPosId, player.name, player.type);
+            player.grid.animateTile(animateMoveParams);
+            player.pos = newPosId;
+        } else {
+            player.grid.changeTileImg(newPosId, player.type);
+            player.grid.setImgVisible(newPosId);
+            player.grid.changeTileSetting(newPosId, player.name, player.type);
         }
 
-        $('#' + newTileId)
-            .addClass(this.name + ' player impassable')
-            .trigger('tileChange', ['player', '<img class="content" src="img/' + this.image + '">'])
-            .removeClass('walkable');
-
-        this.row = this.helpers.setRowCol(this.pos).row;
-        this.col = this.helpers.setRowCol(this.pos).col;
+        player.row = this.helpers.getRowCol(newPosId).row;
+        player.col = this.helpers.getRowCol(newPosId).col;
     }
 
-    _setLighting(centerTile) {
-        let playerTileIdColIndex = centerTile.indexOf('col'),
-            newRow = +centerTile.slice(3, playerTileIdColIndex),
-            newCol = +centerTile.slice(playerTileIdColIndex + 3),
-            $lightRadiusTiles,
+    setLighting(centerTile, oldPos) {
+        let $lightRadiusTiles,
             $lastLightRadius,
-            $oldCenterTile = $('#' + this.pos),
+            $oldCenterTile = $('#' + oldPos) || $('#' + this.pos),
             $newCenterTile = $('#' + centerTile);
 
         this._removeLighting($oldCenterTile, 'light-ctr', 'light-img-radius');
 
         for (let i = this.lightRadius; i >= 1; i--) {
-            $lightRadiusTiles = this.helpers.findSurroundingTiles(newRow, newCol, i);
+            $lightRadiusTiles = this.helpers.findSurroundingTiles(centerTile, i);
 
             // when moving, set previous outer light circle to darkness
-            if (centerTile !== this.pos && i === this.lightRadius) {
-                $lastLightRadius = this.helpers.findSurroundingTiles(this.row, this.col, i);
+            if (oldPos && i === this.lightRadius) {
+                $lastLightRadius = this.helpers.findSurroundingTiles(oldPos, i);
                 this._removeLighting($lastLightRadius, 'light', 'light-img-trans');
                 this._addLighting($lastLightRadius, 'light-non', 'light-img-non');
             }

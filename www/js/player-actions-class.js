@@ -35,10 +35,8 @@ class PlayerActions {
             (newTilePos === (PlayerActions._brTile(currentRow, currentCol))) ||
             (newTilePos === (PlayerActions._blTile(currentRow, currentCol)))
         ) {
-            player._setLighting(newTilePos);
-            player.pos = newTilePos;
-            player._setPlayer(newTilePos, currentPos);
-            callback();
+            player.setPlayer(currentPos, newTilePos, callback);
+            player.setLighting(newTilePos, currentPos);
         }
     }
 
@@ -57,7 +55,8 @@ class PlayerActions {
             targetMonster,
             currentPlayer = playerActions.players[params.player],
             callback = params.callback,
-            animateParams;
+            animateAttackParams,
+            animateDeathParams;
 
         for (monsterNum in this.monsters) {
             if (Object.prototype.hasOwnProperty.call(this.monsters, monsterNum)) {
@@ -69,22 +68,30 @@ class PlayerActions {
                     // if attack target matches monster in list of nearby monsters, then we have our target
                     if (nearbyMonsterList.indexOf(targetLoc) !== -1) {
                         targetMonster.health -= 1;
-                        animateParams = {
-                            "targetObject" : targetMonster,
+                        animateAttackParams = {
+                            "position" : targetMonster.pos,
                             "type" : "attack"
+                        };
+                        animateDeathParams = {
+                            "position" : targetMonster.pos,
+                            "type" : "fadeOut",
+                            "callback" : function() {
+                                playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
+                                playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type);
+                                playerActions.grid.changeTileImg(targetMonster.pos, 'trans');
+                                callback();
+                            }
                         };
                         if (targetMonster.health < 1) {
                             this.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
-                            animateParams.callback = function() {
-                                playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
-                                playerActions.grid.clearImg(targetMonster);
-                                callback();
+                            animateAttackParams.callback = function() {
+                                playerActions.grid.animateTile(animateDeathParams);
                             };
                         } else {
-                            animateParams.callback = callback;
+                            animateAttackParams.callback = callback;
                         }
-                        this.grid.animateTile(null, animateParams);
+                        this.grid.animateTile(animateAttackParams);
                         break;
                     }
                 }

@@ -5,17 +5,19 @@
  */
 
 class Grid {
-    constructor(gridOptions) {
+    constructor(helpers, gridOptions) {
+        this.helpers = helpers;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
+        this.tileSize = gridOptions.tileSize;
     }
 
     drawGrid() {
         let grid = this,
             markup = '',
             id = '',
-            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>',
-            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><div class="light-img light-img-non"></div><img class="content" src="img/trans.png"></figure>';
+            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><div class="light-img light-img-non"></div><div class="content content-trans"></div></figure>',
+            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><div class="light-img light-img-non"></div><div class="content content-trans"></div></figure>';
 
         $('.grid').prepend(() => {
             for (let rowNum = 0; rowNum <= grid.gridHeight + 1; rowNum++) {
@@ -38,36 +40,79 @@ class Grid {
         $('.grid').children().remove();
     }
 
-    clearImg(target) {
-        let targetType = '';
-        if (target.constructor === PlayerCharacter)
-            targetType = 'player';
-        else
-            targetType = 'monster';
-
-        $('#' + target.pos)
-            .addClass('walkable')
-            .trigger('tileChange', [target.name, '<img class="content" src="img/trans.png">'])
-            .removeClass(target.name + ' ' + targetType);
+    changeTileSetting(position, name, type) {
+        $('#' + position).addClass(name + ' ' + type).removeClass('walkable');
     }
 
-    updateTileImage(e, tileClass, image) {
-        $('.' + tileClass + '>img.content').replaceWith(image);
+    changeTileImg(position, type) {
+        let $content = $('#' + position + ' .content');
+
+        $content.attr("class", "content content-" + type);
+        if (type === 'clear')
+            $content.css('opacity', 'initial');
     }
 
-    animateTile(e, params) {
-        let $target = $('#' + params.targetObject.pos),
+    setImgVisible(position) {
+        $('#' + position + ' .content').css('opacity', 1);
+    }
+
+    setTileWalkable(position, name, type) {
+        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' impassable');
+    }
+
+    animateTile(params) {
+        let $target = $('#' + params.position),
             $targetContent = $target.children('.content'),
+            $targetContentAndLight = $targetContent.add('#' + params.position + ' .light-img'),
+            isPlayer = $targetContent.hasClass('content-player'),
             type = params.type,
             callback = params.callback,
-            rotation = Math.random() * 360;
+            imageRotation = Math.random() * 360;
 
         switch (type) {
+            case 'move':
+                if (params.destinationId) {
+                    let destinationPosValues = this.helpers.getRowCol(params.destinationId),
+                        currentPosValues = this.helpers.getRowCol(params.position),
+                        moveDirection = {
+                            vertMov : destinationPosValues.row - currentPosValues.row,
+                            horizMov : destinationPosValues.col - currentPosValues.col
+                        },
+                        movementClasses = '';
+
+                    if (moveDirection.vertMov > 0)
+                        movementClasses = 'move-down';
+                    else if (moveDirection.vertMov < 0)
+                        movementClasses = 'move-up';
+                    if (moveDirection.horizMov > 0)
+                        movementClasses = movementClasses === '' ? 'move-right' : movementClasses + ' move-right';
+                    else if (moveDirection.horizMov < 0)
+                        movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
+
+                    $targetContent.addClass('content-zindex-raised');
+                    if (isPlayer) {
+                        $targetContentAndLight.addClass(movementClasses, function() {
+                            $targetContentAndLight.removeClass(movementClasses);
+                            $targetContent.removeClass('content-zindex-raised');
+                        });
+                    } else {
+                        $targetContent.addClass(movementClasses, function() {
+                            $targetContent.removeClass('content-zindex-raised', movementClasses);
+                        });
+                    }
+                }
+                break;
+            case 'fadeOut':
+                $targetContent.animate({opacity: 0}, 200);
+                break;
+            case 'fadeIn':
+                $targetContent.animate({opacity: 1}, 200);
+                break;
             case 'attack':
                 $target.prepend("<div class='blood'></div>");
                 $(".blood")
-                    .css("transform", "rotate(" + rotation + "deg)")
-                    .animate({opacity: 1}, 100)
+                    .css("transform", "rotate(" + imageRotation + "deg)")
+                    .animate({opacity: 1}, 0)
                     .animate({opacity: 0.8}, 100)
                     .animate({opacity: 0}, 300, function() {
                         $(".blood").remove();

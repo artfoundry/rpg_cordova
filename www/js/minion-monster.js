@@ -3,13 +3,14 @@
  */
 
 class MinionMonster extends Monster {
-    constructor(gridOptions, monsterOptions, helpers) {
-        super(gridOptions, monsterOptions, helpers);
+    constructor(monsterOptions, grid, helpers) {
+        super(monsterOptions, grid, helpers);
         this.pos = monsterOptions.pos;
+        this.grid = grid;
         this.helpers = helpers;
     }
 
     initialize() {
-        this._setmonster();
+        this._setmonster(this.pos);
     }
 }
