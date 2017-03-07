@@ -35,7 +35,7 @@ class TurnController {
         this.grid.drawGrid();
 
         // for testing
-        $('.light-img').remove();
+        // $('.light-img').remove();
 
         this.players.player1.initialize();
         this.monsters.monster1.initialize();
