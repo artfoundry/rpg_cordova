@@ -9,6 +9,10 @@
 
 
 class Events {
+    constructor(helpers) {
+        this.helpers = helpers;
+    }
+
     /**
      * function setUpClickListener
      *
@@ -26,7 +30,7 @@ class Events {
         let destinationTile = '';
 
         $('body').keyup((e) => {
-            destinationTile = document.getElementById(this.checkPlayerDestination(e.which, playerPos));
+            destinationTile = document.getElementById(this.helpers.checkPlayerDestination(e.which, playerPos));
             this.processAction(targetActions, params, destinationTile);
         });
     }
@@ -37,24 +41,6 @@ class Events {
                 targetActions[actionType](destinationTile, params[actionType]);
                 break;
             }
-        }
-    }
-
-    checkPlayerDestination(keyCode, playerPos) {
-        let colIndex = playerPos.indexOf('col'),
-            rowIndex = playerPos.indexOf('row'),
-            rowNum = +playerPos.slice(rowIndex+3, colIndex),
-            colNum = +playerPos.slice(colIndex+3);
-
-        switch (keyCode) {
-            case 39: // right arrow
-                return playerPos.replace(/col[\d]/, 'col' + (colNum+1));
-            case 37: // left arrow
-                return playerPos.replace(/col[\d]/, 'col' + (colNum-1));
-            case 38: // up arrow
-                return playerPos.replace(/row[\d]/, 'row' + (rowNum-1));
-            case 40: // down arrow
-                return playerPos.replace(/row[\d]/, 'row' + (rowNum+1));
         }
     }
 

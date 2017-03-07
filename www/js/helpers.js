@@ -75,4 +75,30 @@ class Helpers {
         }
         return $nearbyCharLoc;
     }
+
+    checkPlayerDestination(keyCode, playerPos) {
+        let colIndex = playerPos.indexOf('col'),
+            rowIndex = playerPos.indexOf('row'),
+            rowNum = +playerPos.slice(rowIndex+3, colIndex),
+            colNum = +playerPos.slice(colIndex+3);
+
+        switch (keyCode) {
+            case 102: // numpad 6
+                return playerPos.replace(/col[\d]/, 'col' + (colNum+1));
+            case 100: // numpad 4
+                return playerPos.replace(/col[\d]/, 'col' + (colNum-1));
+            case 104: // numpad 8
+                return playerPos.replace(/row[\d]/, 'row' + (rowNum-1));
+            case 98: // numpad 2
+                return playerPos.replace(/row[\d]/, 'row' + (rowNum+1));
+            case 103: // numpad 7
+                return 'row'+ (rowNum-1) + 'col' + (colNum-1);
+            case 105: // numpad 9
+                return 'row'+ (rowNum-1) + 'col' + (colNum+1);
+            case 99: // numpad 3
+                return 'row'+ (rowNum+1) + 'col' + (colNum+1);
+            case 97: // numpad 1
+                return 'row'+ (rowNum+1) + 'col' + (colNum-1);
+        }
+    }
 }
