@@ -35,10 +35,12 @@ class TurnController {
         this.grid.drawGrid();
 
         // for testing
-        $('body').prepend('<button id="testing"></button>');
-        $('#testing').click(function() {
-            $('.light-img').toggle();
-        });
+        if ($('#testing').length === 0) {
+            $('body').prepend('<button id="testing"></button>');
+            $('#testing').click(function() {
+                $('.light-img').toggle();
+            });
+        }
         // end test code
 
         this.players.player1.initialize();
