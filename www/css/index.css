@@ -157,7 +157,7 @@ figure {
 }
 
 /**
- *  Content
+ *  Tile Content
  */
 
 .content {
@@ -272,11 +272,6 @@ figure {
 /**
  * Animations
  */
-
-.center {
-    margin-top: 0;
-    margin-left: 0;
-}
 
 .move-up {
     margin-top: -64px;

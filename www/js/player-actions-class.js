@@ -26,14 +26,14 @@ class PlayerActions {
             newTilePos = newTile.id,
             callback = params.callback;
 
-        if ((newTilePos === (PlayerActions._rightTile(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._leftTile(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._bottomTile(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._topTile(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._trTile(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._tlTile(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._brTile(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._blTile(currentRow, currentCol)))
+        if ((newTilePos === (PlayerActions._getRightTileId(currentRow, currentCol))) ||
+            (newTilePos === (PlayerActions._getLeftTileId(currentRow, currentCol))) ||
+            (newTilePos === (PlayerActions._getBottomTileId(currentRow, currentCol))) ||
+            (newTilePos === (PlayerActions._getTopTileId(currentRow, currentCol))) ||
+            (newTilePos === (PlayerActions._getTopRightTileId(currentRow, currentCol))) ||
+            (newTilePos === (PlayerActions._getTopLeftTileId(currentRow, currentCol))) ||
+            (newTilePos === (PlayerActions._getBottomRightTileId(currentRow, currentCol))) ||
+            (newTilePos === (PlayerActions._getBottomLeftTileId(currentRow, currentCol)))
         ) {
             player.setPlayer(currentPos, newTilePos, callback);
         }
@@ -98,12 +98,12 @@ class PlayerActions {
         }
     }
 
-    static _topTile(row, col) { return 'row' + (row - 1) + 'col' + col; }
-    static _bottomTile(row, col) { return 'row' + (row + 1) + 'col' + col; }
-    static _leftTile(row, col) { return 'row' + row + 'col' + (col - 1); }
-    static _rightTile(row, col) { return 'row' + row + 'col' + (col + 1); }
-    static _tlTile(row, col) { return 'row' + (row - 1) + 'col' + (col - 1); }
-    static _trTile(row, col) { return 'row' + (row - 1) + 'col' + (col + 1); }
-    static _blTile(row, col) { return 'row' + (row + 1) + 'col' + (col - 1); }
-    static _brTile(row, col) { return 'row' + (row + 1) + 'col' + (col + 1); }
+    static _getTopTileId(row, col) { return 'row' + (row - 1) + 'col' + col; }
+    static _getBottomTileId(row, col) { return 'row' + (row + 1) + 'col' + col; }
+    static _getLeftTileId(row, col) { return 'row' + row + 'col' + (col - 1); }
+    static _getRightTileId(row, col) { return 'row' + row + 'col' + (col + 1); }
+    static _getTopLeftTileId(row, col) { return 'row' + (row - 1) + 'col' + (col - 1); }
+    static _getTopRightTileId(row, col) { return 'row' + (row - 1) + 'col' + (col + 1); }
+    static _getBottomLeftTileId(row, col) { return 'row' + (row + 1) + 'col' + (col - 1); }
+    static _getBottomRightTileId(row, col) { return 'row' + (row + 1) + 'col' + (col + 1); }
 }
