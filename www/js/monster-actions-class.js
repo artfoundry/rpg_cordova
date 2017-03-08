@@ -80,7 +80,6 @@ class MonsterActions {
                         "callback" : function() {
                             if (targetPlayer.health < 1) {
                                 monsterActions.grid.changeTileImg(targetPlayer.pos, 'trans');
-                                monsterActions.helpers.killObject(monsterActions.players, playerNum);
                                 setIsGameOver();
                             }
                         }

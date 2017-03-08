@@ -93,13 +93,13 @@ class TurnController {
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
             } else {
-                this._endGame("win");
+                this._endGame("gameOverWin");
             }
         // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
                 this._tearDownListeners();
-                this._endGame("lose");
+                this._endGame("gameOverDead");
             } else {
                 this.setIsPlayerTurn(true);
                 this.runTurnCycle();
@@ -163,14 +163,18 @@ class TurnController {
 
     _endGame(message) {
         let controller = this,
-            gameEndMessage = message === "lose" ? "gameOverDead" : "gameOverWin",
             restartCallback = function() {
                 controller.grid.clearGrid();
                 game.initialize();
             },
+            scoreValues = {
+                "kills" : this.players.player1.kills,
+                "health" : this.players.player1.health
+            },
             endingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body", "text" : gameEndMessage, "hidden" : false},
+                {"class" : "modal-body", "text" : message, "hidden" : false},
+                {"class" : "modal-body", "text" : "score", "scoreValues" : scoreValues, "hidden" : false},
             ],
             buttons = [
                 {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
