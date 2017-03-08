@@ -103,6 +103,7 @@ figure {
 .grid {
     margin: auto;
     background-color:black;
+    overflow: hidden;
 }
 
 .row {
@@ -149,13 +150,13 @@ figure {
 
 .light-img-radius {
     background-image: url('../img/light-radius.png');
-    background-size: 360px 360px;
+    background-size: 1600px 1600px;
     background-repeat: no-repeat;
-    background-position: -20px -20px;
-    left: -128px;
-    top: -128px;
-    width: 320px;
-    height: 320px;
+    background-position: 20px 20px;
+    left: -800px;
+    top: -800px;
+    width: 1600px;
+    height: 1600px;
     z-index: 2;
 }
 

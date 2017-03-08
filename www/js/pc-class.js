@@ -16,7 +16,7 @@ class PlayerCharacter {
         this.health = playerOptions.health;
         this.row = 0;
         this.col = 0;
-        this.lightRadius = 2;
+        this.lightRadius = 2; // not needed unless we implement changeable light radii
         this.kills = 0;
         // radius x = 2x + 1 sqs
         // 0 = 1x1 sqs
@@ -54,6 +54,7 @@ class PlayerCharacter {
                     player.grid.changeTileImg(newPosId, player.type);
                     player.grid.setImgVisible(newPosId);
                     player.grid.changeTileImg(currentPos, "trans");
+                    player.setLighting(newPosId, currentPos);
                     if (callback)
                         callback();
                 }
@@ -75,26 +76,10 @@ class PlayerCharacter {
     }
 
     setLighting(centerTile, oldPos) {
-        let $lightRadiusTiles,
-            $lastLightRadius,
-            $oldCenterTile = $('#' + oldPos) || $('#' + this.pos),
+        let $oldCenterTile = $('#' + oldPos) || $('#' + this.pos),
             $newCenterTile = $('#' + centerTile);
 
         this._removeLighting($oldCenterTile, 'light-ctr', 'light-img-radius');
-
-        for (let i = this.lightRadius; i >= 1; i--) {
-            $lightRadiusTiles = this.helpers.findSurroundingTiles(centerTile, i);
-
-            // when moving, set previous outer light circle to darkness
-            if (oldPos && i === this.lightRadius) {
-                $lastLightRadius = this.helpers.findSurroundingTiles(oldPos, i);
-                this._removeLighting($lastLightRadius, 'light', 'light-img-trans');
-                this._addLighting($lastLightRadius, 'light-non', 'light-img-non');
-            }
-            this._removeLighting($lightRadiusTiles, 'light-non', 'light-img-non');
-            this._addLighting($lightRadiusTiles, 'light', 'light-img-trans');
-        }
-
         this._removeLighting($newCenterTile, '', 'light-img-trans');
         this._addLighting($newCenterTile, 'light light-ctr', 'light-img-radius');
     }

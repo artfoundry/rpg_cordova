@@ -4,16 +4,16 @@
  * Helper functions used by player and turn-control classes.
  */
 
-/*
- * _findSurroundingTiles()
- * Finds all tiles in a given radius from the passed in center tile, no farther, no closer, but ignores tiles that are out of the grid
- */
 
 class Helpers {
     constructor(gridOptions) {
         this.grid = gridOptions;
     }
 
+    /*
+     * findSurroundingTiles()
+     * Finds all tiles in a given radius from the passed in center tile, no farther, no closer, but ignores tiles that are out of the grid
+     */
     findSurroundingTiles(centerTile, searchRadius) {
         let center = this.getRowCol(centerTile),
             firstRow = center.row - searchRadius,
@@ -84,13 +84,13 @@ class Helpers {
 
         switch (keyCode) {
             case 102: // numpad 6
-                return playerPos.replace(/col[\d]/, 'col' + (colNum+1));
+                return playerPos.replace(/col[\d]+/, 'col' + (colNum+1));
             case 100: // numpad 4
-                return playerPos.replace(/col[\d]/, 'col' + (colNum-1));
+                return playerPos.replace(/col[\d]+/, 'col' + (colNum-1));
             case 104: // numpad 8
-                return playerPos.replace(/row[\d]/, 'row' + (rowNum-1));
+                return playerPos.replace(/row[\d]+/, 'row' + (rowNum-1));
             case 98: // numpad 2
-                return playerPos.replace(/row[\d]/, 'row' + (rowNum+1));
+                return playerPos.replace(/row[\d]+/, 'row' + (rowNum+1));
             case 103: // numpad 7
                 return 'row'+ (rowNum-1) + 'col' + (colNum-1);
             case 105: // numpad 9

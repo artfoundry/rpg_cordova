@@ -36,7 +36,6 @@ class PlayerActions {
             (newTilePos === (PlayerActions._blTile(currentRow, currentCol)))
         ) {
             player.setPlayer(currentPos, newTilePos, callback);
-            player.setLighting(newTilePos, currentPos);
         }
     }
 
