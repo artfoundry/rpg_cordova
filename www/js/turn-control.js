@@ -35,7 +35,11 @@ class TurnController {
         this.grid.drawGrid();
 
         // for testing
-        // $('.light-img').remove();
+        $('body').prepend('<button id="testing"></button>');
+        $('#testing').click(function() {
+            $('.light-img').toggle();
+        });
+        // end test code
 
         this.players.player1.initialize();
         this.monsters.monster1.initialize();

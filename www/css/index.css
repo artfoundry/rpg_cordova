@@ -144,10 +144,6 @@ figure {
     background-image: url('../img/trans.png');
 }
 
-.light-img-non {
-    background-image: url('../img/light-non.png');
-}
-
 .light-img-radius {
     background-image: url('../img/light-radius.png');
     background-size: 1600px 1600px;
