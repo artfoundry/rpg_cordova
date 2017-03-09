@@ -9,9 +9,10 @@ class UI {
             "dialogHeader"  : "Welcome to Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
             "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!",
-            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While it cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.",
+            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While it cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health and number of monsters killed.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
-            "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!"
+            "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
+            "score"         : "Your final score for the game is: "
         };
         this.runTurnCycle = function() {};
     }
@@ -39,6 +40,8 @@ class UI {
                 $(".modal-section:last-child").addClass(messages[i].class).text(this.dialogs[messages[i].text]);
                 if (messages[i].hidden)
                     $("." + messages[i].class + ":last-child").hide();
+                if (messages[i].text === "score")
+                    $(".modal-section:last-child").append('<span class="score score-text">' + this.calcScore(messages[i].scoreValues) + '!</span>');
             }
         }
         for (let i = 0; i < buttons.length; i++) {
@@ -69,6 +72,10 @@ class UI {
         $(".modal").hide();
         if (params.callback)
             params.callback();
+    }
+
+    calcScore(scoreValues) {
+        return (scoreValues.kills*5) + (scoreValues.health*10);
     }
 
     updateValue(params) {

@@ -265,6 +265,15 @@ figure {
     font-family: 'Creepster', serif;
 }
 
+.score-text {
+    font-size: 2em;
+    font-family: 'Creepster', serif;
+    color: orangered;
+    text-shadow: 1px 1px 2px black;
+    vertical-align: middle;
+    padding-left: 10px;
+}
+
 .subheader {
     font-size: 1.2em;
 }
