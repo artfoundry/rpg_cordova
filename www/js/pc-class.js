@@ -79,7 +79,8 @@ class PlayerCharacter {
         let $oldCenterTile = $('#' + oldPos) || $('#' + this.pos),
             $newCenterTile = $('#' + centerTile);
 
-        this._removeLighting($oldCenterTile, 'light-ctr', 'light-img-radius');
+        this._removeLighting($oldCenterTile, 'light light-ctr', 'light-img-radius');
+        this._addLighting($oldCenterTile, '', 'light-img-trans');
         this._removeLighting($newCenterTile, '', 'light-img-trans');
         this._addLighting($newCenterTile, 'light light-ctr', 'light-img-radius');
     }
