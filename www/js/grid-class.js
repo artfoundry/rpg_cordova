@@ -16,8 +16,8 @@ class Grid {
         let grid = this,
             markup = '',
             id = '',
-            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable light-non"><div class="light-img light-img-non"></div><div class="content content-trans"></div></figure>',
-            borderTile = '<figure id="" class="tile tile-wall impassable light-non"><div class="light-img light-img-non"></div><div class="content content-trans"></div></figure>';
+            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>',
+            borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>';
 
         $('.grid').prepend(() => {
             for (let rowNum = 0; rowNum <= grid.gridHeight + 1; rowNum++) {
@@ -60,10 +60,18 @@ class Grid {
         $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' impassable');
     }
 
+    /**
+     * animateTile
+     * @param params
+     * params.position: string of tile ID
+     * params.type: string of animation type
+     * params.destinationId (only for move type): string of destination tile ID
+     * params.callback (optional)
+     */
     animateTile(params) {
         let $target = $('#' + params.position),
             $targetContent = $target.children('.content'),
-            $targetContentAndLight = $targetContent.add('#' + params.position + ' .light-img'),
+            $targetLight = $target.children('.light-img'),
             isPlayer = $targetContent.hasClass('content-player'),
             type = params.type,
             callback = params.callback,
@@ -89,11 +97,16 @@ class Grid {
                     else if (moveDirection.horizMov < 0)
                         movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
 
+                    $targetLight.push($targetContent);
                     $targetContent.addClass('content-zindex-raised');
                     if (isPlayer) {
-                        $targetContentAndLight.addClass(movementClasses, function() {
-                            $targetContentAndLight.removeClass(movementClasses);
-                            $targetContent.removeClass('content-zindex-raised');
+                        $targetLight.each(function(){
+                            $(this).addClass(movementClasses, function() {
+                                $targetLight.each(function() {
+                                    $(this).removeClass(movementClasses);
+                                });
+                                $targetContent.removeClass('content-zindex-raised');
+                            });
                         });
                     } else {
                         $targetContent.addClass(movementClasses, function() {
