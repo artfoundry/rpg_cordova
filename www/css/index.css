@@ -14,11 +14,6 @@ body {
     padding: 0;
 }
 
-img {
-    height: auto;
-    width: auto;
-}
-
 div {
     width: auto;
     margin: 0;
@@ -113,10 +108,8 @@ figure {
 .tile {
     display: inline-block;
     position: relative;
-    width: 9%;
+    width: 64px;
     height: 64px;
-    max-width: 64px;
-    max-height: 64px;
 }
 
 .tile-ground-dungeon {

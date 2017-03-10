@@ -32,6 +32,7 @@ class Grid {
                 }
                 markup += '</div>';
             }
+            $('.grid').css('width', (this.gridWidth + 2) * this.tileSize);
             return markup;
         });
     }
@@ -75,7 +76,8 @@ class Grid {
             isPlayer = $targetContent.hasClass('content-player'),
             type = params.type,
             callback = params.callback,
-            imageRotation = Math.random() * 360;
+            imageRotation = Math.random() * 360,
+            grid = this;
 
         switch (type) {
             case 'move':
@@ -107,6 +109,19 @@ class Grid {
                                 });
                                 $targetContent.removeClass('content-zindex-raised');
                             });
+
+                            let playerPos = grid.helpers.isOffScreen($targetContent);
+
+                            if (playerPos.top < 140) {
+                                window.scrollBy(0, 320);
+                            } else if (playerPos.bottom < 140) {
+                                window.scrollBy(0, -320);
+                            }
+                            if (playerPos.left < 140) {
+                                window.scrollBy(320, 0);
+                            } else if (playerPos.right < 140) {
+                                window.scrollBy(-320, 0);
+                            }
                         });
                     } else {
                         $targetContent.addClass(movementClasses, function() {
