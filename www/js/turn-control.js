@@ -36,7 +36,7 @@ class TurnController {
 
         // for testing
         if ($('#testing').length === 0) {
-            $('body').prepend('<button id="testing"></button>');
+            $('#app').prepend('<button id="testing"></button>');
             $('#testing').click(function() {
                 $('.light-img').toggle();
             });

@@ -11,8 +11,8 @@
                 * Enable inline JS: add 'unsafe-inline' to default-src
         -->
         <!-- Access to google fonts -->
-        <access origin="http://fonts.googleapis.com"></access>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://code.jquery.com data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' http://code.jquery.com; media-src *; img-src 'self' data: content:;">
+        <!--<access origin="http://fonts.googleapis.com"></access>-->
+        <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' http://code.jquery.com data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' http://code.jquery.com; media-src *; img-src 'self' data: content:;">-->
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
@@ -26,12 +26,14 @@
     </head>
     <body>
         <div id="app" data-role="page">
-            <div class="statusbar">
-                <span class="title">Monsters!</span>
-                <span class="stats">
-                    <span class="pc-health">Health: <span class="status-value"></span></span>
-                    <span class="kills">Kills: <span class="status-value"></span></span>
-                </span>
+            <div class="statusbar-container">
+                <div class="statusbar">
+                    <span class="title">Monsters!</span>
+                    <span class="stats">
+                        <span class="pc-health">Health: <span class="status-value"></span></span>
+                        <span class="kills">Kills: <span class="status-value"></span></span>
+                    </span>
+                </div>
             </div>
 
             <div class="modal">
