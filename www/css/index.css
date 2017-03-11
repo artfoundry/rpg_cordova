@@ -14,11 +14,6 @@ body {
     padding: 0;
 }
 
-img {
-    height: auto;
-    width: auto;
-}
-
 div {
     width: auto;
     margin: 0;
@@ -35,8 +30,8 @@ figure {
 /* Portrait layout (default) */
 #app {
     text-align:center;
-    padding: 3%;
-    margin: 30px auto 0;
+    padding: 0 3% 3%;
+    margin: 0 auto;
 }
 
 /* Landscape layout (with min-width) */
@@ -45,13 +40,27 @@ figure {
     }
 }
 
+#testing {
+    position: fixed;
+    z-index: 10;
+    top: 100px;
+    left: 10px;
+    opacity: .5;
+}
+
 /**
  *  Status bar
  */
 
+.statusbar-container {
+    position: fixed;
+    z-index: 4;
+    width: 90%;
+    border-top: 40px solid black;
+}
+
 .statusbar {
     position: relative;
-    z-index: 4;
     padding: 10px;
     margin: 0 0 20px;
     text-align: left;
@@ -60,6 +69,7 @@ figure {
     text-shadow: 1px 1px 2px black;
     border-bottom: 2px solid darkslategray;
     border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 20px 20px black;
 }
 
 .statusbar span {
@@ -102,6 +112,7 @@ figure {
 
 .grid {
     margin: auto;
+    padding-top: 88px;
     background-color:black;
     overflow: hidden;
 }
@@ -113,10 +124,8 @@ figure {
 .tile {
     display: inline-block;
     position: relative;
-    width: 9%;
+    width: 64px;
     height: 64px;
-    max-width: 64px;
-    max-height: 64px;
 }
 
 .tile-ground-dungeon {
@@ -201,6 +210,7 @@ figure {
     width: 60%;
     min-width: 300px;
     max-width: 600px;
+    top: 20%;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 20px;

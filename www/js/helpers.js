@@ -101,4 +101,31 @@ class Helpers {
                 return 'row'+ (rowNum+1) + 'col' + (colNum-1);
         }
     }
+
+    isOffScreen(element) {
+        let height = element.outerHeight(),
+            width = element.outerWidth(),
+            $win = $(window),
+            viewport = {
+                top : $win.scrollTop(),
+                left : $win.scrollLeft()
+            },
+            bounds = element.offset(),
+            showing;
+
+        viewport.right = viewport.left + $win.width();
+        viewport.bottom = viewport.top + $win.height();
+
+        bounds.right = bounds.left + width;
+        bounds.bottom = bounds.top + height;
+
+        showing = {
+            top : viewport.bottom - bounds.top,
+            left: viewport.right - bounds.left,
+            bottom: bounds.bottom - viewport.top,
+            right: bounds.right - viewport.left
+        };
+
+        return showing;
+    }
 }

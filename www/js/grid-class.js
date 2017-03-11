@@ -32,6 +32,7 @@ class Grid {
                 }
                 markup += '</div>';
             }
+            $('.grid').css('width', (this.gridWidth + 2) * this.tileSize);
             return markup;
         });
     }
@@ -71,49 +72,14 @@ class Grid {
     animateTile(params) {
         let $target = $('#' + params.position),
             $targetContent = $target.children('.content'),
-            $targetLight = $target.children('.light-img'),
-            isPlayer = $targetContent.hasClass('content-player'),
             type = params.type,
             callback = params.callback,
             imageRotation = Math.random() * 360;
 
         switch (type) {
             case 'move':
-                if (params.destinationId) {
-                    let destinationPosValues = this.helpers.getRowCol(params.destinationId),
-                        currentPosValues = this.helpers.getRowCol(params.position),
-                        moveDirection = {
-                            vertMov : destinationPosValues.row - currentPosValues.row,
-                            horizMov : destinationPosValues.col - currentPosValues.col
-                        },
-                        movementClasses = '';
-
-                    if (moveDirection.vertMov > 0)
-                        movementClasses = 'move-down';
-                    else if (moveDirection.vertMov < 0)
-                        movementClasses = 'move-up';
-                    if (moveDirection.horizMov > 0)
-                        movementClasses = movementClasses === '' ? 'move-right' : movementClasses + ' move-right';
-                    else if (moveDirection.horizMov < 0)
-                        movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
-
-                    $targetLight.push($targetContent);
-                    $targetContent.addClass('content-zindex-raised');
-                    if (isPlayer) {
-                        $targetLight.each(function(){
-                            $(this).addClass(movementClasses, function() {
-                                $targetLight.each(function() {
-                                    $(this).removeClass(movementClasses);
-                                });
-                                $targetContent.removeClass('content-zindex-raised');
-                            });
-                        });
-                    } else {
-                        $targetContent.addClass(movementClasses, function() {
-                            $targetContent.removeClass('content-zindex-raised', movementClasses);
-                        });
-                    }
-                }
+                if (params.destinationId)
+                    this._animateMovement(params.position, params.destinationId);
                 break;
             case 'fadeOut':
                 $targetContent.animate({opacity: 0}, 200);
@@ -142,6 +108,89 @@ class Grid {
             $targetContent.promise().done(function() {
                 callback();
             });
+        }
+    }
+
+    _animateMovement(position, destination) {
+        let $target = $('#' + position),
+            $targetContent = $target.children('.content'),
+            $targetLight = $target.children('.light-img'),
+            isPlayer = $targetContent.hasClass('content-player'),
+            destinationPosValues = this.helpers.getRowCol(destination),
+            currentPosValues = this.helpers.getRowCol(position),
+            moveDirection = {
+                vertMov : destinationPosValues.row - currentPosValues.row,
+                horizMov : destinationPosValues.col - currentPosValues.col
+            },
+            movementClasses = '',
+            grid = this;
+
+        if (moveDirection.vertMov > 0)
+            movementClasses = 'move-down';
+        else if (moveDirection.vertMov < 0)
+            movementClasses = 'move-up';
+        if (moveDirection.horizMov > 0)
+            movementClasses = movementClasses === '' ? 'move-right' : movementClasses + ' move-right';
+        else if (moveDirection.horizMov < 0)
+            movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
+
+        $targetLight.push($targetContent);
+        $targetContent.addClass('content-zindex-raised');
+        if (isPlayer) {
+            $targetLight.each(function(){
+                $(this).addClass(movementClasses, function() {
+                    $targetLight.each(function() {
+                        $(this).removeClass(movementClasses);
+                    });
+                    $targetContent.removeClass('content-zindex-raised');
+                });
+
+                let playerPos = grid.helpers.isOffScreen($targetContent),
+                    x = 0,
+                    y = 0;
+
+                if (playerPos.top < 140) {
+                    y = 160;
+                } else if (playerPos.bottom < 140) {
+                    y = -160;
+                }
+                if (playerPos.left < 140) {
+                    x = 160;
+                } else if (playerPos.right < 140) {
+                    x = -160;
+                }
+                grid._scrollWindow(x, y);
+            });
+        } else {
+            $targetContent.addClass(movementClasses, function() {
+                $targetContent.removeClass('content-zindex-raised', movementClasses);
+            });
+        }
+    }
+
+    _scrollWindow(xValue, yValue) {
+        let greaterValue = Math.abs(xValue) > Math.abs(yValue) ? xValue : yValue,
+            lesserValue = greaterValue === xValue ? yValue : xValue,
+            remainder = Math.abs(greaterValue) - Math.abs(lesserValue),
+            x = xValue < 0 ? -1 : (xValue > 0 ? 1 : 0),
+            y = yValue < 0 ? -1 : (yValue > 0 ? 1 : 0);
+
+        for (let i=0; i < Math.abs(lesserValue); i++) {
+            setTimeout(function() {
+                window.scrollBy(x, y);
+            }, i);
+        }
+        for (let i=0; i < remainder; i++) {
+            if (greaterValue === xValue) {
+                setTimeout(function() {
+                    window.scrollBy(x, 0);
+                }, i);
+            }
+            else {
+                setTimeout(function() {
+                    window.scrollBy(0, y);
+                }, i);
+            }
         }
     }
 
