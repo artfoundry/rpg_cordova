@@ -72,10 +72,6 @@ figure {
     box-shadow: 0 -10px 20px 20px black;
 }
 
-.statusbar span {
-    display: inline-block;
-}
-
 .statusbar .title {
     font-family: 'Creepster', serif;
     font-size: 1.4em;
@@ -83,13 +79,20 @@ figure {
 }
 
 .stats {
-    position: absolute;
-    right: 0;
-    width: 250px;
+    float: right;
+    width: 55%;
+    white-space: normal;
+    text-align: right;
 }
 
 .stats .pc-health {
-    width: 150px;
+    display: inline-block;
+    width: 120px;
+}
+
+.stats .kills {
+    width: 70px;
+    display: inline-block;
 }
 
 .status-value {
@@ -97,6 +100,7 @@ figure {
 }
 
 .life-bubble {
+    display: inline-block;
     width: 10px;
     height: 10px;
     margin: 0 3px;
@@ -208,7 +212,7 @@ figure {
     position: absolute;
     z-index: 6;
     width: 60%;
-    min-width: 300px;
+    min-width: 250px;
     max-width: 600px;
     top: 20%;
     left: 50%;
@@ -245,7 +249,7 @@ figure {
 
 .modal-body-container {
     height: 70%;
-    max-height: 400px;
+    max-height: 500px;
     overflow: auto;
 }
 
