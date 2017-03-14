@@ -29,7 +29,13 @@ class UI {
      */
     modalOpen(messages, buttons) {
         let button = '<button class="modal-button dynamic"></button>',
-            section = '<section class="modal-section dynamic"></section>';
+            section = '<section class="modal-section dynamic"></section>',
+            $body = $('body'),
+            scrollY = $body.scrollTop(),
+            scrollX = $body.scrollLeft();
+
+        if (scrollX > 0 || scrollY > 0)
+            this.scrollWindow(-scrollX, -scrollY);
 
         $(".modal").show();
         for (let i = 0; i < messages.length; i++) {
@@ -72,6 +78,32 @@ class UI {
         $(".modal").hide();
         if (params.callback)
             params.callback();
+    }
+
+    scrollWindow(xValue, yValue) {
+        let greaterValue = Math.abs(xValue) > Math.abs(yValue) ? xValue : yValue,
+            lesserValue = greaterValue === xValue ? yValue : xValue,
+            remainder = Math.abs(greaterValue) - Math.abs(lesserValue),
+            x = xValue < 0 ? -1 : (xValue > 0 ? 1 : 0),
+            y = yValue < 0 ? -1 : (yValue > 0 ? 1 : 0);
+
+        for (let i=0; i < Math.abs(lesserValue); i++) {
+            setTimeout(function() {
+                window.scrollBy(x, y);
+            }, i);
+        }
+        for (let i=0; i < remainder; i++) {
+            if (greaterValue === xValue) {
+                setTimeout(function() {
+                    window.scrollBy(x, 0);
+                }, i);
+            }
+            else {
+                setTimeout(function() {
+                    window.scrollBy(0, y);
+                }, i);
+            }
+        }
     }
 
     calcScore(scoreValues) {
