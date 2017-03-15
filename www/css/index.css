@@ -190,17 +190,14 @@ figure {
 
 .content-player {
     background-image: url('../img/character.png');
-    opacity: 0;
 }
 
 .content-minion {
     background-image: url('../img/shoggoth.png');
-    opacity: 0;
 }
 
 .content-elder {
     background-image: url('../img/elder.png');
-    opacity: 0;
 }
 
 /**
