@@ -110,20 +110,20 @@ class Helpers {
                 top : $win.scrollTop(),
                 left : $win.scrollLeft()
             },
-            bounds = element.offset(),
+            elementOffset = element.offset(),
             showing;
 
         viewport.right = viewport.left + $win.width();
         viewport.bottom = viewport.top + $win.height();
 
-        bounds.right = bounds.left + width;
-        bounds.bottom = bounds.top + height;
+        elementOffset.right = elementOffset.left + width;
+        elementOffset.bottom = elementOffset.top + height;
 
         showing = {
-            top : viewport.bottom - bounds.top,
-            left: viewport.right - bounds.left,
-            bottom: bounds.bottom - viewport.top,
-            right: bounds.right - viewport.left
+            top : viewport.bottom - elementOffset.top,
+            left: viewport.right - elementOffset.left,
+            bottom: elementOffset.bottom - viewport.top,
+            right: elementOffset.right - viewport.left
         };
 
         return showing;

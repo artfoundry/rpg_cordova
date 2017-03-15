@@ -5,11 +5,12 @@
  */
 
 class Grid {
-    constructor(helpers, gridOptions) {
+    constructor(helpers, gridOptions, ui) {
         this.helpers = helpers;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
         this.tileSize = gridOptions.tileSize;
+        this.ui = ui;
     }
 
     drawGrid() {
@@ -149,48 +150,26 @@ class Grid {
                     x = 0,
                     y = 0;
 
-                if (playerPos.top < 140) {
-                    y = 160;
-                } else if (playerPos.bottom < 140) {
-                    y = -160;
+                // if player is near the bottom and moving down
+                if (movementClasses.includes('move-down') && playerPos.top > 0 && playerPos.top < 140) {
+                    y = $(window).height() / 3;
+                // if player is near the top and moving up
+                } else if (movementClasses.includes('move-up') && playerPos.bottom > 0 && playerPos.bottom < 140) {
+                    y = -$(window).height() / 3;
                 }
-                if (playerPos.left < 140) {
-                    x = 160;
-                } else if (playerPos.right < 140) {
-                    x = -160;
+                // if player is near the left edge and moving left
+                if (movementClasses.includes('move-right') && playerPos.left > 0 && playerPos.left < 140) {
+                    x = $(window).width() / 3;
+                // if player is near the right edge and moving right
+                } else if (movementClasses.includes('move-left') && playerPos.right > 0 && playerPos.right < 140) {
+                    x = -$(window).width() / 3;
                 }
-                grid._scrollWindow(x, y);
+                grid.ui.scrollWindow(x, y);
             });
         } else {
             $targetContent.addClass(movementClasses, function() {
                 $targetContent.removeClass('content-zindex-raised', movementClasses);
             });
-        }
-    }
-
-    _scrollWindow(xValue, yValue) {
-        let greaterValue = Math.abs(xValue) > Math.abs(yValue) ? xValue : yValue,
-            lesserValue = greaterValue === xValue ? yValue : xValue,
-            remainder = Math.abs(greaterValue) - Math.abs(lesserValue),
-            x = xValue < 0 ? -1 : (xValue > 0 ? 1 : 0),
-            y = yValue < 0 ? -1 : (yValue > 0 ? 1 : 0);
-
-        for (let i=0; i < Math.abs(lesserValue); i++) {
-            setTimeout(function() {
-                window.scrollBy(x, y);
-            }, i);
-        }
-        for (let i=0; i < remainder; i++) {
-            if (greaterValue === xValue) {
-                setTimeout(function() {
-                    window.scrollBy(x, 0);
-                }, i);
-            }
-            else {
-                setTimeout(function() {
-                    window.scrollBy(0, y);
-                }, i);
-            }
         }
     }
 
