@@ -52,7 +52,6 @@ class PlayerCharacter {
                 "type" : "move",
                 "callback" : function() {
                     player.grid.changeTileImg(newPosId, player.type);
-                    player.grid.setImgVisible(newPosId);
                     player.grid.changeTileImg(currentPos, "trans");
                     player.setLighting(newPosId, currentPos);
                     if (callback)
@@ -67,7 +66,6 @@ class PlayerCharacter {
             player.pos = newPosId;
         } else {
             player.grid.changeTileImg(newPosId, player.type);
-            player.grid.setImgVisible(newPosId);
             player.grid.changeTileSetting(newPosId, player.name, player.type);
         }
 

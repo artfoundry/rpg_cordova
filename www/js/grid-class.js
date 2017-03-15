@@ -47,15 +47,7 @@ class Grid {
     }
 
     changeTileImg(position, type) {
-        let $content = $('#' + position + ' .content');
-
-        $content.attr("class", "content content-" + type);
-        if (type === 'clear')
-            $content.css('opacity', 'initial');
-    }
-
-    setImgVisible(position) {
-        $('#' + position + ' .content').css('opacity', 1);
+        $('#' + position + ' .content').attr("class", "content content-" + type);
     }
 
     setTileWalkable(position, name, type) {
@@ -75,18 +67,25 @@ class Grid {
             $targetContent = $target.children('.content'),
             type = params.type,
             callback = params.callback,
-            imageRotation = Math.random() * 360;
+            imageRotation = Math.random() * 360,
+            grid = this;
 
         switch (type) {
             case 'move':
                 if (params.destinationId)
                     this._animateMovement(params.position, params.destinationId);
                 break;
-            case 'fadeOut':
-                $targetContent.animate({opacity: 0}, 200);
+            case 'fade-out':
+                $targetContent.fadeOut();
                 break;
-            case 'fadeIn':
-                $targetContent.animate({opacity: 1}, 200);
+            case 'fade-in':
+                $targetContent.fadeIn();
+                break;
+            case 'spawn':
+                $targetContent.fadeOut(function() {
+                    grid.changeTileImg(params.position, params.characterType);
+                    $targetContent.fadeIn();
+                });
                 break;
             case 'attack':
                 $target.prepend("<div class='blood'></div>");

@@ -58,7 +58,6 @@ class Monster {
                 "type" : "move",
                 "callback" : function() {
                     monster.grid.changeTileImg(newTileId, monster.type);
-                    monster.grid.setImgVisible(newTileId);
                     monster.grid.changeTileImg(oldTileId, "trans");
                     if (callback)
                         callback();
@@ -69,9 +68,13 @@ class Monster {
             monster.grid.animateTile(animateMoveParams);
             monster.pos = newTileId;
         } else {
-            monster.grid.changeTileImg(newTileId, monster.type);
-            monster.grid.setImgVisible(newTileId);
+            animateMoveParams = {
+                "position" : newTileId,
+                "type" : "spawn",
+                "characterType" : monster.type
+            };
             monster.grid.changeTileSetting(newTileId, monster.name, monster.type);
+            monster.grid.animateTile(animateMoveParams);
         }
 
         monster.row = this.helpers.getRowCol(newTileId).row;
