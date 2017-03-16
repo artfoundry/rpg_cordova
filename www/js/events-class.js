@@ -35,6 +35,15 @@ class Events {
         });
     }
 
+    setUpGeneralInteractionListeners(target, targetAction) {
+        $(target).click((e) => {
+            targetAction();
+        });
+        $('body').keyup((e) => {
+            targetAction();
+        });
+    }
+
     processAction(targetActions, params, destinationTile) {
         for (let actionType in targetActions) {
             if (Object.prototype.hasOwnProperty.call(targetActions, actionType) && $(destinationTile).hasClass(actionType)) {

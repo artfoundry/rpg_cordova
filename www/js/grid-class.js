@@ -170,7 +170,8 @@ class Grid {
             });
         } else {
             $targetContent.addClass(movementClasses, function() {
-                $targetContent.removeClass('content-zindex-raised', movementClasses, function() {
+                movementClasses += 'content-zindex-raised';
+                $targetContent.removeClass(movementClasses, function() {
                     callback();
                 });
             });

@@ -12,7 +12,8 @@ class UI {
             "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While it cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health and number of monsters killed.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
-            "score"         : "Your final score for the game is: "
+            "score"         : "Your final score for the game is: ",
+            "wait"          : "Wait...something is moving in the darkness..."
         };
         this.runTurnCycle = function() {};
     }
@@ -68,16 +69,26 @@ class UI {
         }
     }
 
-    visibilityToggle(element) {
-        $(element).toggle();
-    }
-
     modalClose(params) {
         this.events.removeClickListener(".modal-button");
         $(".dynamic").remove();
         $(".modal").hide();
         if (params.callback)
             params.callback();
+    }
+
+    displayStatus(message) {
+        $('.status-message').addClass('status-message-open', 200);
+        $('.status-text').text(this.dialogs[message]);
+    }
+
+    hideStatus() {
+        $('.status-message').removeClass('status-message-open', 200);
+        $('.status-text').text('');
+    }
+
+    visibilityToggle(element) {
+        $(element).toggle();
     }
 
     scrollWindow(xValue, yValue) {
