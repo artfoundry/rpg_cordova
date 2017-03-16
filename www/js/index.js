@@ -17,6 +17,7 @@ let game = {
             "player1" : {
                 "name" : "Player1",
                 "type" : "player",
+                "subtype" : "investigator",
                 "startPos" : "row1col1",
                 "health" : 3
             }
@@ -25,7 +26,8 @@ let game = {
         const monsterOptions = {
             "monster1" : {
                 "name" : "Elder",
-                "type" : "elder monster",
+                "type" : "elder",
+                "subtype" : "monster",
                 "health" : 3
             }
         };

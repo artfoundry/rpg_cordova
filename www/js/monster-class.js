@@ -9,6 +9,7 @@ class Monster {
         this.gridHeight = grid.gridHeight;
         this.name = monsterOptions.name;
         this.type = monsterOptions.type;
+        this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health;
         this.row = 0;
         this.col = 0;
@@ -63,17 +64,18 @@ class Monster {
                         callback();
                 }
             };
-            monster.grid.setTileWalkable(oldTileId, monster.name, monster.type);
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type);
+            monster.grid.setTileWalkable(oldTileId, monster.name, monster.type, monster.subtype);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);
             monster.grid.animateTile(animateMoveParams);
             monster.pos = newTileId;
         } else {
             animateMoveParams = {
                 "position" : newTileId,
-                "type" : "spawn",
+                "type" : "image-swap",
+                "delay" : "spawn",
                 "characterType" : monster.type
             };
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);
             monster.grid.animateTile(animateMoveParams);
         }
 

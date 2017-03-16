@@ -66,12 +66,16 @@ class TurnController {
     }
 
     runTurnCycle() {
+        let turnCycle = this;
+
         if (this.getIsPlayerTurn() === true) {
             this._setupPlayerClickHandlers();
         } else {
             this._tearDownListeners();
             this.monsterActions.moveMonsters(this.getIsGameOver.bind(this), this.setIsGameOver.bind(this));
-            this.endTurn();
+            $('.grid').find(':animated').promise().done(function() {
+                turnCycle.endTurn();
+            });
         }
     }
 
@@ -148,7 +152,7 @@ class TurnController {
                         "callback": this.endTurn.bind(this)
                     },
                     "impassable": {
-                        "targetObject": player,
+                        "position": this.players[player].pos,
                         "type": "impassable"
                     },
                     "monster": {

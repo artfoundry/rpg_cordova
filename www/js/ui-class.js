@@ -68,11 +68,11 @@ class UI {
         }
     }
 
-    visibilityToggle(e, element) {
+    visibilityToggle(element) {
         $(element).toggle();
     }
 
-    modalClose(e, params) {
+    modalClose(params) {
         this.events.removeClickListener(".modal-button");
         $(".dynamic").remove();
         $(".modal").hide();
