@@ -18,7 +18,7 @@ class Monster {
 
     initialize() {
         this._randomizeLoc();
-        this._setmonster(this.pos);
+        this._setMonster(this.pos);
     }
 
     randomMove(callback) {
@@ -45,10 +45,10 @@ class Monster {
                 break;
         }
         if (oldTileId !== newTileId)
-            this._setmonster(newTileId, oldTileId, callback);
+            this._setMonster(newTileId, oldTileId, callback);
     }
 
-    _setmonster(newTileId, oldTileId, callback) {
+    _setMonster(newTileId, oldTileId, callback) {
         let monster = this,
             animateMoveParams = {};
 

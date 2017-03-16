@@ -66,16 +66,12 @@ class TurnController {
     }
 
     runTurnCycle() {
-        let turnCycle = this;
-
         if (this.getIsPlayerTurn() === true) {
-            this._setupPlayerClickHandlers();
+            this._setupPlayerTurnInteractionHandlers();
         } else {
-            this._tearDownListeners();
+            this._setupMonsterTurnInteractionHandlers();
             this.monsterActions.moveMonsters(this.getIsGameOver.bind(this), this.setIsGameOver.bind(this));
-            $('.grid').find(':animated').promise().done(function() {
-                turnCycle.endTurn();
-            });
+            this._waitForAnimationsToFinish();
         }
     }
 
@@ -96,9 +92,9 @@ class TurnController {
     }
 
     endTurn() {
+        this._tearDownListeners();
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
-            this._tearDownListeners();
             if (Object.keys(this.monsters).length > 0) {
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
@@ -123,47 +119,68 @@ class TurnController {
      *
      *****************************/
 
+    _waitForAnimationsToFinish() {
+        let turnCycle = this;
+
+        $('.grid').find(':animated').promise().done(function() {
+            turnCycle.endTurn();
+        });
+    }
 
     /*****************************
-     * function _setupPlayerClickHandlers
+     * function _setupMonsterTurnInteractionHandlers
      *
-     * Sets up click handlers through events class with these parameters:
+     * Sets up player click and key handlers for monster turn using events class (in order to send status message)
      *
-     * -target class
-     * -function to take action
-     * -function to take alternate action if click target is invalid
-     * -player object
-     * -callback function to run after player move action is finished
+     * parameters:
+     * -target (class ".tile")
+     * -targetActions: keys are tile classes, values are actions to take
      ****************************/
-    _setupPlayerClickHandlers() {
-        let targetActions = {},
-            params = {};
+    _setupMonsterTurnInteractionHandlers() {
+        let turnCycle = this,
+            targetAction = function() {
+                if (turnCycle.getIsPlayerTurn() === false) {
+                    turnCycle.ui.displayStatus('wait');
+                    setTimeout(function() {
+                        turnCycle.ui.hideStatus();
+                    }, 1500);
+                }
+            };
+        this.events.setUpGeneralInteractionListeners(this.tileListenerTarget, targetAction);
+    }
 
-        for (let player in this.players) {
-            if (Object.prototype.hasOwnProperty.call(this.players, player)) {
-                targetActions = {
-                    "walkable": this.playerActions.movePlayer.bind(this.playerActions),
-                    "impassable": this.grid.animateTile.bind(this),
-                    "monster": this.playerActions.playerAttack.bind(this.playerActions)
-                };
-                params = {
-                    "walkable": {
-                        "player": player,
-                        "callback": this.endTurn.bind(this)
-                    },
-                    "impassable": {
-                        "position": this.players[player].pos,
-                        "type": "impassable"
-                    },
-                    "monster": {
-                        "player": player,
-                        "callback" : this.endTurn.bind(this)
-                    }
-                };
-                this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
-                this.events.setUpArrowKeysListener(targetActions, params, this.players[player].pos);
-            }
-        }
+    /*****************************
+     * function _setupPlayerTurnInteractionHandlers
+     *
+     * Sets up click and key handlers for player turn using events class
+     *
+     * parameters:
+     * -target (class ".tile")
+     * -targetActions: keys are tile classes, values are actions to take
+     * -params: parameters to send to each target action
+     ****************************/
+    _setupPlayerTurnInteractionHandlers() {
+        let targetActions = {
+                "walkable": this.playerActions.movePlayer.bind(this.playerActions),
+                "impassable": this.grid.animateTile.bind(this),
+                "monster": this.playerActions.playerAttack.bind(this.playerActions)
+            },
+            params = {
+                "walkable": {
+                    "player": "player1",
+                    "callback": this.endTurn.bind(this)
+                },
+                "impassable": {
+                    "position": this.players.player1.pos,
+                    "type": "impassable"
+                },
+                "monster": {
+                    "player": "player1",
+                    "callback" : this.endTurn.bind(this)
+                }
+            };
+            this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
+            this.events.setUpArrowKeysListener(targetActions, params, this.players.player1.pos);
     }
 
     _tearDownListeners() {

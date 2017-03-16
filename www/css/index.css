@@ -61,6 +61,7 @@ figure {
 
 .statusbar {
     position: relative;
+    z-index: 4;
     padding: 10px;
     margin: 0 0 20px;
     text-align: left;
@@ -76,6 +77,35 @@ figure {
     font-family: 'Creepster', serif;
     font-size: 1.4em;
     left: 0;
+}
+
+.status-message {
+    /*display: none;*/
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    width: 50%;
+    height: 0;
+    padding: 10px;
+    background: linear-gradient(to top, rgba(96,173,188,1) 0%,rgba(50,50,50,1) 100%);
+    border-bottom: 2px solid lightblue;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 -10px 20px 20px black;
+}
+
+.status-message-open {
+    height: 100%;
+    padding: 80px 10px 10px;
+}
+
+.status-text {
+    text-align: center;
+    font-family: 'Creepster', serif;
+    color: orangered;
+    font-size: 1.5em;
+    text-shadow: 1px 1px 2px black;
 }
 
 .stats {
