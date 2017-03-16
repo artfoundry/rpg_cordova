@@ -21,7 +21,7 @@ and spawns a Shoggoth each turn it can move but can't attack. Shoggoths move one
 and attacks player if next to it.  All monsters move after player moves.
 Game ends when either player or all monsters are dead.  Scoring is based on remaining health and number of kills at end of game.
 
-*In progress*
+*Feature complete; just assets to update*
 
 **Phase 2a: Expanded features**
 
