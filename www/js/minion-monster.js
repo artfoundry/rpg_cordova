@@ -11,6 +11,6 @@ class MinionMonster extends Monster {
     }
 
     initialize() {
-        this._setmonster(this.pos);
+        this._setMonster(this.pos);
     }
 }
