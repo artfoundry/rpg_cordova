@@ -17,7 +17,8 @@ class ElderMonster extends Monster {
     spawn() {
         let minionOptions = {
             "name" : "Shoggoth",
-            "type" : "minion monster",
+            "type" : "minion",
+            "subtype" : "monster",
             "health" : 1,
             "pos" : this.oldPos
         };

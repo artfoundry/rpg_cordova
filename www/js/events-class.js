@@ -38,7 +38,7 @@ class Events {
     processAction(targetActions, params, destinationTile) {
         for (let actionType in targetActions) {
             if (Object.prototype.hasOwnProperty.call(targetActions, actionType) && $(destinationTile).hasClass(actionType)) {
-                targetActions[actionType](destinationTile, params[actionType]);
+                targetActions[actionType](params[actionType], destinationTile);
                 break;
             }
         }

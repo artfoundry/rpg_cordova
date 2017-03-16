@@ -18,7 +18,7 @@ class PlayerActions {
      * - params: Object sent by TurnController containing player object and callback under "walkable" key
      * - newTile: String of tile's id in the format "row#col#"
      */
-    movePlayer(newTile, params) {
+    movePlayer(params, newTile) {
         let player = this.players[params.player],
             currentPos = player.pos,
             currentRow = player.row,
@@ -46,7 +46,7 @@ class PlayerActions {
      * @param params - object in which targets key contains list of game characters, either players or monsters
      * @private
      */
-    playerAttack(targetTile, params) {
+    playerAttack(params, targetTile) {
         let playerActions = this,
             monsterNum,
             nearbyMonsterList,
@@ -73,11 +73,12 @@ class PlayerActions {
                         };
                         animateDeathParams = {
                             "position" : targetMonster.pos,
-                            "type" : "fadeOut",
+                            "type" : "image-swap",
+                            "delay" : "death",
+                            "characterType" : "trans",
                             "callback" : function() {
                                 playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
-                                playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type);
-                                playerActions.grid.changeTileImg(targetMonster.pos, 'trans');
+                                playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type, targetMonster.subtype);
                                 callback();
                             }
                         };

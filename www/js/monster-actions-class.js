@@ -21,7 +21,9 @@ class MonsterActions {
         for (let monster in this.monsters) {
             minionAttacked = false;
 
-            if (!isGameOver() && Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
+            if (isGameOver())
+                return;
+            else if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 currentMonster = this.monsters[monster];
                 if (currentMonster.name === "Elder") {
                     currentMonster.saveCurrentPos();
@@ -43,8 +45,8 @@ class MonsterActions {
         }
     }
 
-    addNewMinion(currentMonster) {
-        let newMinion = currentMonster.spawn(),
+    addNewMinion(currentElderMonster) {
+        let newMinion = currentElderMonster.spawn(),
             newMinionNum;
 
         this.monsterCount += 1;

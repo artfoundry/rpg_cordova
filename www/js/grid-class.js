@@ -42,16 +42,16 @@ class Grid {
         $('.grid').children().remove();
     }
 
-    changeTileSetting(position, name, type) {
-        $('#' + position).addClass(name + ' ' + type).removeClass('walkable');
+    changeTileSetting(position, name, type, subtype) {
+        $('#' + position).addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
     }
 
     changeTileImg(position, type) {
         $('#' + position + ' .content').attr("class", "content content-" + type);
     }
 
-    setTileWalkable(position, name, type) {
-        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' impassable');
+    setTileWalkable(position, name, type, subtype) {
+        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable');
     }
 
     /**
@@ -73,28 +73,31 @@ class Grid {
         switch (type) {
             case 'move':
                 if (params.destinationId)
-                    this._animateMovement(params.position, params.destinationId);
-                break;
-            case 'fade-out':
-                $targetContent.fadeOut();
+                    this._animateMovement(params.position, params.destinationId, callback);
                 break;
             case 'fade-in':
                 $targetContent.fadeIn();
                 break;
-            case 'spawn':
-                $targetContent.fadeOut(function() {
+            case 'image-swap':
+                let delay = 0;
+                if (params.delay === "death")
+                    delay = 200;
+                $targetContent.fadeOut(delay, function() {
                     grid.changeTileImg(params.position, params.characterType);
                     $targetContent.fadeIn();
+                    if (callback)
+                        callback();
                 });
                 break;
             case 'attack':
                 $target.prepend("<div class='blood'></div>");
-                $(".blood")
+                let $blood = $('.blood');
+                $blood
                     .css("transform", "rotate(" + imageRotation + "deg)")
                     .animate({opacity: 1}, 0)
-                    .animate({opacity: 0.8}, 100)
                     .animate({opacity: 0}, 300, function() {
-                        $(".blood").remove();
+                        $(".blood").detach();
+                        callback();
                     });
                 break;
             case 'impassable':
@@ -104,14 +107,9 @@ class Grid {
                     .animate({marginLeft: "+=20"}, 100);
                 break;
         }
-        if (callback) {
-            $targetContent.promise().done(function() {
-                callback();
-            });
-        }
     }
 
-    _animateMovement(position, destination) {
+    _animateMovement(position, destination, callback) {
         let $target = $('#' + position),
             $targetContent = $target.children('.content'),
             $targetLight = $target.children('.light-img'),
@@ -144,30 +142,37 @@ class Grid {
                     });
                     $targetContent.removeClass('content-zindex-raised');
                 });
+            });
 
-                let playerPos = grid.helpers.isOffScreen($targetContent),
-                    x = 0,
-                    y = 0;
+            let playerPos = grid.helpers.isOffScreen($targetContent),
+                x = 0,
+                y = 0;
 
-                // if player is near the bottom and moving down
-                if (movementClasses.includes('move-down') && playerPos.top > 0 && playerPos.top < 140) {
-                    y = $(window).height() / 3;
-                // if player is near the top and moving up
-                } else if (movementClasses.includes('move-up') && playerPos.bottom > 0 && playerPos.bottom < 140) {
-                    y = -$(window).height() / 3;
-                }
-                // if player is near the left edge and moving left
-                if (movementClasses.includes('move-right') && playerPos.left > 0 && playerPos.left < 140) {
-                    x = $(window).width() / 3;
-                // if player is near the right edge and moving right
-                } else if (movementClasses.includes('move-left') && playerPos.right > 0 && playerPos.right < 140) {
-                    x = -$(window).width() / 3;
-                }
+            // if player is near the bottom and moving down
+            if (movementClasses.includes('move-down') && playerPos.top > 0 && playerPos.top < 140) {
+                y = $(window).height() / 3;
+            // if player is near the top and moving up
+            } else if (movementClasses.includes('move-up') && playerPos.bottom > 0 && playerPos.bottom < 140) {
+                y = -$(window).height() / 3;
+            }
+            // if player is near the left edge and moving left
+            if (movementClasses.includes('move-right') && playerPos.left > 0 && playerPos.left < 140) {
+                x = $(window).width() / 3;
+            // if player is near the right edge and moving right
+            } else if (movementClasses.includes('move-left') && playerPos.right > 0 && playerPos.right < 140) {
+                x = -$(window).width() / 3;
+            }
+            if (x !== 0 || y !== 0)
                 grid.ui.scrollWindow(x, y);
+
+            $targetLight.promise().done(function() {
+                callback();
             });
         } else {
             $targetContent.addClass(movementClasses, function() {
-                $targetContent.removeClass('content-zindex-raised', movementClasses);
+                $targetContent.removeClass('content-zindex-raised', movementClasses, function() {
+                    callback();
+                });
             });
         }
     }
