@@ -41,7 +41,7 @@ figure {
     width: 3%;
     height: 800px;
     background-color: black;
-    z-index: 4;
+    z-index: 6;
 }
 
 .right-side-bar {
@@ -51,7 +51,7 @@ figure {
     width: 3%;
     height: 800px;
     background-color: black;
-    z-index: 4;
+    z-index: 6;
 }
 
 #testing {
@@ -68,14 +68,14 @@ figure {
 
 .statusbar-container {
     position: fixed;
-    z-index: 4;
+    z-index: 6;
     width: 94%;
     border-top: 40px solid black;
 }
 
 .statusbar {
     position: relative;
-    z-index: 4;
+    z-index: 6;
     padding: 10px;
     margin: 0 0 20px;
     text-align: left;
@@ -99,8 +99,9 @@ figure {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 3;
+    z-index: 4;
     width: 50%;
+    min-width: 420px;
     height: 0;
     padding: 10px;
     background: linear-gradient(to top, rgba(96,173,188,1) 0%,rgba(50,50,50,1) 100%);
@@ -120,6 +121,7 @@ figure {
     color: orangered;
     font-size: 1.5em;
     text-shadow: 1px 1px 2px black;
+    white-space: normal;
 }
 
 .stats {
@@ -250,8 +252,8 @@ figure {
 
 .modal {
     display: none;
-    position: fixed;
-    z-index: 6;
+    position: absolute;
+    z-index: 5;
     width: 60%;
     min-width: 250px;
     max-width: 600px;
