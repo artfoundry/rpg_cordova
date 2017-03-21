@@ -44,10 +44,6 @@ class Events {
         });
     }
 
-    setUpCharacterPositionListener() {
-
-    }
-
     processAction(targetActions, params, destinationTile) {
         for (let actionType in targetActions) {
             if (Object.prototype.hasOwnProperty.call(targetActions, actionType) && $(destinationTile).hasClass(actionType)) {

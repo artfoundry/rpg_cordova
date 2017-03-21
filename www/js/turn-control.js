@@ -143,7 +143,7 @@ class TurnController {
                     turnCycle.ui.displayStatus('wait');
                     setTimeout(function() {
                         turnCycle.ui.hideStatus();
-                    }, 1500);
+                    }, 1000);
                 }
             };
         this.events.setUpGeneralInteractionListeners(this.tileListenerTarget, targetAction);

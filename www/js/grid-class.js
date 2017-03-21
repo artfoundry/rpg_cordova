@@ -16,6 +16,7 @@ class Grid {
     drawGrid() {
         let grid = this,
             $gridEl = $('.grid'),
+            gridPixels = (this.gridWidth + 2) * this.tileSize,
             markup = '',
             id = '',
             blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>',
@@ -36,8 +37,8 @@ class Grid {
             }
             return markup;
         });
-        $gridEl.css('width', (this.gridWidth + 2) * this.tileSize);
-        $('#row0col0').prepend('<canvas id="canvas-lighting" width="800" height="800"></div>');
+        $gridEl.css('width', gridPixels + 1);
+        $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></div>');
     }
 
     clearGrid() {

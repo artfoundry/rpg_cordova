@@ -77,15 +77,16 @@ class PlayerCharacter {
 
     _setLighting(newPos, currentPos) {
         let oldPos = currentPos || newPos,
-            lightPos = $('#' + newPos).offset(),
-            oldLightPos = $('#' + oldPos + ' .content').offset(),
+            newLightPos = $('#' + newPos).offset(),
+            currentLightPos = $('#' + oldPos + ' .content').offset(),
             player = this;
 
-        this.lightingParams.newLightPosTop = Math.round(lightPos.top) - this.grid.tileSize;
-        this.lightingParams.newLightPosLeft = Math.round(lightPos.left - (3.5 * this.grid.tileSize));
-        this._calcCurrentPosition(oldLightPos);
+        this.lightingParams.gridPos = $('.grid').offset();
+        this.lightingParams.radius = this.lightRadius * this.grid.tileSize + (this.grid.tileSize/2);
+        this.lightingParams.newLightPosTop = Math.round(newLightPos.top - this.lightingParams.gridPos.top - (this.lightingParams.radius/3));
+        this.lightingParams.newLightPosLeft = Math.round(newLightPos.left - this.lightingParams.gridPos.left + (this.lightingParams.radius/3));
+        this._calcCurrentPosition(currentLightPos);
         this.lightingParams.canvas = document.getElementById("canvas-lighting");
-        this.lightingParams.radius= this.lightRadius * this.grid.tileSize + (this.grid.tileSize/2);
         this.lightingParams.currentPos = currentPos;
 
         this._drawLightCircle();
@@ -102,8 +103,8 @@ class PlayerCharacter {
     _drawLightCircle() {
         let canvas = this.lightingParams.canvas,
             radius = this.lightingParams.radius,
-            cx = this.lightingParams.oldLightPosLeft,
-            cy = this.lightingParams.oldLightPosTop,
+            cx = this.lightingParams.currentLightPosLeft,
+            cy = this.lightingParams.currentLightPosTop,
             ctx = canvas.getContext("2d"),
             cw = canvas.width,
             ch = canvas.height,
@@ -125,16 +126,16 @@ class PlayerCharacter {
 
         if (this.lightingParams.animID) {
             let $charPos = $('#' + this.lightingParams.currentPos + ' .content'),
-                oldLightPos = $charPos.offset();
+                currentLightPos = $charPos.offset();
 
-            this._calcCurrentPosition(oldLightPos);
-            if (this.lightingParams.newLightPosLeft === this.lightingParams.oldLightPosLeft && this.lightingParams.newLightPosTop === this.lightingParams.oldLightPosTop)
+            this._calcCurrentPosition(currentLightPos);
+            if (this.lightingParams.newLightPosLeft === this.lightingParams.currentLightPosLeft && this.lightingParams.newLightPosTop === this.lightingParams.currentLightPosTop)
                 cancelAnimationFrame(this.lightingParams.animID);
         }
     }
 
     _calcCurrentPosition(currentPos) {
-        this.lightingParams.oldLightPosLeft = Math.round(currentPos.left - (3.5*this.grid.tileSize));
-        this.lightingParams.oldLightPosTop = Math.round(currentPos.top) - this.grid.tileSize;
+        this.lightingParams.currentLightPosLeft = Math.round(currentPos.left - this.lightingParams.gridPos.left + (this.lightingParams.radius/3));
+        this.lightingParams.currentLightPosTop = Math.round(currentPos.top - this.lightingParams.gridPos.top - (this.lightingParams.radius/3));
     }
 }
