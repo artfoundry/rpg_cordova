@@ -70,6 +70,8 @@ class UI {
     }
 
     modalClose(params) {
+        this._musicCheck();
+
         this.events.removeClickListener(".modal-button");
         $(".dynamic").remove();
         $(".modal").hide();
@@ -139,5 +141,12 @@ class UI {
         }
         else
             $element.text(params.value);
+    }
+
+    _musicCheck() {
+        let $audioEl = $('audio');
+
+        if ($audioEl.paused)
+            $audioEl.play();
     }
 }
