@@ -38,7 +38,7 @@ class TurnController {
         if ($('#testing').length === 0) {
             $('#app').prepend('<button id="testing"></button>');
             $('#testing').click(function() {
-                $('.light-img').toggle();
+                $('#canvas-lighting').toggle();
             });
         }
         // end test code
@@ -143,7 +143,7 @@ class TurnController {
                     turnCycle.ui.displayStatus('wait');
                     setTimeout(function() {
                         turnCycle.ui.hideStatus();
-                    }, 1500);
+                    }, 1000);
                 }
             };
         this.events.setUpGeneralInteractionListeners(this.tileListenerTarget, targetAction);

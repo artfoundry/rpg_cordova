@@ -15,12 +15,14 @@ class Grid {
 
     drawGrid() {
         let grid = this,
+            $gridEl = $('.grid'),
+            gridPixels = (this.gridWidth + 2) * this.tileSize,
             markup = '',
             id = '',
             blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>',
             borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>';
 
-        $('.grid').prepend(() => {
+        $gridEl.prepend(() => {
             for (let rowNum = 0; rowNum <= grid.gridHeight + 1; rowNum++) {
                 markup += '<div class="row">';
                 for (let colNum = 0; colNum <= grid.gridWidth + 1; colNum++) {
@@ -33,9 +35,10 @@ class Grid {
                 }
                 markup += '</div>';
             }
-            $('.grid').css('width', (this.gridWidth + 2) * this.tileSize);
             return markup;
         });
+        $gridEl.css('width', gridPixels + 1);
+        $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></div>');
     }
 
     clearGrid() {
@@ -112,7 +115,6 @@ class Grid {
     _animateMovement(position, destination, callback) {
         let $target = $('#' + position),
             $targetContent = $target.children('.content'),
-            $targetLight = $target.children('.light-img'),
             isPlayer = $targetContent.hasClass('content-player'),
             destinationPosValues = this.helpers.getRowCol(destination),
             currentPosValues = this.helpers.getRowCol(position),
@@ -120,8 +122,7 @@ class Grid {
                 vertMov : destinationPosValues.row - currentPosValues.row,
                 horizMov : destinationPosValues.col - currentPosValues.col
             },
-            movementClasses = '',
-            grid = this;
+            movementClasses = '';
 
         if (moveDirection.vertMov > 0)
             movementClasses = 'move-down';
@@ -132,40 +133,13 @@ class Grid {
         else if (moveDirection.horizMov < 0)
             movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
 
-        $targetLight.push($targetContent);
-        $targetContent.addClass('content-zindex-raised');
+        $targetContent.addClass('content-zindex-raised'); // this class will be removed when image swap takes place after animation
         if (isPlayer) {
-            $targetLight.each(function(){
-                $(this).addClass(movementClasses, function() {
-                    $targetLight.each(function() {
-                        $(this).removeClass(movementClasses);
-                    });
-                    $targetContent.removeClass('content-zindex-raised');
-                });
+            $targetContent.addClass(movementClasses, function() {
+                $targetContent.removeClass(movementClasses);
             });
-
-            let playerPos = grid.helpers.isOffScreen($targetContent),
-                x = 0,
-                y = 0;
-
-            // if player is near the bottom and moving down
-            if (movementClasses.includes('move-down') && playerPos.top > 0 && playerPos.top < 140) {
-                y = $(window).height() / 3;
-            // if player is near the top and moving up
-            } else if (movementClasses.includes('move-up') && playerPos.bottom > 0 && playerPos.bottom < 140) {
-                y = -$(window).height() / 3;
-            }
-            // if player is near the left edge and moving left
-            if (movementClasses.includes('move-right') && playerPos.left > 0 && playerPos.left < 140) {
-                x = $(window).width() / 3;
-            // if player is near the right edge and moving right
-            } else if (movementClasses.includes('move-left') && playerPos.right > 0 && playerPos.right < 140) {
-                x = -$(window).width() / 3;
-            }
-            if (x !== 0 || y !== 0)
-                grid.ui.scrollWindow(x, y);
-
-            $targetLight.promise().done(function() {
+            this._udpateScreenPosition($targetContent, movementClasses);
+            $targetContent.promise().done(function() {
                 callback();
             });
         } else {
@@ -176,6 +150,29 @@ class Grid {
                 });
             });
         }
+    }
+
+    _udpateScreenPosition($targetContent, movementClasses) {
+        let playerPos = this.helpers.isOffScreen($targetContent),
+            x = 0,
+            y = 0;
+
+        // if player is near the bottom and moving down
+        if (movementClasses.includes('move-down') && playerPos.top > 0 && playerPos.top < 140) {
+            y = $(window).height() / 3;
+            // if player is near the top and moving up
+        } else if (movementClasses.includes('move-up') && playerPos.bottom > 0 && playerPos.bottom < 140) {
+            y = -$(window).height() / 3;
+        }
+        // if player is near the left edge and moving left
+        if (movementClasses.includes('move-right') && playerPos.left > 0 && playerPos.left < 140) {
+            x = $(window).width() / 3;
+            // if player is near the right edge and moving right
+        } else if (movementClasses.includes('move-left') && playerPos.right > 0 && playerPos.right < 140) {
+            x = -$(window).width() / 3;
+        }
+        if (x !== 0 || y !== 0)
+            this.ui.scrollWindow(x, y);
     }
 
     _insertString(baseString, toInsert, position) {
