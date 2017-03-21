@@ -19,6 +19,7 @@ class PlayerCharacter {
         this.col = 0;
         this.lightRadius = 2; // not needed unless we implement changeable light radii
         this.kills = 0;
+        this.lightingParams = {};
         // radius x = 2x + 1 sqs
         // 0 = 1x1 sqs
         // 1 = 3x3 sqs
@@ -28,7 +29,7 @@ class PlayerCharacter {
 
     initialize() {
         this.setPlayer(this.pos);
-        this.setLighting(this.pos);
+        this._setLighting(this.pos);
         this.resetKills();
     }
 
@@ -54,7 +55,6 @@ class PlayerCharacter {
                 "callback" : function() {
                     player.grid.changeTileImg(newPosId, player.type);
                     player.grid.changeTileImg(currentPos, "trans");
-                    player.setLighting(newPosId, currentPos);
                     if (callback)
                         callback();
                 }
@@ -64,6 +64,7 @@ class PlayerCharacter {
             player.grid.setTileWalkable(currentPos, player.name, player.type, player.subtype);
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
             player.grid.animateTile(animateMoveParams);
+            player._setLighting(newPosId, currentPos);
             player.pos = newPosId;
         } else {
             player.grid.changeTileImg(newPosId, player.type);
@@ -74,23 +75,66 @@ class PlayerCharacter {
         player.col = this.helpers.getRowCol(newPosId).col;
     }
 
-    setLighting(centerTile, oldPos) {
-        let $oldCenterTile = $('#' + oldPos) || $('#' + this.pos),
-            $newCenterTile = $('#' + centerTile);
+    _setLighting(newPos, currentPos) {
+        let oldPos = currentPos || newPos,
+            lightPos = $('#' + newPos).offset(),
+            oldLightPos = $('#' + oldPos + ' .content').offset(),
+            player = this;
 
-        this._removeLighting($oldCenterTile, 'light light-ctr', 'light-img-radius');
-        this._addLighting($oldCenterTile, '', 'light-img-trans');
-        this._removeLighting($newCenterTile, '', 'light-img-trans');
-        this._addLighting($newCenterTile, 'light light-ctr', 'light-img-radius');
+        this.lightingParams.newLightPosTop = Math.round(lightPos.top) - this.grid.tileSize;
+        this.lightingParams.newLightPosLeft = Math.round(lightPos.left - (3.5 * this.grid.tileSize));
+        this._calcCurrentPosition(oldLightPos);
+        this.lightingParams.canvas = document.getElementById("canvas-lighting");
+        this.lightingParams.radius= this.lightRadius * this.grid.tileSize + (this.grid.tileSize/2);
+        this.lightingParams.currentPos = currentPos;
+
+        this._drawLightCircle();
+
+        if (newPos !== oldPos) {
+            let lightingLoop = function() {
+                player.lightingParams.animID = requestAnimationFrame(lightingLoop);
+                player._drawLightCircle();
+            };
+            lightingLoop();
+        }
     }
 
-    _addLighting($tile, lightClass, lightImgClass) {
-        $tile.addClass(lightClass);
-        $tile.children('.light-img').addClass(lightImgClass);
+    _drawLightCircle() {
+        let canvas = this.lightingParams.canvas,
+            radius = this.lightingParams.radius,
+            cx = this.lightingParams.oldLightPosLeft,
+            cy = this.lightingParams.oldLightPosTop,
+            ctx = canvas.getContext("2d"),
+            cw = canvas.width,
+            ch = canvas.height,
+            radialGradient = ctx.createRadialGradient(cx, cy, 1, cx, cy, radius);
+
+        ctx.save();
+        ctx.clearRect(0, 0, cw, ch);
+        radialGradient.addColorStop(0, 'rgba(0,0,0,1)');
+        radialGradient.addColorStop(.65, 'rgba(0,0,0,1)');
+        radialGradient.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI*2);
+        ctx.fillStyle = radialGradient;
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-out';
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.restore();
+
+        if (this.lightingParams.animID) {
+            let $charPos = $('#' + this.lightingParams.currentPos + ' .content'),
+                oldLightPos = $charPos.offset();
+
+            this._calcCurrentPosition(oldLightPos);
+            if (this.lightingParams.newLightPosLeft === this.lightingParams.oldLightPosLeft && this.lightingParams.newLightPosTop === this.lightingParams.oldLightPosTop)
+                cancelAnimationFrame(this.lightingParams.animID);
+        }
     }
 
-    _removeLighting($tile, lightClass, lightImgClass) {
-        $tile.removeClass(lightClass);
-        $tile.children('.light-img').removeClass(lightImgClass);
+    _calcCurrentPosition(currentPos) {
+        this.lightingParams.oldLightPosLeft = Math.round(currentPos.left - (3.5*this.grid.tileSize));
+        this.lightingParams.oldLightPosTop = Math.round(currentPos.top) - this.grid.tileSize;
     }
 }
