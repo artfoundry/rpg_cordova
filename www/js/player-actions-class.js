@@ -69,7 +69,8 @@ class PlayerActions {
                         targetMonster.health -= 1;
                         animateAttackParams = {
                             "position" : targetMonster.pos,
-                            "type" : "attack"
+                            "type" : "attack",
+                            "attacker" : currentPlayer.type
                         };
                         animateDeathParams = {
                             "position" : targetMonster.pos,
