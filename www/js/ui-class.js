@@ -72,6 +72,7 @@ class UI {
 
     modalClose(params) {
         this.audio.musicCheck();
+        this.audio.playSoundEffect('dungeon-ambience');
 
         this.events.removeClickListener(".modal-button");
         $(".dynamic").remove();
