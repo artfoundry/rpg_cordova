@@ -58,8 +58,8 @@ class Monster {
                 "destinationId" : newTileId,
                 "type" : "move",
                 "callback" : function() {
-                    monster.grid.changeTileImg(newTileId, monster.type);
-                    monster.grid.changeTileImg(oldTileId, "trans");
+                    monster.grid.changeTileImg(newTileId, 'content-' + monster.type, 'content-trans');
+                    monster.grid.changeTileImg(oldTileId, 'content-trans', 'content-' + monster.type);
                     if (callback)
                         callback();
                 }
@@ -73,7 +73,8 @@ class Monster {
                 "position" : newTileId,
                 "type" : "image-swap",
                 "delay" : "spawn",
-                "characterType" : monster.type
+                "addClasses" : "content-" + monster.type,
+                "removeClasses" : "content-trans"
             };
             monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);
             monster.grid.animateTile(animateMoveParams);

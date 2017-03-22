@@ -53,8 +53,8 @@ class PlayerCharacter {
                 "destinationId" : newPosId,
                 "type" : "move",
                 "callback" : function() {
-                    player.grid.changeTileImg(newPosId, player.type);
-                    player.grid.changeTileImg(currentPos, "trans");
+                    player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
+                    player.grid.changeTileImg(currentPos, 'content-trans', 'content-' + player.type);
                     if (callback)
                         callback();
                 }
@@ -67,7 +67,7 @@ class PlayerCharacter {
             player._setLighting(newPosId, currentPos);
             player.pos = newPosId;
         } else {
-            player.grid.changeTileImg(newPosId, player.type);
+            player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
         }
 
@@ -84,7 +84,7 @@ class PlayerCharacter {
         this.lightingParams.gridPos = $('.grid').offset();
         this.lightingParams.radius = this.lightRadius * this.grid.tileSize + (this.grid.tileSize/2);
         this.lightingParams.newLightPosTop = Math.round(newLightPos.top - this.lightingParams.gridPos.top - (this.lightingParams.radius/3));
-        this.lightingParams.newLightPosLeft = Math.round(newLightPos.left - this.lightingParams.gridPos.left + (this.lightingParams.radius/3));
+        this.lightingParams.newLightPosLeft = Math.round(newLightPos.left - this.lightingParams.gridPos.left + (this.lightingParams.radius/6));
         this._calcCurrentPosition(currentLightPos);
         this.lightingParams.canvas = document.getElementById("canvas-lighting");
         this.lightingParams.currentPos = currentPos;
@@ -135,7 +135,7 @@ class PlayerCharacter {
     }
 
     _calcCurrentPosition(currentPos) {
-        this.lightingParams.currentLightPosLeft = Math.round(currentPos.left - this.lightingParams.gridPos.left + (this.lightingParams.radius/3));
+        this.lightingParams.currentLightPosLeft = Math.round(currentPos.left - this.lightingParams.gridPos.left + (this.lightingParams.radius/6));
         this.lightingParams.currentLightPosTop = Math.round(currentPos.top - this.lightingParams.gridPos.top - (this.lightingParams.radius/3));
     }
 }

@@ -81,7 +81,7 @@ class MonsterActions {
                         "type" : "attack",
                         "callback" : function() {
                             if (targetPlayer.health < 1) {
-                                monsterActions.grid.changeTileImg(targetPlayer.pos, 'trans');
+                                monsterActions.grid.changeTileImg(targetPlayer.pos, 'content-trans', 'content-player');
                                 setIsGameOver();
                             }
                         }
