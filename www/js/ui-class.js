@@ -3,7 +3,8 @@
  */
 
 class UI {
-    constructor(events) {
+    constructor(audio, events) {
+        this.audio = audio;
         this.events = events;
         this.dialogs = {
             "dialogHeader"  : "Welcome to Monsters!",
@@ -70,7 +71,7 @@ class UI {
     }
 
     modalClose(params) {
-        this._musicCheck();
+        this.audio.musicCheck();
 
         this.events.removeClickListener(".modal-button");
         $(".dynamic").remove();
@@ -141,12 +142,5 @@ class UI {
         }
         else
             $element.text(params.value);
-    }
-
-    _musicCheck() {
-        let audioEl = document.getElementById('music');
-
-        if (audioEl.paused)
-            audioEl.play();
     }
 }

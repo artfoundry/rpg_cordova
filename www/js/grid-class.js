@@ -5,11 +5,12 @@
  */
 
 class Grid {
-    constructor(helpers, gridOptions, ui) {
+    constructor(helpers, gridOptions, audio, ui) {
         this.helpers = helpers;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
         this.tileSize = gridOptions.tileSize;
+        this.audio = audio;
         this.ui = ui;
     }
 
@@ -38,7 +39,7 @@ class Grid {
             return markup;
         });
         $gridEl.css('width', gridPixels + 1);
-        $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></div>');
+        $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></canvas>');
     }
 
     clearGrid() {
@@ -96,6 +97,8 @@ class Grid {
                 });
                 break;
             case 'attack':
+                if (params.attacker === 'player')
+                    this.audio.playSoundEffect('shotgun');
                 $target.prepend("<div class='blood'></div>");
                 let $blood = $('.blood');
                 $blood
