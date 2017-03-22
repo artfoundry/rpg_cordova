@@ -49,8 +49,12 @@ class Grid {
         $('#' + position).addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
     }
 
-    changeTileImg(position, type) {
-        $('#' + position + ' .content').attr("class", "content content-" + type);
+    changeTileImg(position, addClasses, removeClasses) {
+        $('#' + position + ' .content').addClass(addClasses).removeClass(removeClasses);
+    }
+
+    toggleDirection($targetContent, direction) {
+        direction === 'left' ? $targetContent.addClass('face-left').removeClass('face-right') : $targetContent.addClass('face-right').removeClass('face-left');
     }
 
     setTileWalkable(position, name, type, subtype) {
@@ -82,11 +86,10 @@ class Grid {
                 $targetContent.fadeIn();
                 break;
             case 'image-swap':
-                let delay = 0;
-                if (params.delay === "death")
-                    delay = 200;
+                let delay = params.delay === "death" ? 200 : 0;
+
                 $targetContent.fadeOut(delay, function() {
-                    grid.changeTileImg(params.position, params.characterType);
+                    grid.changeTileImg(params.position, params.addClasses, params.removeClasses);
                     $targetContent.fadeIn();
                     if (callback)
                         callback();
@@ -99,7 +102,7 @@ class Grid {
                     .css("transform", "rotate(" + imageRotation + "deg)")
                     .animate({opacity: 1}, 0)
                     .animate({opacity: 0}, 300, function() {
-                        $(".blood").detach();
+                        $blood.detach();
                         callback();
                     });
                 break;
@@ -115,7 +118,7 @@ class Grid {
     _animateMovement(position, destination, callback) {
         let $target = $('#' + position),
             $targetContent = $target.children('.content'),
-            isPlayer = $targetContent.hasClass('content-player'),
+            $destinationContent = $('#' + destination).children('.content'),
             destinationPosValues = this.helpers.getRowCol(destination),
             currentPosValues = this.helpers.getRowCol(position),
             moveDirection = {
@@ -128,28 +131,31 @@ class Grid {
             movementClasses = 'move-down';
         else if (moveDirection.vertMov < 0)
             movementClasses = 'move-up';
-        if (moveDirection.horizMov > 0)
+        if (moveDirection.horizMov > 0) {
             movementClasses = movementClasses === '' ? 'move-right' : movementClasses + ' move-right';
-        else if (moveDirection.horizMov < 0)
-            movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
-
-        $targetContent.addClass('content-zindex-raised'); // this class will be removed when image swap takes place after animation
-        if (isPlayer) {
-            $targetContent.addClass(movementClasses, function() {
-                $targetContent.removeClass(movementClasses);
-            });
-            this._udpateScreenPosition($targetContent, movementClasses);
-            $targetContent.promise().done(function() {
-                callback();
-            });
-        } else {
-            $targetContent.addClass(movementClasses, function() {
-                movementClasses += 'content-zindex-raised';
-                $targetContent.removeClass(movementClasses, function() {
-                    callback();
-                });
-            });
+            this.toggleDirection($targetContent);
         }
+        else if (moveDirection.horizMov < 0) {
+            movementClasses = movementClasses === '' ? 'move-left' : movementClasses + ' move-left';
+            this.toggleDirection($targetContent, 'left');
+        }
+        if ($targetContent.hasClass('face-left'))
+            this.toggleDirection($destinationContent, 'left');
+        else if ($targetContent.hasClass('face-right'))
+            this.toggleDirection($destinationContent);
+
+        // temporarily increase z-index of image for animation, so it doesn't slip under destination tile
+        $targetContent.addClass('content-zindex-raised');
+
+        $targetContent.addClass(movementClasses, function() {
+            movementClasses += ' content-zindex-raised face-right face-left';
+            $targetContent.removeClass(movementClasses);
+        });
+        this._udpateScreenPosition($targetContent, movementClasses);
+        $targetContent.promise().done(function() {
+            callback();
+        });
+
     }
 
     _udpateScreenPosition($targetContent, movementClasses) {

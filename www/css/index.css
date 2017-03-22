@@ -350,6 +350,14 @@ figure {
     margin-left: -64px;
 }
 
+.face-right {
+    transform: scaleX(1);
+}
+
+.face-left {
+    transform: scaleX(-1);
+}
+
 .blood {
     position: absolute;
     background-image: url('../img/blood.png');
