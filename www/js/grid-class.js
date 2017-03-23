@@ -103,17 +103,19 @@ class Grid {
                 let $blood = $('.blood');
                 $blood
                     .css("transform", "rotate(" + imageRotation + "deg)")
-                    .animate({opacity: 1}, 0)
-                    .animate({opacity: 0}, 300, function() {
+                    .animate({"opacity": 1}, 0)
+                    .animate({"opacity": 0}, 300, function() {
                         $blood.detach();
                         callback();
                     });
                 break;
             case 'impassable':
                 $targetContent
-                    .animate({marginLeft: "+=10"}, 100)
-                    .animate({marginLeft: "-=30"}, 100)
-                    .animate({marginLeft: "+=20"}, 100);
+                    .animate({"marginLeft": "+=10"}, 100)
+                    .animate({"marginLeft": "-=30"}, 100)
+                    .animate({"marginLeft": "+=20"}, 100, function() {
+                        $(this).css({"marginLeft": ""});
+                    });
                 break;
             case 'spawn':
                 grid.changeTileImg(params.position, params.addClasses, params.removeClasses);
