@@ -115,6 +115,14 @@ class Grid {
                     .animate({marginLeft: "-=30"}, 100)
                     .animate({marginLeft: "+=20"}, 100);
                 break;
+            case 'spawn':
+                grid.changeTileImg(params.position, params.addClasses, params.removeClasses);
+                $targetContent
+                    .css({"backgroundPosition": "32px", "backgroundSize": "0", "opacity": "0"})
+                    .animate({"background-position": "-=32px", "backgroundSize": "+=64px", "opacity": "+=1"}, 500, function() {
+                        $(this).css({"backgroundPosition": "", "backgroundSize": "", "opacity": ""});
+                    });
+                break;
         }
     }
 
