@@ -118,9 +118,9 @@ class Grid {
             case 'spawn':
                 grid.changeTileImg(params.position, params.addClasses, params.removeClasses);
                 $targetContent
-                    .css({width: "-=64", height: "-64", left: "+=32", top: "+=32", opacity: "0", transform: "rotate(270deg)"})
-                    .animate({width: "+=64", height: "+=64", left: "-=32", top: "-=32", opacity: "+=1", transform: "rotate(-=270deg)"}, 600, function() {
-                        $(this).css({width: "", height: "", left: "", top: "", opacity: "", transform: ""});
+                    .css({"backgroundPosition": "32px", "backgroundSize": "0", "opacity": "0"})
+                    .animate({"background-position": "-=32px", "backgroundSize": "+=64px", "opacity": "+=1"}, 500, function() {
+                        $(this).css({"backgroundPosition": "", "backgroundSize": "", "opacity": ""});
                     });
                 break;
         }

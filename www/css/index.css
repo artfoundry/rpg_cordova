@@ -219,6 +219,7 @@ figure {
     width: 64px;
     height: 64px;
     z-index: 0;
+    background-repeat: no-repeat;
 }
 
 .content-zindex-raised {
