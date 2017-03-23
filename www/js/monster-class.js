@@ -71,8 +71,8 @@ class Monster {
         } else {
             animateMoveParams = {
                 "position" : newTileId,
-                "type" : "image-swap",
-                "delay" : "spawn",
+                "type" : "spawn",
+                // "delay" : "spawn",
                 "addClasses" : "content-" + monster.type,
                 "removeClasses" : "content-trans"
             };
