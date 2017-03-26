@@ -23,6 +23,8 @@ class Monster {
 
     /**
      * function searchForPrey
+     * Currently looks for player within searchRadius and if finds them, moves toward the first one as long as the tile is walkable
+     *
      * @param searchRadius: the distance in tiles from the monster to search
      */
     searchForPrey(searchRadius) {
