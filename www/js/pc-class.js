@@ -18,6 +18,7 @@ class PlayerCharacter {
         this.row = 0;
         this.col = 0;
         this.kills = 0;
+        this.lightRadius = 2,
         this.lightingParams = {};
     }
 

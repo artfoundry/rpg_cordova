@@ -138,8 +138,7 @@ class Grid {
                 vertMov : destinationPosValues.row - currentPosValues.row,
                 horizMov : destinationPosValues.col - currentPosValues.col
             },
-            movementClasses = '',
-            isPlayer = $targetContent.hasClass('content-player');
+            movementClasses = '';
 
         if (moveDirection.vertMov > 0)
             movementClasses = 'move-down';
