@@ -136,7 +136,8 @@ class Grid {
                 vertMov : destinationPosValues.row - currentPosValues.row,
                 horizMov : destinationPosValues.col - currentPosValues.col
             },
-            movementClasses = '';
+            movementClasses = '',
+            isPlayer = $targetContent.hasClass('content-player');
 
         if (moveDirection.vertMov > 0)
             movementClasses = 'move-down';
@@ -162,34 +163,10 @@ class Grid {
             movementClasses += ' content-zindex-raised face-right face-left';
             $targetContent.removeClass(movementClasses);
         });
-        this._udpateScreenPosition($targetContent, movementClasses);
         $targetContent.promise().done(function() {
             callback();
         });
 
-    }
-
-    _udpateScreenPosition($targetContent, movementClasses) {
-        let playerPos = this.helpers.isOffScreen($targetContent),
-            x = 0,
-            y = 0;
-
-        // if player is near the bottom and moving down
-        if (movementClasses.includes('move-down') && playerPos.top > 0 && playerPos.top < 140) {
-            y = $(window).height() / 3;
-            // if player is near the top and moving up
-        } else if (movementClasses.includes('move-up') && playerPos.bottom > 0 && playerPos.bottom < 140) {
-            y = -$(window).height() / 3;
-        }
-        // if player is near the left edge and moving left
-        if (movementClasses.includes('move-right') && playerPos.left > 0 && playerPos.left < 140) {
-            x = $(window).width() / 3;
-            // if player is near the right edge and moving right
-        } else if (movementClasses.includes('move-left') && playerPos.right > 0 && playerPos.right < 140) {
-            x = -$(window).width() / 3;
-        }
-        if (x !== 0 || y !== 0)
-            this.ui.scrollWindow(x, y);
     }
 
     _insertString(baseString, toInsert, position) {
