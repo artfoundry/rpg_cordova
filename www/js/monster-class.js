@@ -21,6 +21,42 @@ class Monster {
         this._setMonster(this.pos);
     }
 
+    /**
+     * function searchForPrey
+     * Currently looks for player within searchRadius and if finds them, moves toward the first one as long as the tile is walkable
+     *
+     * @param searchRadius: the distance in tiles from the monster to search
+     */
+    searchForPrey(searchRadius) {
+        let targets = this.helpers.checkForNearbyCharacters(this, 'player', searchRadius),
+            targetPlayer = {},
+            rowDiff = 0,
+            colDiff = 0,
+            newTileId = this.pos,
+            newTileRow = this.row,
+            newTileCol = this.col,
+            oldTileId = this.pos;
+
+        if (targets !== null) {
+            targetPlayer = this.helpers.getRowCol(targets[0].id);
+            rowDiff = targetPlayer.row - this.row;
+            colDiff = targetPlayer.col - this.col;
+            if (Math.abs(rowDiff) === searchRadius || Math.abs(colDiff) === searchRadius) {
+                if (Math.abs(rowDiff) > 0) {
+                    newTileRow = rowDiff < 0 ? this.row - 1 : this.row + 1;
+                }
+                if (Math.abs(colDiff) > 0) {
+                    newTileCol = colDiff < 0 ? this.col - 1 : this.col + 1;
+                }
+                newTileId = 'row' + newTileRow + 'col' + newTileCol;
+                if ($('#' + newTileId).hasClass('walkable'))
+                    this._setMonster(newTileId, oldTileId);
+            }
+        } else {
+            this.randomMove();
+        }
+    }
+
     randomMove(callback) {
         let direction = Math.floor(Math.random() * 4),
             oldTileId = this.pos,

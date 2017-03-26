@@ -25,21 +25,25 @@ class MonsterActions {
                 return;
             else if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 currentMonster = this.monsters[monster];
-                if (currentMonster.name === "Elder") {
+                if (currentMonster.name === 'Elder') {
                     currentMonster.saveCurrentPos();
                 } else {
-                    nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player');
+                    nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
                     if (nearbyPlayerTiles) {
                         this._monsterAttack(nearbyPlayerTiles[0], setIsGameOver);
                         minionAttacked = true;
                     }
                 }
                 if (!minionAttacked) {
-                    currentMonster.randomMove(function() {
-                        if (this.name === "Elder" && $('#' + this.oldPos).hasClass('walkable')) {
-                            monsterActions.addNewMinion(this);
-                        }
-                    }.bind(currentMonster));
+                    if (currentMonster.name === 'Elder') {
+                        currentMonster.randomMove(function() {
+                            if ($('#' + this.oldPos).hasClass('walkable')) {
+                                monsterActions.addNewMinion(this);
+                            }
+                        }.bind(currentMonster));
+                    } else {
+                        currentMonster.searchForPrey(2);
+                    }
                 }
             }
         }

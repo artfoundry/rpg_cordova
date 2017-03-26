@@ -10,9 +10,13 @@ class Helpers {
         this.grid = gridOptions;
     }
 
-    /*
-     * findSurroundingTiles()
+    /**
+     * function findSurroundingTiles
      * Finds all tiles in a given radius from the passed in center tile, no farther, no closer, but ignores tiles that are out of the grid
+     *
+     * @param centerTile: string of the tile ID of the search origin
+     * @param searchRadius: distance in tiles from the character to search
+     * @returns $(): jquery object array of matching tiles
      */
     findSurroundingTiles(centerTile, searchRadius) {
         let center = this.getRowCol(centerTile),
@@ -63,10 +67,19 @@ class Helpers {
         delete objectList[objectKey];
     }
 
-    checkForNearbyCharacters(character, charSearchType) {
+    /**
+     * function checkForNearbyCharacters
+     * Looks for a specific type of character within a requested range of tiles and returns all found matches
+     *
+     * @param character: object of the character around which the search is done
+     * @param charSearchType: string of the class name (no '.') of the character type to search for
+     * @param distance: distance in tiles from the character to search
+     * @returns {*}: jquery object array of matching tiles, or null if no matches
+     */
+    checkForNearbyCharacters(character, charSearchType, distance) {
         let characterLoc = character.pos,
             $nearbyCharLoc = null,
-            $surroundingTiles = this.findSurroundingTiles(characterLoc, 1);
+            $surroundingTiles = this.findSurroundingTiles(characterLoc, distance);
 
         if ($surroundingTiles.hasClass(charSearchType)) {
             $nearbyCharLoc = $.grep($surroundingTiles, function(tile){
