@@ -23,10 +23,10 @@ class Monster {
 
     /**
      * function searchForPrey
-     * Looks at surrounding tiles up to the searchRadius and then tries to move toward the first player found.
-     * If something blocks the path, no move is made.
+     * Currently looks for players within searchRadius and if finds them, tries three possible tiles
+     * to move toward the first one. If none are walkable, then stays put. If none are found, moves randomly.
      *
-     * @param searchRadius: the distance in tiles from the monster to search
+     * @param searchRadius: the distance in tiles from the monster to search (will search everything from 2 tiles away up to search radius
      */
     searchForPrey(searchRadius) {
         let $targets = $(),

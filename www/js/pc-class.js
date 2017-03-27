@@ -17,14 +17,9 @@ class PlayerCharacter {
         this.health = playerOptions.health;
         this.row = 0;
         this.col = 0;
-        this.lightRadius = 2; // not needed unless we implement changeable light radii
         this.kills = 0;
+        this.lightRadius = 2,
         this.lightingParams = {};
-        // radius x = 2x + 1 sqs
-        // 0 = 1x1 sqs
-        // 1 = 3x3 sqs
-        // 2 = 5x5 sqs
-        // 3 = 7x7 sqs
     }
 
     initialize() {
