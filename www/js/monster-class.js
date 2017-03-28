@@ -7,6 +7,7 @@ class Monster {
         this.helpers = helpers;
         this.gridWidth = grid.gridWidth;
         this.gridHeight = grid.gridHeight;
+        this.difficulty = grid.difficulty;
         this.name = monsterOptions.name;
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
@@ -34,6 +35,7 @@ class Monster {
             rowDiff = 0,
             colDiff = 0,
             options = [],
+            newTileId = this.pos,
             newTileRow = this.row,
             newTileCol = this.col,
             firstRowOpt = 0,
@@ -48,42 +50,55 @@ class Monster {
             targetPlayer = this.helpers.getRowCol($targets[0].id);
             rowDiff = targetPlayer.row - this.row;
             colDiff = targetPlayer.col - this.col;
+            if (this.difficulty === 'medium') {
+                if (Math.abs(rowDiff) === searchRadius || Math.abs(colDiff) === searchRadius) {
+                    if (Math.abs(rowDiff) > 0) {
+                        newTileRow = rowDiff < 0 ? this.row - 1 : this.row + 1;
+                    }
+                    if (Math.abs(colDiff) > 0) {
+                        newTileCol = colDiff < 0 ? this.col - 1 : this.col + 1;
+                    }
+                    newTileId = 'row' + newTileRow + 'col' + newTileCol;
+                    if ($('#' + newTileId).hasClass('walkable'))
+                        this._setMonster(newTileId, oldTileId);
+                }
+            } else if (this.difficulty === 'hard') {
+                // for each position of the target, there are three possible moves for the monster that will bring it closer
+                // this is the best option
+                if (this.row < targetPlayer.row)
+                    newTileRow = this.row + 1;
+                else if (this.row > targetPlayer.row)
+                    newTileRow = this.row - 1;
+                if (this.col < targetPlayer.col)
+                    newTileCol = this.col + 1;
+                else if (this.col > targetPlayer.col)
+                    newTileCol = this.col - 1;
+                options.push('row' + newTileRow + 'col' + newTileCol);
+                firstRowOpt = newTileRow;
+                firstColOpt = newTileCol;
 
-            // for each position of the target, there are three possible moves for the monster that will bring it closer
-            // this is the best option
-            if (this.row < targetPlayer.row)
-                newTileRow = this.row + 1;
-            else if (this.row > targetPlayer.row)
-                newTileRow = this.row - 1;
-            if (this.col < targetPlayer.col)
-                newTileCol = this.col + 1;
-            else if (this.col > targetPlayer.col)
-                newTileCol = this.col - 1;
-            options.push('row' + newTileRow + 'col' + newTileCol);
-            firstRowOpt = newTileRow;
-            firstColOpt = newTileCol;
+                // this is the second best option
+                if (rowDiff > colDiff)
+                    newTileCol = this.col;
+                else
+                    newTileRow = this.row;
+                options.push('row' + newTileRow + 'col' + newTileCol);
 
-            // this is the second best option
-            if (rowDiff > colDiff)
-                newTileCol = this.col;
-            else
-                newTileRow = this.row;
-            options.push('row' + newTileRow + 'col' + newTileCol);
+                // this is the last option - basically the reverse of the 2nd option
+                if (newTileRow === this.row) {
+                    newTileRow = firstRowOpt;
+                    newTileCol = this.col;
+                } else if (newTileCol === this.col) {
+                    newTileCol = firstColOpt;
+                    newTileRow = this.row;
+                }
+                options.push('row' + newTileRow + 'col' + newTileCol);
 
-            // this is the last option - basically the reverse of the 2nd option
-            if (newTileRow === this.row) {
-                newTileRow = firstRowOpt;
-                newTileCol = this.col;
-            } else if (newTileCol === this.col) {
-                newTileCol = firstColOpt;
-                newTileRow = this.row;
-            }
-            options.push('row' + newTileRow + 'col' + newTileCol);
-
-            for (let opt=0; opt < options.length; opt++) {
-                if ($('#' + options[opt]).hasClass('walkable')) {
-                    this._setMonster(options[opt], oldTileId);
-                    break;
+                for (let opt=0; opt < options.length; opt++) {
+                    if ($('#' + options[opt]).hasClass('walkable')) {
+                        this._setMonster(options[opt], oldTileId);
+                        break;
+                    }
                 }
             }
         } else {

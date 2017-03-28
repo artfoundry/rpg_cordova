@@ -10,7 +10,8 @@ let game = {
         const gridOptions = {
             width: 10,
             height: 10,
-            tileSize: 64
+            tileSize: 64,
+            difficulty: 'medium'
         };
 
         const playerOptions = {
