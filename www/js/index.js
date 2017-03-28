@@ -11,7 +11,7 @@ let game = {
             width: 10,
             height: 10,
             tileSize: 64,
-            difficulty: 'medium'
+            difficulty: 'hard'
         };
 
         const playerOptions = {
