@@ -44,7 +44,9 @@ class Monster {
         for (let radius=2; radius <= searchRadius; radius++) {
             $targets = $targets.add(this.helpers.checkForNearbyCharacters(this, 'player', radius));
         }
-        if ($targets.length > 0) {
+        if ($targets.length === 0)
+            this.randomMove();
+        else {
             targetPlayer = this.helpers.getRowCol($targets[0].id);
             rowDiff = targetPlayer.row - this.row;
             colDiff = targetPlayer.col - this.col;
@@ -63,11 +65,17 @@ class Monster {
             firstRowOpt = newTileRow;
             firstColOpt = newTileCol;
 
-            // this is the second best option
+            // this is the second best option (first option is blocked)
             if (rowDiff > colDiff)
-                newTileCol = this.col;
+                if (colDiff === 0)
+                    newTileCol = this.col + 1;
+                else
+                    newTileCol = this.col;
             else
-                newTileRow = this.row;
+                if (rowDiff === 0)
+                    newTileRow = this.row + 1;
+                else
+                    newTileRow = this.row;
             options.push('row' + newTileRow + 'col' + newTileCol);
 
             // this is the last option - basically the reverse of the 2nd option
@@ -86,8 +94,6 @@ class Monster {
                     break;
                 }
             }
-        } else {
-            this.randomMove();
         }
     }
 
