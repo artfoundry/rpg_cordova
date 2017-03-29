@@ -27,7 +27,23 @@ figure {
     padding: 0;
 }
 
-/* Portrait layout (default) */
+button {
+    background: linear-gradient(to bottom, rgba(80,80,80,0.4) 0%, rgba(130,190,210,0.8) 15%, rgba(70,70,70,0.8) 40%, rgba(50,50,50,0.8) 70%, rgba(80,120,140,0.2) 80%, rgba(50,50,50,0.8) 100%);
+    border: 1px solid darkblue;
+    border-top: 1px solid lightblue;
+    border-bottom: 1px solid darkslateblue;
+    border-radius: 12px;
+    box-shadow: inset 0 0 8px black;
+    color: lightgray;
+    font-size: 1em;
+    line-height: 1.5em;
+    cursor: pointer;
+}
+
+button:active {
+    box-shadow: inset 0 0 8px 8px black;
+}
+
 #app {
     text-align:center;
     padding: 0 3% 3%;
@@ -56,10 +72,15 @@ figure {
 
 #testing {
     position: fixed;
+    height: 10px;
     z-index: 10;
     top: 100px;
     left: 10px;
     opacity: .5;
+    border: none;
+    border-radius: 2px;
+    box-shadow: none;
+    background: white;
 }
 
 /**
@@ -160,14 +181,7 @@ figure {
     width: 70px;
     height: 28px;
     margin: 0 10px;
-    color: white;
-    background: linear-gradient(to bottom, rgba(80,80,80,0.4) 0%, rgba(130,190,210,0.8) 15%, rgba(70,70,70,0.8) 40%, rgba(50,50,50,0.8) 70%, rgba(80,120,140,0.2) 80%, rgba(50,50,50,0.8) 100%);
-    border: 1px solid darkblue;
-    border-top: 1px solid lightblue;
-    border-bottom: 1px solid darkslateblue;
-    border-radius: 12px;
-    box-shadow: inset 0 0 8px black;
-    cursor: pointer;
+    font-size: .8em;
 }
 
 /**
@@ -184,7 +198,7 @@ figure {
 #grid-cover {
     display: none;
     position: absolute;
-    width: 100%;
+    width: 95%;
     height: 100%;
     padding-top: 88px;
     background-color: black;
@@ -325,18 +339,7 @@ figure {
 
 .modal-button {
     width: 100px;
-    line-height: 2em;
     margin: 10px;
-    color: lightgray;
-    background-color: darkslateblue;
-    border: 1px lightgray solid;
-    border-radius: 6px;
-    box-shadow: 0 0 8px 2px darkslategray;
-    cursor: pointer;
-}
-
-.modal-button:active {
-    box-shadow: 0 0 4px 2px black;
 }
 
 .creepy-text {
