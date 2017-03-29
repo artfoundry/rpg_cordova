@@ -145,8 +145,11 @@ class TurnController {
                         turnCycle.ui.hideStatus();
                     }, 1000);
                 }
+            },
+            params = {
+                "keys" : [97, 98, 99, 100, 101, 102, 103, 104, 105]
             };
-        this.events.setUpGeneralInteractionListeners(this.tileListenerTarget, targetAction);
+        this.events.setUpGeneralInteractionListeners(this.tileListenerTarget, targetAction, params);
     }
 
     /*****************************

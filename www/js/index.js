@@ -36,7 +36,7 @@ let game = {
         let helpers = new Helpers(gridOptions);
         let audio = new Audio();
         let events = new Events(helpers);
-        let ui = new UI(audio, events);
+        let ui = new UI(helpers, audio, events);
         let grid = new Grid(helpers, gridOptions, audio, ui);
         let players = {
             player1: new PlayerCharacter(playerOptions.player1, grid, helpers)

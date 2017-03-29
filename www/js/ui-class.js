@@ -3,7 +3,8 @@
  */
 
 class UI {
-    constructor(audio, events) {
+    constructor(helpers, audio, events) {
+        this.helpers = helpers;
         this.audio = audio;
         this.events = events;
         this.dialogs = {
@@ -75,8 +76,11 @@ class UI {
         this.audio.playSoundEffect('dungeon-ambience');
         this.audio.setVolume('sfx-dungeon-ambience', 0.2);
 
+        this.events.setUpGeneralInteractionListeners('#button-options', this.optionsOpen.bind(this));
+
         this.events.removeClickListener(".modal-button");
-        $(".dynamic").remove();
+        // remove dynamically added content
+        $(".model .dynamic").remove();
         $(".modal").hide();
         if (params.callback)
             params.callback();
@@ -94,6 +98,25 @@ class UI {
 
     visibilityToggle(element) {
         $(element).toggle();
+    }
+
+    optionsOpen() {
+        this.helpers.setKeysDisabled();
+        $('.panel').show();
+        $('#grid-cover').show();
+
+        $('.panel-footer').append('<button class="panel-button dynamic">Close</button>');
+        this.events.removeClickListener("#button-options");
+        this.events.setUpGeneralInteractionListeners(".panel-button, #button-options", this.optionsClose.bind(this));
+    }
+
+    optionsClose() {
+        $('#grid-cover').hide();
+        $('.panel').hide();
+        this.helpers.setKeysEnabled();
+        this.events.removeClickListener(".panel-button");
+        this.events.setUpGeneralInteractionListeners('#button-options', this.optionsOpen.bind(this));
+        $(".panel .dynamic").remove();
     }
 
     scrollWindow(xValue, yValue) {

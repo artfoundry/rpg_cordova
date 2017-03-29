@@ -114,6 +114,18 @@ class Helpers {
                 return 'row'+ (rowNum+1) + 'col' + (colNum-1);
         }
     }
+    
+    setKeysEnabled() {
+        $('body').addClass('keys-enabled');
+    }
+
+    setKeysDisabled() {
+        $('body').removeClass('keys-enabled');
+    }
+    
+    getKeysEnabled() {
+        return $('body').hasClass('keys-enabled');
+    }
 
     isOffScreen(element) {
         let height = element.outerHeight(),
