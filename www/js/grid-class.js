@@ -9,7 +9,6 @@ class Grid {
         this.helpers = helpers;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
-        this.difficulty = gridOptions.difficulty;
         this.tileSize = gridOptions.tileSize;
         this.audio = audio;
         this.ui = ui;

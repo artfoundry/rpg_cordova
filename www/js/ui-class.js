@@ -17,6 +17,8 @@ class UI {
             "score"         : "Your final score for the game is: ",
             "wait"          : "Wait...something is moving in the darkness..."
         };
+        this.panelOptions = [];
+        this.difficulty = 'medium';
         this.runTurnCycle = function() {};
     }
 
@@ -40,17 +42,17 @@ class UI {
         if (scrollX > 0 || scrollY > 0)
             this.scrollWindow(-scrollX, -scrollY);
 
-        $(".modal").show();
+        $('.modal').show();
         for (let i = 0; i < messages.length; i++) {
             if (messages[i].class === "modal-header")
-                $(".modal-header").text(this.dialogs[messages[i].text]);
+                $('.modal-header').text(this.dialogs[messages[i].text]);
             else {
-                $(".modal-body-container").append(section);
-                $(".modal-section:last-child").addClass(messages[i].class).text(this.dialogs[messages[i].text]);
+                $('.modal-body-container').append(section);
+                $('.modal-section:last-child').addClass(messages[i].class).text(this.dialogs[messages[i].text]);
                 if (messages[i].hidden)
-                    $("." + messages[i].class + ":last-child").hide();
-                if (messages[i].text === "score")
-                    $(".modal-section:last-child").append('<span class="score score-text">' + this.calcScore(messages[i].scoreValues) + '!</span>');
+                    $('.' + messages[i].class + ':last-child').hide();
+                if (messages[i].text === 'score')
+                    $('.modal-section:last-child').append('<span class="score score-text">' + this.calcScore(messages[i].scoreValues) + '!</span>');
             }
         }
         for (let i = 0; i < buttons.length; i++) {
@@ -62,28 +64,80 @@ class UI {
                 },
                 $button;
 
-            $(".modal-footer").append(button);
-            $button = $(".modal-button:last-child");
+            $('.modal-footer').append(button);
+            $button = $('.modal-button:last-child');
             $button.text(buttons[i].label);
-            this.events.setUpClickListener(".modal-button:last-child", action, params);
+            this.events.setUpClickListener('.modal-button:last-child', action, params);
             if (buttons[i].hidden)
                 $button.hide();
         }
     }
 
     modalClose(params) {
-        this.audio.musicCheck();
+        this.events.removeClickListener('.modal-button');
+        // remove dynamically added content
+        $('.model .dynamic').remove();
+        $('.modal').hide();
+        if (params.callback)
+            params.callback();
+    }
+
+    updateUIAtStart(params) {
+        this.panelOptions = [
+            {
+                'element' : '.panel-header',
+                'content' : ' <span class="dynamic">Options</span>'
+            },
+            {
+                'element' : '.panel-body-container',
+                'content' : `<div id="panel-options-diff" class="dynamic">
+                                <span class="panel-option-label">Difficulty: </span>
+                                <span id="panel-option-diff-easy" class="panel-option" data-options-difficulty="easy">Easy</span>
+                                <span id="panel-option-diff-medium" class="panel-option" data-options-difficulty="medium">Medium</span>
+                                <span id="panel-option-diff-hard" class="panel-option" data-options-difficulty="hard">Hard</span>
+                            </div>`,
+                'target' : '#panel-options-diff',
+                'callback' : this.setGameDifficulty.bind(this),
+                'dataAtt' : 'optionsDifficulty'
+            },
+            {
+                'element' : '.panel-body-container',
+                'content' : `<div id="panel-options-snd" class="dynamic">
+                                <span class="panel-option-label">Sound: </span>
+                                <span id="panel-option-snd-on" class="panel-option" data-options-snd="true">On</span>
+                                <span id="panel-option-snd-off" class="panel-option" data-options-snd="false">Off</span>
+                            </div>`,
+                'target' : '#panel-options-snd',
+                'callback' : this.audio.setSoundState.bind(this),
+                'dataAtt' : 'optionsSnd'
+            },
+            {
+                'element' : '.panel-body-container',
+                'content' : `<div id="panel-options-music" class="dynamic">
+                                <span class="panel-option-label">Music: </span>
+                                <span id="panel-option-music-on" class="panel-option" data-options-music="true">On</span>
+                                <span id="panel-option-music-off" class="panel-option" data-options-music="false">Off</span>
+                            </div>`,
+                'target' : '#panel-options-music',
+                'callback' : this.audio.setMusicState.bind(this),
+                'dataAtt' : 'optionsMusic'
+            },
+            {
+                'element' : '.panel-footer',
+                'content' : '<button class="panel-button dynamic">Close</button>',
+                'target' : '.panel-button',
+                'callback' : this.panelClose.bind(this)
+            }
+        ];
+
+        this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
+
+        this.audio.setSoundState("true");
+        this.audio.setMusicState("true");
         this.audio.playSoundEffect('dungeon-ambience');
         this.audio.setVolume('sfx-dungeon-ambience', 0.2);
 
-        this.events.setUpGeneralInteractionListeners('#button-options', this.optionsOpen.bind(this));
-
-        this.events.removeClickListener(".modal-button");
-        // remove dynamically added content
-        $(".model .dynamic").remove();
-        $(".modal").hide();
-        if (params.callback)
-            params.callback();
+        this.modalClose(params);
     }
 
     displayStatus(message) {
@@ -100,25 +154,75 @@ class UI {
         $(element).toggle();
     }
 
-    optionsOpen() {
+    /**
+     * function optionsOpen
+     * Sets up and appends a panel, using this.panelOptions for the dynamic content
+     */
+    panelOpen() {
         this.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
 
-        $('.panel-footer').append('<button class="panel-button dynamic">Close</button>');
-        this.events.removeClickListener("#button-options");
-        this.events.setUpGeneralInteractionListeners(".panel-button, #button-options", this.optionsClose.bind(this));
+        for (let option = 0; option < this.panelOptions.length; option++) {
+            let currentOption = this.panelOptions[option],
+                target = currentOption.target ? currentOption.target : null;
+            $(currentOption.element).append(currentOption.content);
+            if (target)
+                this.events.setUpGeneralInteractionListeners(target, currentOption.callback, currentOption.dataAtt);
+        }
+        // remove the click-to-open listener for the Options button...
+        this.events.removeClickListener('#button-options');
+        // ...and set the button to close the panel instead
+        this.events.setUpGeneralInteractionListeners('#button-options', this.panelClose.bind(this));
     }
 
-    optionsClose() {
+    panelClose() {
         $('#grid-cover').hide();
         $('.panel').hide();
         this.helpers.setKeysEnabled();
-        this.events.removeClickListener(".panel-button");
-        this.events.setUpGeneralInteractionListeners('#button-options', this.optionsOpen.bind(this));
-        $(".panel .dynamic").remove();
+        this.events.removeClickListener('#button-options');
+        this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
+        // remove dynamically added content
+        $('.panel .dynamic').remove();
     }
 
+    calcScore(scoreValues) {
+        return (scoreValues.kills*5) + (scoreValues.health*10);
+    }
+
+    updateValue(params) {
+        let $element = $(params.id + ' .status-value'),
+            bubbleElements,
+            difference = 0,
+            newBubble = '<span class="life-bubble"></span>';
+
+        if (params.id.includes('.pc-health')) {
+            bubbleElements = $element.children('.life-bubble');
+            difference = params.value - bubbleElements.length;
+            for (let i=0; i < Math.abs(difference); i++) {
+                if (difference < 0)
+                    bubbleElements.last().remove();
+                else
+                    $element.append(newBubble);
+            }
+        }
+        else
+            $element.text(params.value);
+    }
+
+    setGameDifficulty(option) {
+        this.difficulty = option;
+        $('#panel-option-diff-' + option).addClass('option-highlight');
+    }
+
+    /**
+     * function scrollWindow
+     * Used to scroll the window in a certain direction by the amounts provided in xValue and yValue
+     * -Not currently in use-
+     *
+     * @param xValue
+     * @param yValue
+     */
     scrollWindow(xValue, yValue) {
         let greaterValue = Math.abs(xValue) > Math.abs(yValue) ? xValue : yValue,
             lesserValue = greaterValue === xValue ? yValue : xValue,
@@ -143,29 +247,5 @@ class UI {
                 }, i);
             }
         }
-    }
-
-    calcScore(scoreValues) {
-        return (scoreValues.kills*5) + (scoreValues.health*10);
-    }
-
-    updateValue(params) {
-        let $element = $(params.id + " .status-value"),
-            bubbleElements,
-            difference = 0,
-            newBubble = "<span class='life-bubble'></span>";
-
-        if (params.id.includes(".pc-health")) {
-            bubbleElements = $element.children(".life-bubble");
-            difference = params.value - bubbleElements.length;
-            for (let i=0; i < Math.abs(difference); i++) {
-                if (difference < 0)
-                    bubbleElements.last().remove();
-                else
-                    $element.append(newBubble);
-            }
-        }
-        else
-            $element.text(params.value);
     }
 }

@@ -5,13 +5,30 @@
 class Audio {
     constructor() {
         this.setVolume('music', 0.2);
+        this.soundOn = false;
+        this.musicOn = false;
     }
 
-    musicCheck() {
+    setMusicState(option) {
         let audioEl = document.getElementById('music');
 
-        if (audioEl.paused)
-            audioEl.play();
+        if (this.soundOn) {
+            this.musicOn = $.parseJSON(option);
+            if (this.musicOn) {
+                audioEl.play();
+            } else {
+                audioEl.pause();
+            }
+        }
+    }
+
+    setSoundState(option) {
+        let allAudio = document.getElementsByTagName('audio');
+
+        this.soundOn = $.parseJSON(option);
+        for (let i=0; i < allAudio.length; i++) {
+            allAudio[i].muted = !this.soundOn;
+        }
     }
 
     /**
@@ -21,12 +38,11 @@ class Audio {
      * @param level - volume level between 0 and 1
      */
     setVolume(sound, level) {
-        let audioEl = document.getElementById(sound);
-
-        audioEl.volume = level;
+        document.getElementById(sound).volume = level;
     }
 
     playSoundEffect(sound) {
-        document.getElementById('sfx-' + sound).play();
+        if (this.soundOn)
+            document.getElementById('sfx-' + sound).play();
     }
 }

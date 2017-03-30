@@ -10,8 +10,7 @@ let game = {
         const gridOptions = {
             width: 10,
             height: 10,
-            tileSize: 64,
-            difficulty: 'hard'
+            tileSize: 64
         };
 
         const playerOptions = {
@@ -42,7 +41,7 @@ let game = {
             player1: new PlayerCharacter(playerOptions.player1, grid, helpers)
         };
         let monsters = {
-            monster1 : new ElderMonster(monsterOptions.monster1, grid, helpers)
+            monster1 : new ElderMonster(monsterOptions.monster1, ui, grid, helpers)
         };
         let playerActions = new PlayerActions(grid, ui, players, monsters, helpers);
         let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers);

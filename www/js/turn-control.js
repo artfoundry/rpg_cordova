@@ -57,7 +57,7 @@ class TurnController {
             ],
             buttons = [
                 {"label" : "Tips", "action" : this.ui.visibilityToggle, "params" : ".modal-tips", "hidden" : false},
-                {"label" : "Start!", "action" : this.ui.modalClose, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
+                {"label" : "Start!", "action" : this.ui.updateUIAtStart, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
             ];
 
         this.ui.updateValue({id: ".kills", value: 0});

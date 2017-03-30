@@ -397,6 +397,10 @@ button:active {
 
 }
 
+.option-highlight {
+    color: red;
+}
+
 /**
  * Animations
  */
