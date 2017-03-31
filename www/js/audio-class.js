@@ -5,16 +5,21 @@
 class Audio {
     constructor() {
         this.setVolume('music', 0.2);
-        this.soundOn = false;
-        this.musicOn = false;
+        this._soundOn = 'off';
+        this._musicOn = 'off';
     }
 
+    /**
+     * function setMusicState
+     * Turns music off/on based on passed option
+     * @param option: string
+     */
     setMusicState(option) {
         let audioEl = document.getElementById('music');
 
-        if (this.soundOn) {
-            this.musicOn = $.parseJSON(option);
-            if (this.musicOn) {
+        if (this._soundOn) {
+            this._musicOn = option || this._musicOn;
+            if (this._musicOn) {
                 audioEl.play();
             } else {
                 audioEl.pause();
@@ -22,17 +27,30 @@ class Audio {
         }
     }
 
-    setSoundState(option) {
-        let allAudio = document.getElementsByTagName('audio');
-
-        this.soundOn = $.parseJSON(option);
-        for (let i=0; i < allAudio.length; i++) {
-            allAudio[i].muted = !this.soundOn;
-        }
+    getMusicState() {
+        return this._musicOn;
     }
 
     /**
-     * functionsetVolume
+     * function setSoundState
+     * Turns all sound off/on based on passed option
+     * @param option: string
+     */
+    setSoundState(option) {
+        let allAudio = document.getElementsByTagName('audio');
+
+        this._soundOn = option || this._soundOn;
+        for (let i=0; i < allAudio.length; i++) {
+            allAudio[i].muted = !this._soundOn;
+        }
+    }
+
+    getSoundState() {
+        return this._soundOn;
+    }
+
+    /**
+     * function setVolume
      *
      * @param sound - string of audio element ID to be changed
      * @param level - volume level between 0 and 1
@@ -42,7 +60,7 @@ class Audio {
     }
 
     playSoundEffect(sound) {
-        if (this.soundOn)
+        if (this._soundOn)
             document.getElementById('sfx-' + sound).play();
     }
 }

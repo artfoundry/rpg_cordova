@@ -104,22 +104,22 @@ class UI {
                 'element' : '.panel-body-container',
                 'content' : `<div id="panel-options-snd" class="dynamic">
                                 <span class="panel-option-label">Sound: </span>
-                                <span id="panel-option-snd-on" class="panel-option" data-options-snd="true">On</span>
-                                <span id="panel-option-snd-off" class="panel-option" data-options-snd="false">Off</span>
+                                <span id="panel-option-snd-on" class="panel-option" data-options-snd="on">On</span>
+                                <span id="panel-option-snd-off" class="panel-option" data-options-snd="off">Off</span>
                             </div>`,
                 'target' : '#panel-options-snd',
-                'callback' : this.audio.setSoundState.bind(this),
+                'callback' : this.updateSoundSetting.bind(this),
                 'dataAtt' : 'optionsSnd'
             },
             {
                 'element' : '.panel-body-container',
                 'content' : `<div id="panel-options-music" class="dynamic">
                                 <span class="panel-option-label">Music: </span>
-                                <span id="panel-option-music-on" class="panel-option" data-options-music="true">On</span>
-                                <span id="panel-option-music-off" class="panel-option" data-options-music="false">Off</span>
+                                <span id="panel-option-music-on" class="panel-option" data-options-music="on">On</span>
+                                <span id="panel-option-music-off" class="panel-option" data-options-music="off">Off</span>
                             </div>`,
                 'target' : '#panel-options-music',
-                'callback' : this.audio.setMusicState.bind(this),
+                'callback' : this.updateMusicSetting.bind(this),
                 'dataAtt' : 'optionsMusic'
             },
             {
@@ -132,8 +132,8 @@ class UI {
 
         this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
 
-        this.audio.setSoundState("true");
-        this.audio.setMusicState("true");
+        this.audio.setSoundState("on");
+        this.audio.setMusicState("on");
         this.audio.playSoundEffect('dungeon-ambience');
         this.audio.setVolume('sfx-dungeon-ambience', 0.2);
 
@@ -159,6 +159,9 @@ class UI {
      * Sets up and appends a panel, using this.panelOptions for the dynamic content
      */
     panelOpen() {
+        let soundSetting = this.audio.getSoundState(),
+            musicSetting = this.audio.getMusicState();
+
         this.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
@@ -170,6 +173,8 @@ class UI {
             if (target)
                 this.events.setUpGeneralInteractionListeners(target, currentOption.callback, currentOption.dataAtt);
         }
+        this.updateSoundSetting(soundSetting);
+        this.updateMusicSetting(musicSetting);
         this.setGameDifficulty();
         // remove the click-to-open listener for the Options button...
         this.events.removeClickListener('#button-options');
@@ -185,6 +190,24 @@ class UI {
         this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
         // remove dynamically added content
         $('.panel .dynamic').remove();
+    }
+
+    setGameDifficulty(setting) {
+        this.difficulty = setting || this.difficulty;
+        $('#panel-options-diff').children().removeClass('option-highlight');
+        $('#panel-option-diff-' + this.difficulty).addClass('option-highlight');
+    }
+
+    updateSoundSetting(setting) {
+        this.audio.setSoundState(setting);
+        $('#panel-options-snd').children().removeClass('option-highlight');
+        $('#panel-option-snd-' + setting).addClass('option-highlight');
+    }
+
+    updateMusicSetting(setting) {
+        this.audio.setMusicState(setting);
+        $('#panel-options-music').children().removeClass('option-highlight');
+        $('#panel-option-music-' + setting).addClass('option-highlight');
     }
 
     calcScore(scoreValues) {
@@ -211,11 +234,6 @@ class UI {
             $element.text(params.value);
     }
 
-    setGameDifficulty(option) {
-        this.difficulty = option || this.difficulty;
-        $('#panel-options-diff').children().removeClass('option-highlight');
-        $('#panel-option-diff-' + this.difficulty).addClass('option-highlight');
-    }
 
     /**
      * function scrollWindow
