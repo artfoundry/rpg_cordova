@@ -170,6 +170,7 @@ class UI {
             if (target)
                 this.events.setUpGeneralInteractionListeners(target, currentOption.callback, currentOption.dataAtt);
         }
+        this.setGameDifficulty();
         // remove the click-to-open listener for the Options button...
         this.events.removeClickListener('#button-options');
         // ...and set the button to close the panel instead
@@ -211,8 +212,9 @@ class UI {
     }
 
     setGameDifficulty(option) {
-        this.difficulty = option;
-        $('#panel-option-diff-' + option).addClass('option-highlight');
+        this.difficulty = option || this.difficulty;
+        $('#panel-options-diff').children().removeClass('option-highlight');
+        $('#panel-option-diff-' + this.difficulty).addClass('option-highlight');
     }
 
     /**
