@@ -23,6 +23,6 @@ class ElderMonster extends Monster {
             "health" : 1,
             "pos" : this.oldPos
         };
-        return new MinionMonster(minionOptions, this.grid, this.helpers);
+        return new MinionMonster(minionOptions, this.ui, this.grid, this.helpers);
     }
 }

@@ -9,6 +9,7 @@ class Monster {
         this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health;
         this.ui = ui;
+        this.grid = grid;
         this.gridWidth = grid.gridWidth;
         this.gridHeight = grid.gridHeight;
         this.helpers = helpers;
