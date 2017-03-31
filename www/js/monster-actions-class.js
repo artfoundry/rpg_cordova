@@ -81,7 +81,7 @@ class MonsterActions {
                 if (targetPlayer.pos === targetTile.id) {
                     targetLoc = $('#' + targetPlayer.pos)[0];
                     targetPlayer.health -= 1;
-                    this.ui.updateValue({id: ".pc-health", value: targetPlayer.health});
+                    this.ui.updateStatusValue({id: ".pc-health", value: targetPlayer.health});
                     animateParams = {
                         "position" : targetPlayer.pos,
                         "type" : "attack",

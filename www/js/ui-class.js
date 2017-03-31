@@ -213,7 +213,7 @@ class UI {
         return (scoreValues.kills*5) + (scoreValues.health*10);
     }
 
-    updateValue(params) {
+    updateStatusValue(params) {
         let $element = $(params.id + ' .status-value'),
             bubbleElements,
             difference = 0,

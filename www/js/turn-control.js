@@ -60,8 +60,8 @@ class TurnController {
                 {"label" : "Start!", "action" : this.ui.updateUIAtStart, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
             ];
 
-        this.ui.updateValue({id: ".kills", value: 0});
-        this.ui.updateValue({id: ".pc-health", value: this.players.player1.health});
+        this.ui.updateStatusValue({id: ".kills", value: 0});
+        this.ui.updateStatusValue({id: ".pc-health", value: this.players.player1.health});
         this.ui.modalOpen(startingMessages, buttons);
     }
 
