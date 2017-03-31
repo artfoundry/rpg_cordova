@@ -24,12 +24,14 @@ class UI {
             },
             {
                 'element' : '.panel-body-container',
-                'content' : `<div id="panel-options-diff" class="dynamic">
+                'content' : `<section class="dynamic">
                                 <span class="panel-option-label">Difficulty: </span>
-                                <span id="panel-option-diff-easy" class="panel-option" data-options-difficulty="easy">Easy</span>
-                                <span id="panel-option-diff-medium" class="panel-option" data-options-difficulty="medium">Medium</span>
-                                <span id="panel-option-diff-hard" class="panel-option" data-options-difficulty="hard">Hard</span>
-                            </div>`,
+                                <span id="panel-options-diff" class="panel-options">
+                                    <span id="panel-option-diff-easy" class="panel-option" data-options-difficulty="easy">Easy</span>
+                                    <span id="panel-option-diff-medium" class="panel-option" data-options-difficulty="medium">Medium</span>
+                                    <span id="panel-option-diff-hard" class="panel-option" data-options-difficulty="hard">Hard</span>
+                                </span>
+                            </section>`,
                 'target' : '#panel-options-diff',
                 'callback' : this.setGameDifficulty.bind(this),
                 'runCallbackNow' : true,
@@ -37,11 +39,13 @@ class UI {
             },
             {
                 'element' : '.panel-body-container',
-                'content' : `<div id="panel-options-snd" class="dynamic">
+                'content' : `<section class="dynamic">
                                 <span class="panel-option-label">Sound: </span>
-                                <span id="panel-option-snd-on" class="panel-option" data-options-snd="on">On</span>
-                                <span id="panel-option-snd-off" class="panel-option" data-options-snd="off">Off</span>
-                            </div>`,
+                                <span id="panel-options-snd" class="panel-options">
+                                    <span id="panel-option-snd-on" class="panel-option" data-options-snd="on">On</span>
+                                    <span id="panel-option-snd-off" class="panel-option" data-options-snd="off">Off</span>
+                                </span>
+                            </section>`,
                 'target' : '#panel-options-snd',
                 'callback' : this.updateSoundSetting.bind(this),
                 'runCallbackNow' : true,
@@ -49,11 +53,13 @@ class UI {
             },
             {
                 'element' : '.panel-body-container',
-                'content' : `<div id="panel-options-music" class="dynamic">
+                'content' : `<section class="dynamic">
                                 <span class="panel-option-label">Music: </span>
-                                <span id="panel-option-music-on" class="panel-option" data-options-music="on">On</span>
-                                <span id="panel-option-music-off" class="panel-option" data-options-music="off">Off</span>
-                            </div>`,
+                                <span id="panel-options-music" class="panel-options">
+                                    <span id="panel-option-music-on" class="panel-option" data-options-music="on">On</span>
+                                    <span id="panel-option-music-off" class="panel-option" data-options-music="off">Off</span>
+                                </span>
+                            </section>`,
                 'target' : '#panel-options-music',
                 'callback' : this.updateMusicSetting.bind(this),
                 'runCallbackNow' : true,
@@ -205,7 +211,7 @@ class UI {
 
     updateMusicSetting(setting = this.audio.getMusicState()) {
         this.audio.setMusicState(setting);
-        $('#panel-options-music').children().removeClass('option-highlight');
+        $('#panel-options-music').find('.panel-option').removeClass('option-highlight');
         $('#panel-option-music-' + setting).addClass('option-highlight');
     }
 
