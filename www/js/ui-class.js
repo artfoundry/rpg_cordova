@@ -17,7 +17,56 @@ class UI {
             "score"         : "Your final score for the game is: ",
             "wait"          : "Wait...something is moving in the darkness..."
         };
-        this.panelOptions = [];
+        this.panelOptions = [
+            {
+                'element' : '.panel-header',
+                'content' : ' <span class="dynamic">Options</span>'
+            },
+            {
+                'element' : '.panel-body-container',
+                'content' : `<div id="panel-options-diff" class="dynamic">
+                                <span class="panel-option-label">Difficulty: </span>
+                                <span id="panel-option-diff-easy" class="panel-option" data-options-difficulty="easy">Easy</span>
+                                <span id="panel-option-diff-medium" class="panel-option" data-options-difficulty="medium">Medium</span>
+                                <span id="panel-option-diff-hard" class="panel-option" data-options-difficulty="hard">Hard</span>
+                            </div>`,
+                'target' : '#panel-options-diff',
+                'callback' : this.setGameDifficulty.bind(this),
+                'runCallbackNow' : true,
+                'dataAtt' : 'optionsDifficulty'
+            },
+            {
+                'element' : '.panel-body-container',
+                'content' : `<div id="panel-options-snd" class="dynamic">
+                                <span class="panel-option-label">Sound: </span>
+                                <span id="panel-option-snd-on" class="panel-option" data-options-snd="on">On</span>
+                                <span id="panel-option-snd-off" class="panel-option" data-options-snd="off">Off</span>
+                            </div>`,
+                'target' : '#panel-options-snd',
+                'callback' : this.updateSoundSetting.bind(this),
+                'runCallbackNow' : true,
+                'dataAtt' : 'optionsSnd'
+            },
+            {
+                'element' : '.panel-body-container',
+                'content' : `<div id="panel-options-music" class="dynamic">
+                                <span class="panel-option-label">Music: </span>
+                                <span id="panel-option-music-on" class="panel-option" data-options-music="on">On</span>
+                                <span id="panel-option-music-off" class="panel-option" data-options-music="off">Off</span>
+                            </div>`,
+                'target' : '#panel-options-music',
+                'callback' : this.updateMusicSetting.bind(this),
+                'runCallbackNow' : true,
+                'dataAtt' : 'optionsMusic'
+            },
+            {
+                'element' : '.panel-footer',
+                'content' : '<button class="panel-button dynamic">Close</button>',
+                'target' : '.panel-button',
+                'callback' : this.panelClose.bind(this),
+                'runCallbackNow' : false
+            }
+        ];
         this.difficulty = 'medium';
         this.runTurnCycle = function() {};
     }
@@ -83,53 +132,6 @@ class UI {
     }
 
     updateUIAtStart(params) {
-        this.panelOptions = [
-            {
-                'element' : '.panel-header',
-                'content' : ' <span class="dynamic">Options</span>'
-            },
-            {
-                'element' : '.panel-body-container',
-                'content' : `<div id="panel-options-diff" class="dynamic">
-                                <span class="panel-option-label">Difficulty: </span>
-                                <span id="panel-option-diff-easy" class="panel-option" data-options-difficulty="easy">Easy</span>
-                                <span id="panel-option-diff-medium" class="panel-option" data-options-difficulty="medium">Medium</span>
-                                <span id="panel-option-diff-hard" class="panel-option" data-options-difficulty="hard">Hard</span>
-                            </div>`,
-                'target' : '#panel-options-diff',
-                'callback' : this.setGameDifficulty.bind(this),
-                'dataAtt' : 'optionsDifficulty'
-            },
-            {
-                'element' : '.panel-body-container',
-                'content' : `<div id="panel-options-snd" class="dynamic">
-                                <span class="panel-option-label">Sound: </span>
-                                <span id="panel-option-snd-on" class="panel-option" data-options-snd="on">On</span>
-                                <span id="panel-option-snd-off" class="panel-option" data-options-snd="off">Off</span>
-                            </div>`,
-                'target' : '#panel-options-snd',
-                'callback' : this.updateSoundSetting.bind(this),
-                'dataAtt' : 'optionsSnd'
-            },
-            {
-                'element' : '.panel-body-container',
-                'content' : `<div id="panel-options-music" class="dynamic">
-                                <span class="panel-option-label">Music: </span>
-                                <span id="panel-option-music-on" class="panel-option" data-options-music="on">On</span>
-                                <span id="panel-option-music-off" class="panel-option" data-options-music="off">Off</span>
-                            </div>`,
-                'target' : '#panel-options-music',
-                'callback' : this.updateMusicSetting.bind(this),
-                'dataAtt' : 'optionsMusic'
-            },
-            {
-                'element' : '.panel-footer',
-                'content' : '<button class="panel-button dynamic">Close</button>',
-                'target' : '.panel-button',
-                'callback' : this.panelClose.bind(this)
-            }
-        ];
-
         this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
 
         this.audio.setSoundState("on");
@@ -159,9 +161,6 @@ class UI {
      * Sets up and appends a panel, using this.panelOptions for the dynamic content
      */
     panelOpen() {
-        let soundSetting = this.audio.getSoundState(),
-            musicSetting = this.audio.getMusicState();
-
         this.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
@@ -172,10 +171,10 @@ class UI {
             $(currentOption.element).append(currentOption.content);
             if (target)
                 this.events.setUpGeneralInteractionListeners(target, currentOption.callback, currentOption.dataAtt);
+            if (currentOption.callback && currentOption.runCallbackNow) {
+                currentOption.callback();
+            }
         }
-        this.updateSoundSetting(soundSetting);
-        this.updateMusicSetting(musicSetting);
-        this.setGameDifficulty();
         // remove the click-to-open listener for the Options button...
         this.events.removeClickListener('#button-options');
         // ...and set the button to close the panel instead
@@ -198,13 +197,13 @@ class UI {
         $('#panel-option-diff-' + this.difficulty).addClass('option-highlight');
     }
 
-    updateSoundSetting(setting) {
+    updateSoundSetting(setting = this.audio.getSoundState()) {
         this.audio.setSoundState(setting);
         $('#panel-options-snd').children().removeClass('option-highlight');
         $('#panel-option-snd-' + setting).addClass('option-highlight');
     }
 
-    updateMusicSetting(setting) {
+    updateMusicSetting(setting = this.audio.getMusicState()) {
         this.audio.setMusicState(setting);
         $('#panel-options-music').children().removeClass('option-highlight');
         $('#panel-option-music-' + setting).addClass('option-highlight');
