@@ -13,8 +13,21 @@ class Events {
         this.helpers = helpers;
     }
 
+    setUpGeneralInteractionListeners(target, targetAction, params) {
+        $(target).click((e) => {
+            targetAction();
+        });
+        if (params && params.keys) {
+            $('body').keyup((e) => {
+                if (params.keys.includes(e.which))
+                    targetAction();
+            });
+        }
+    }
+
     /**
      * function setUpClickListener
+     * Click handler for tiles
      *
      * @param target - element selector for click handler
      * @param targetActions - callback function
@@ -29,18 +42,13 @@ class Events {
     setUpArrowKeysListener(targetActions, params, playerPos) {
         let destinationTile = '';
 
+        this.helpers.setKeysEnabled();
+        
         $('body').keyup((e) => {
-            destinationTile = document.getElementById(this.helpers.checkPlayerDestination(e.which, playerPos));
-            this.processAction(targetActions, params, destinationTile);
-        });
-    }
-
-    setUpGeneralInteractionListeners(target, targetAction) {
-        $(target).click((e) => {
-            targetAction();
-        });
-        $('body').keyup((e) => {
-            targetAction();
+            if (this.helpers.getKeysEnabled()) {
+                destinationTile = document.getElementById(this.helpers.checkPlayerDestination(e.which, playerPos));
+                this.processAction(targetActions, params, destinationTile);
+            }
         });
     }
 

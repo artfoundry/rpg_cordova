@@ -41,6 +41,8 @@ class MonsterActions {
                                 monsterActions.addNewMinion(this);
                             }
                         }.bind(currentMonster));
+                    } else if (this.grid.difficulty === 'easy') {
+                        currentMonster.randomMove();
                     } else {
                         currentMonster.searchForPrey(2);
                     }
