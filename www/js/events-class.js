@@ -74,4 +74,8 @@ class Events {
     removeArrowKeysListener() {
         $('body').off('keyup');
     }
+
+    removeAllListeners() {
+        $('*').off();
+    }
 }
