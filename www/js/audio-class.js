@@ -19,11 +19,7 @@ class Audio {
 
         if (this._soundOn) {
             this._musicOn = option || this._musicOn;
-            if (this._musicOn) {
-                audioEl.play();
-            } else {
-                audioEl.pause();
-            }
+            this._musicOn === "on" ? audioEl.play() : audioEl.pause();
         }
     }
 
@@ -41,7 +37,7 @@ class Audio {
 
         this._soundOn = option || this._soundOn;
         for (let i=0; i < allAudio.length; i++) {
-            allAudio[i].muted = !this._soundOn;
+            allAudio[i].muted = this._soundOn !== "on";
         }
     }
 
