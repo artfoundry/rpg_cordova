@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
         <!--
         Customize this policy to fit your own app's needs. For more guidance, see:
             https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
@@ -20,8 +21,6 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
         <link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
-        <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
-        <script src="js/jquery-ui.min.js"></script>
         <title>Monsters!</title>
     </head>
     <body>
@@ -58,17 +57,21 @@
 
             <div id="grid-cover"></div>
             <div class="grid"></div>
-            <audio id="music" src="audio/MonsterMusic.mp3" autoplay loop>
-                Your browser does not support the audio element.
-            </audio>
-            <audio id="sfx-dungeon-ambience" src="audio/dungeon-ambience.mp3" loop></audio>
-            <audio id="sfx-shotgun" src="audio/shotgun.mp3"></audio>
-            <!--<audio id="sfx-move-shoggoth" src="audio/move-shoggoth.mp3"></audio>-->
-            <!--<audio id="sfx-move-elder" src="audio/move-elder.mp3"></audio>-->
-            <!--<audio id="sfx-attack-shoggoth" src="audio/attack-shoggoth.mp3"></audio>-->
-            <!--<audio id="sfx-spawn-shoggoth" src="audio/spawn-shoggoth.mp3"></audio>-->
         </div>
+
+        <audio id="music" src="audio/MonsterMusic.mp3" loop>
+            Your browser does not support the audio element.
+        </audio>
+        <audio id="sfx-dungeon-ambience" src="audio/dungeon-ambience.mp3" loop></audio>
+        <audio id="sfx-shotgun" src="audio/shotgun.mp3"></audio>
+        <!--<audio id="sfx-move-shoggoth" src="audio/move-shoggoth.mp3"></audio>-->
+        <!--<audio id="sfx-move-elder" src="audio/move-elder.mp3"></audio>-->
+        <!--<audio id="sfx-attack-shoggoth" src="audio/attack-shoggoth.mp3"></audio>-->
+        <!--<audio id="sfx-spawn-shoggoth" src="audio/spawn-shoggoth.mp3"></audio>-->
+
         <!--<script type="text/javascript" src="cordova.js"></script>-->
+        <script src="lib/jquery-3.2.0.min.js"></script>
+        <script src="lib/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/helpers.js"></script>
         <script type="text/javascript" src="js/audio-class.js"></script>
         <script type="text/javascript" src="js/grid-class.js"></script>

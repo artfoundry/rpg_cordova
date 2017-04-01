@@ -5,28 +5,58 @@
 class Audio {
     constructor() {
         this.setVolume('music', 0.2);
-    }
-
-    musicCheck() {
-        let audioEl = document.getElementById('music');
-
-        if (audioEl.paused)
-            audioEl.play();
+        this._soundOn = 'off';
+        this._musicOn = 'off';
     }
 
     /**
-     * functionsetVolume
+     * function setMusicState
+     * Turns music off/on based on passed option
+     * @param option: string
+     */
+    setMusicState(option) {
+        let audioEl = document.getElementById('music');
+
+        if (this._soundOn) {
+            this._musicOn = option || this._musicOn;
+            this._musicOn === "on" ? audioEl.play() : audioEl.pause();
+        }
+    }
+
+    getMusicState() {
+        return this._musicOn;
+    }
+
+    /**
+     * function setSoundState
+     * Turns all sound off/on based on passed option
+     * @param option: string
+     */
+    setSoundState(option) {
+        let allAudio = document.getElementsByTagName('audio');
+
+        this._soundOn = option || this._soundOn;
+        for (let i=0; i < allAudio.length; i++) {
+            allAudio[i].muted = this._soundOn !== "on";
+        }
+    }
+
+    getSoundState() {
+        return this._soundOn;
+    }
+
+    /**
+     * function setVolume
      *
      * @param sound - string of audio element ID to be changed
      * @param level - volume level between 0 and 1
      */
     setVolume(sound, level) {
-        let audioEl = document.getElementById(sound);
-
-        audioEl.volume = level;
+        document.getElementById(sound).volume = level;
     }
 
     playSoundEffect(sound) {
-        document.getElementById('sfx-' + sound).play();
+        if (this._soundOn)
+            document.getElementById('sfx-' + sound).play();
     }
 }

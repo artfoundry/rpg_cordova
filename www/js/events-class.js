@@ -13,9 +13,15 @@ class Events {
         this.helpers = helpers;
     }
 
-    setUpGeneralInteractionListeners(target, targetAction, params) {
+    setUpGeneralInteractionListeners(target, targetAction, params = null) {
         $(target).click((e) => {
-            targetAction();
+            let $target = $(e.target),
+                selectedOpt = Object.keys($target.data())[0];
+
+            if (selectedOpt)
+                params = $target.data()[selectedOpt];
+
+            targetAction(params);
         });
         if (params && params.keys) {
             $('body').keyup((e) => {

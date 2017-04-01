@@ -79,7 +79,7 @@ class PlayerActions {
                             "addClasses" : "content-trans",
                             "removeClasses" : "content-" + targetMonster.type,
                             "callback" : function() {
-                                playerActions.ui.updateValue({id: ".kills", value: currentPlayer.getKills()});
+                                playerActions.ui.updateStatusValue({id: ".kills", value: currentPlayer.getKills()});
                                 playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type, targetMonster.subtype);
                                 callback();
                             }

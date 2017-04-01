@@ -3,9 +3,10 @@
  */
 
 class ElderMonster extends Monster {
-    constructor(monsterOptions, grid, helpers) {
-        super(monsterOptions, grid, helpers);
+    constructor(monsterOptions, ui, grid, helpers) {
+        super(monsterOptions, ui, grid, helpers);
         this.oldPos = '';
+        this.ui = ui;
         this.grid = grid;
         this.helpers = helpers;
     }
@@ -22,6 +23,6 @@ class ElderMonster extends Monster {
             "health" : 1,
             "pos" : this.oldPos
         };
-        return new MinionMonster(minionOptions, this.grid, this.helpers);
+        return new MinionMonster(minionOptions, this.ui, this.grid, this.helpers);
     }
 }
