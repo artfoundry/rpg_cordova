@@ -91,11 +91,13 @@ button:active {
     position: fixed;
     z-index: 6;
     width: 94%;
+    min-width: 420px;
     border-top: 40px solid black;
 }
 
 .statusbar {
     position: relative;
+    height: 26px;
     z-index: 6;
     padding: 10px;
     margin: 0 0 20px;
@@ -109,9 +111,9 @@ button:active {
 }
 
 .statusbar .title {
+    float: left;
     font-family: 'Creepster', serif;
     font-size: 1.4em;
-    left: 0;
 }
 
 .status-message {
@@ -148,6 +150,7 @@ button:active {
 .stats {
     float: right;
     width: 55%;
+    min-width: 300px;
     white-space: normal;
     text-align: right;
 }
