@@ -131,7 +131,7 @@ class UI {
     modalClose(params) {
         this.events.removeClickListener('.modal-button');
         // remove dynamically added content
-        $('.model .dynamic').remove();
+        $('.modal .dynamic').remove();
         $('.modal').hide();
         if (params.callback)
             params.callback();
@@ -255,7 +255,6 @@ class UI {
     /**
      * function scrollWindow
      * Used to scroll the window in a certain direction by the amounts provided in xValue and yValue
-     * -Not currently in use-
      *
      * @param xValue
      * @param yValue
