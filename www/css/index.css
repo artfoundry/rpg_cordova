@@ -401,9 +401,11 @@ button:active {
 .panel-options {
     display: inline-block;
     text-align: center;
+    position: relative;
 }
 
 .panel-option {
+    position: relative;
     padding: 5px;
     cursor: pointer;
     border-radius: 8px;
@@ -420,12 +422,27 @@ button:active {
     border-bottom: 1px solid lightblue;
 }
 
+.option-disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
 .panel-footer {
     padding: 8px 8px 10px;
 }
 
 .panel-button {
     width: 100px;
+}
+
+.click-cover {
+    position: absolute;
+    top: -7px;
+    left: -5px;
+    width: 100%;
+    height: 100%;
+    z-index: 7;
+    padding: 5px;
 }
 
 /**

@@ -204,9 +204,21 @@ class UI {
     }
 
     updateSoundSetting(setting = this.audio.getSoundState()) {
+        let $musicOptions = $('#panel-options-music');
+
         this.audio.setSoundState(setting);
         $('#panel-options-snd').children().removeClass('option-highlight');
         $('#panel-option-snd-' + setting).addClass('option-highlight');
+
+        // disabling music buttons - easier to put a 'cover' over them than removing and readding event listener
+        if (setting === 'off') {
+            $musicOptions.children('.panel-option').addClass('option-disabled');
+            $musicOptions.append('<div class="click-cover"></div>');
+        }
+        else {
+            $musicOptions.children().removeClass('option-disabled');
+            $musicOptions.children('.click-cover').remove();
+        }
     }
 
     updateMusicSetting(setting = this.audio.getMusicState()) {
