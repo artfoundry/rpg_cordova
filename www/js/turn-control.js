@@ -52,12 +52,24 @@ class TurnController {
         let startingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
                 {"class" : "modal-body subheader creepy-text", "text" : "gameIntro", "hidden" : false},
-                {"class" : "modal-body", "text" : "instructions", "hidden" : false},
-                {"class" : "modal-tips", "text" : "tips", "hidden" : true}
+                {"class" : "modal-body section-two", "text" : "instructions", "hidden" : false},
+                {"class" : "modal-tips content-slide-right", "text" : "tips", "hidden" : true}
             ],
             buttons = [
-                {"label" : "Tips", "action" : this.ui.visibilityToggle, "params" : ".modal-tips", "hidden" : false},
-                {"label" : "Start!", "action" : this.ui.updateUIAtStart, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
+                {
+                    "label" : "Tips",
+                    "id" : "modal-button-tips",
+                    "action" : this.ui.slideWindow,
+                    "params" : {"container" : ".modal-body-container", "button" : "#modal-button-tips"},
+                    "hidden" : false
+                },
+                {
+                    "label" : "Start!",
+                    "id" : "modal-button-start",
+                    "action" : this.ui.updateUIAtStart,
+                    "params" : {"callback" : this.ui.runTurnCycle.bind(this)},
+                    "hidden" : false
+                },
             ];
 
         this.ui.updateStatusValue({id: ".kills", value: 0});
@@ -91,7 +103,7 @@ class TurnController {
         this.isGameOver = true;
     }
 
-    endTurn() {
+    endTurn() {0
         this._tearDownListeners();
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
