@@ -81,15 +81,25 @@ class UI {
         this.runTurnCycle = turnController.runTurnCycle;
     }
 
+    updateUIAtStart(params) {
+        this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
+
+        this.audio.setSoundState("on");
+        this.audio.setMusicState("on");
+        this.audio.playSoundEffect('dungeon-ambience');
+        this.audio.setVolume('sfx-dungeon-ambience', 0.2);
+
+        this.modalClose(params);
+    }
+
     /**
-     * function dialogOpen
-     * Unhides the main dialog, displays messages in it, and unhides listed buttons.
+     * function modalOpen
+     * Unhides the main modal, displays messages in it, and unhides listed buttons.
      * @param messages: Object with a list of element IDs (referring to the modal elements), text IDs (referring to this.dialogs), and visibility flags
      * @param buttons: Array of button IDs (modal element IDs), button action functions, function parameters to pass, and visibility flags
      */
     modalOpen(messages, buttons) {
-        let button = '<button class="modal-button dynamic"></button>',
-            section = '<section class="modal-section dynamic"></section>',
+        let section = '<section class="modal-section dynamic"></section>',
             $body = $('body'),
             scrollY = $body.scrollTop(),
             scrollX = $body.scrollLeft();
@@ -104,8 +114,6 @@ class UI {
             else {
                 $('.modal-body-container').append(section);
                 $('.modal-section:last-child').addClass(messages[i].class).text(this.dialogs[messages[i].text]);
-                if (messages[i].hidden)
-                    $('.' + messages[i].class + ':last-child').hide();
                 if (messages[i].text === 'score')
                     $('.modal-section:last-child').append('<span class="score score-text">' + this.calcScore(messages[i].scoreValues) + '!</span>');
             }
@@ -119,10 +127,10 @@ class UI {
                 },
                 $button;
 
-            $('.modal-footer').append(button);
-            $button = $('.modal-button:last-child');
+            $('.modal-footer').append('<button id="' + buttons[i].id + '" class="modal-button dynamic"></button>');
+            $button = $('#' + buttons[i].id);
             $button.text(buttons[i].label);
-            this.events.setUpClickListener('.modal-button:last-child', action, params);
+            this.events.setUpClickListener('#' + buttons[i].id, action, params);
             if (buttons[i].hidden)
                 $button.hide();
         }
@@ -137,15 +145,25 @@ class UI {
             params.callback();
     }
 
-    updateUIAtStart(params) {
-        this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
+    slideWindow(params) {
+        let $allSlides = $(params.container).children(),
+            button = params.button;
 
-        this.audio.setSoundState("on");
-        this.audio.setMusicState("on");
-        this.audio.playSoundEffect('dungeon-ambience');
-        this.audio.setVolume('sfx-dungeon-ambience', 0.2);
+        if ($allSlides.hasClass('content-slide-left'))
+            $allSlides.removeClass('content-slide-left', 300);
+        else
+            $allSlides.addClass('content-slide-left', 300);
 
-        this.modalClose(params);
+        this._swapButton(button);
+    }
+
+    _swapButton(button) {
+        let $button = $(button),
+            tempText;
+
+        tempText = $button.text();
+        $button.data('temp') ? $button.text($button.data('temp')) : $button.text('Back');
+        $button.data('temp', tempText);
     }
 
     displayStatus(message) {
@@ -156,10 +174,6 @@ class UI {
     hideStatus() {
         $('.status-message').removeClass('status-message-open', 200);
         $('.status-text').text('');
-    }
-
-    visibilityToggle(element) {
-        $(element).toggle();
     }
 
     /**
