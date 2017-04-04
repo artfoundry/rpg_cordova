@@ -103,7 +103,7 @@ class TurnController {
         this.isGameOver = true;
     }
 
-    endTurn() {0
+    endTurn() {
         this._tearDownListeners();
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
