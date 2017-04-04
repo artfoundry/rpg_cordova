@@ -114,11 +114,6 @@ class UI {
             else {
                 $('.modal-body-container').append(section);
                 $('.modal-section:last-child').addClass(messages[i].class).text(this.dialogs[messages[i].text]);
-                if (messages[i].class.includes('section-two')) {
-                    $('.section-two').css('top', $('.modal-section:first-child').height());
-                }
-                if (messages[i].hidden)
-                    $('.' + messages[i].class + ':last-child').hide();
                 if (messages[i].text === 'score')
                     $('.modal-section:last-child').append('<span class="score score-text">' + this.calcScore(messages[i].scoreValues) + '!</span>');
             }
@@ -151,19 +146,13 @@ class UI {
     }
 
     slideWindow(params) {
-        let $rightElement = $(params.container).children('.content-slide-right'),
-            $leftElement = $(params.container).children('.content-slide-left'),
-            $centerElement = $(params.container).children().not('.content-slide-left, .content-slide-right'),
+        let $allSlides = $(params.container).children(),
             button = params.button;
 
-
-        if ($leftElement.length > 0) {
-            $centerElement.addClass('content-slide-right', 300).hide();
-            $leftElement.show().removeClass('content-slide-left', 300);
-        } else if ($rightElement.length > 0) {
-            $centerElement.addClass('content-slide-left', 300).hide();
-            $rightElement.show().removeClass('content-slide-right', 300);
-        }
+        if ($allSlides.hasClass('content-slide-left'))
+            $allSlides.removeClass('content-slide-left', 300);
+        else
+            $allSlides.addClass('content-slide-left', 300);
 
         this._swapButton(button);
     }

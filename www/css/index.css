@@ -325,12 +325,13 @@ button:active {
     position: relative;
     height: 300px;
     max-height: 500px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .modal-section {
-    display: block;
-    position: absolute;
+    position: relative;
+    display: inline-block;
     width: 90%;
     left: 0;
     text-align: left;
@@ -338,14 +339,12 @@ button:active {
     white-space: pre-wrap;
 }
 
-.content-slide-left {
-    display: none;
-    left: -100%;
+.left-content {
+    float: left;
 }
 
-.content-slide-right {
-    display: none;
-    left: 100%;
+.content-slide-left {
+    left: -100%;
 }
 
 .modal-button {
