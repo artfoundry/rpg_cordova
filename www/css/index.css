@@ -334,7 +334,7 @@ button:active {
     width: 90%;
     left: 0;
     text-align: left;
-    padding: 5%;
+    padding: 5% 5% 0;
     white-space: pre-wrap;
 }
 
