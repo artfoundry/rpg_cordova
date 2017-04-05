@@ -16,7 +16,12 @@ class MonsterActions {
         let currentMonster,
             minionAttacked,
             nearbyPlayerTiles = [],
-            monsterActions = this;
+            monsterActions = this,
+            elderSpawnCallback = function() {
+                if ($('#' + this.oldPos).hasClass('walkable')) {
+                    monsterActions.addNewMinion(this);
+                }
+            };
 
         for (let monster in this.monsters) {
             minionAttacked = false;
@@ -25,22 +30,20 @@ class MonsterActions {
                 return;
             else if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 currentMonster = this.monsters[monster];
+                nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
                 if (currentMonster.name === 'Elder') {
                     currentMonster.saveCurrentPos();
-                } else {
-                    nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
-                    if (nearbyPlayerTiles) {
-                        this._monsterAttack(nearbyPlayerTiles[0], setIsGameOver);
-                        minionAttacked = true;
-                    }
+                } else if (nearbyPlayerTiles) {
+                    this._monsterAttack(nearbyPlayerTiles[0], setIsGameOver);
+                    minionAttacked = true;
                 }
                 if (!minionAttacked) {
                     if (currentMonster.name === 'Elder') {
-                        currentMonster.randomMove(function() {
-                            if ($('#' + this.oldPos).hasClass('walkable')) {
-                                monsterActions.addNewMinion(this);
-                            }
-                        }.bind(currentMonster));
+                        if (nearbyPlayerTiles && this.ui.difficulty === 'hard')
+                            currentMonster.avoidPlayer(nearbyPlayerTiles[0], elderSpawnCallback.bind(currentMonster));
+                        else {
+                            currentMonster.randomMove(elderSpawnCallback.bind(currentMonster));
+                        }
                     } else if (this.ui.difficulty === 'easy') {
                         currentMonster.randomMove();
                     } else {
