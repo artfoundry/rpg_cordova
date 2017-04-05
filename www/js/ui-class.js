@@ -34,8 +34,7 @@ class UI {
                             </section>`,
                 'target' : '#panel-options-diff',
                 'callback' : this.setGameDifficulty.bind(this),
-                'runCallbackNow' : true,
-                'dataAtt' : 'optionsDifficulty'
+                'runCallbackNow' : true
             },
             {
                 'element' : '.panel-body-container',
@@ -48,8 +47,7 @@ class UI {
                             </section>`,
                 'target' : '#panel-options-snd',
                 'callback' : this.updateSoundSetting.bind(this),
-                'runCallbackNow' : true,
-                'dataAtt' : 'optionsSnd'
+                'runCallbackNow' : true
             },
             {
                 'element' : '.panel-body-container',
@@ -62,8 +60,7 @@ class UI {
                             </section>`,
                 'target' : '#panel-options-music',
                 'callback' : this.updateMusicSetting.bind(this),
-                'runCallbackNow' : true,
-                'dataAtt' : 'optionsMusic'
+                'runCallbackNow' : true
             },
             {
                 'element' : '.panel-footer',
@@ -190,7 +187,7 @@ class UI {
                 target = currentOption.target ? currentOption.target : null;
             $(currentOption.element).append(currentOption.content);
             if (target)
-                this.events.setUpGeneralInteractionListeners(target, currentOption.callback, currentOption.dataAtt);
+                this.events.setUpGeneralInteractionListeners(target, currentOption.callback);
             if (currentOption.callback && currentOption.runCallbackNow) {
                 currentOption.callback();
             }
@@ -233,14 +230,13 @@ class UI {
         $musicOptions.find('.panel-option').removeClass('option-highlight');
         $('#panel-option-music-' + setting).addClass('option-highlight');
 
-        // disabling music buttons - easier to put a 'cover' over them than removing and readding event listener
         if (soundSetting === 'off') {
             $musicOptions.children('.panel-option').addClass('option-disabled');
-            $musicOptions.append('<div class="click-cover"></div>');
+            this.events.removeClickListener('#panel-options-music');
         }
         else {
             $musicOptions.children().removeClass('option-disabled');
-            $musicOptions.children('.click-cover').remove();
+            this.events.setUpGeneralInteractionListeners('#panel-options-music', this.updateMusicSetting.bind(this));
         }
     }
 

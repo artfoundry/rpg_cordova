@@ -450,16 +450,6 @@ button:active {
     width: 100px;
 }
 
-.click-cover {
-    position: absolute;
-    top: -7px;
-    left: -5px;
-    width: 100%;
-    height: 100%;
-    z-index: 7;
-    padding: 5px;
-}
-
 /**
  * Animations
  */
