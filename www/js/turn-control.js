@@ -216,8 +216,8 @@ class TurnController {
             },
             endingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body", "text" : message, "hidden" : false},
-                {"class" : "modal-body", "text" : "score", "scoreValues" : scoreValues, "hidden" : false},
+                {"class" : "modal-body left-content", "text" : message, "hidden" : false},
+                {"class" : "modal-body left-content", "text" : "score", "scoreValues" : scoreValues, "hidden" : false},
             ],
             buttons = [
                 {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}

@@ -241,6 +241,8 @@ class UI {
     }
 
     calcScore(scoreValues) {
+        if (scoreValues.health < 0)
+            scoreValues.health = 0;
         return (scoreValues.kills*5) + (scoreValues.health*10);
     }
 
