@@ -39,12 +39,12 @@ class MonsterActions {
                 }
                 if (!minionAttacked) {
                     if (currentMonster.name === 'Elder') {
-                        if (nearbyPlayerTiles && this.ui.difficulty === 'hard')
+                        if (nearbyPlayerTiles && Game.gameSettings.difficulty === 'hard')
                             currentMonster.avoidPlayer(nearbyPlayerTiles[0], elderSpawnCallback.bind(currentMonster));
                         else {
                             currentMonster.randomMove(elderSpawnCallback.bind(currentMonster));
                         }
-                    } else if (this.ui.difficulty === 'easy') {
+                    } else if (Game.gameSettings.difficulty === 'easy') {
                         currentMonster.randomMove();
                     } else {
                         currentMonster.searchForPrey(2);
