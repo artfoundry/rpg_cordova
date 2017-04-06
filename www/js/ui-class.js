@@ -7,6 +7,7 @@ class UI {
         this.helpers = helpers;
         this.audio = audio;
         this.events = events;
+        this.runTurnCycle = function() {};
         this.dialogs = {
             "dialogHeader"  : "Welcome to Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
@@ -70,8 +71,6 @@ class UI {
                 'runCallbackNow' : false
             }
         ];
-        this.difficulty = 'medium';
-        this.runTurnCycle = function() {};
     }
 
     initialize(turnController) {
@@ -81,8 +80,8 @@ class UI {
     updateUIAtStart(params) {
         this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
 
-        this.audio.setSoundState("on");
-        this.audio.setMusicState("on");
+        this.audio.setSoundState(Game.gameSettings.soundOn);
+        this.audio.setMusicState(Game.gameSettings.musicOn);
         this.audio.playSoundEffect('dungeon-ambience');
         this.audio.setVolume('sfx-dungeon-ambience', 0.2);
 
@@ -208,10 +207,10 @@ class UI {
         $('.panel .dynamic').remove();
     }
 
-    setGameDifficulty(setting) {
-        this.difficulty = setting || this.difficulty;
+    setGameDifficulty(setting = Game.gameSettings.difficulty) {
         $('#panel-options-diff').children().removeClass('option-highlight');
-        $('#panel-option-diff-' + this.difficulty).addClass('option-highlight');
+        $('#panel-option-diff-' + setting).addClass('option-highlight');
+        Game.gameSettings.difficulty = setting;
     }
 
     updateSoundSetting(setting = this.audio.getSoundState()) {

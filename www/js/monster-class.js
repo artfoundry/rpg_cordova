@@ -3,13 +3,11 @@
  */
 
 class Monster {
-    constructor(monsterOptions, ui, grid, helpers) {
+    constructor(monsterOptions, grid, helpers) {
         this.name = monsterOptions.name;
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
-        this.health = monsterOptions.health;
-        this.ui = ui;
-        this.grid = grid;
+        this.health = monsterOptions.health; // used by player-actions for attacks
         this.gridWidth = grid.gridWidth;
         this.gridHeight = grid.gridHeight;
         this.helpers = helpers;
@@ -50,7 +48,7 @@ class Monster {
             targetPlayerLoc = this.helpers.getRowCol($targets[0].id);
             rowDiff = targetPlayerLoc.row - this.row;
             colDiff = targetPlayerLoc.col - this.col;
-            if (this.ui.difficulty === 'medium') {
+            if (Game.gameSettings.difficulty === 'medium') {
                 if (Math.abs(rowDiff) === searchRadius || Math.abs(colDiff) === searchRadius) {
                     if (Math.abs(rowDiff) > 0) {
                         newTileRow = rowDiff < 0 ? this.row - 1 : this.row + 1;
@@ -62,7 +60,7 @@ class Monster {
                     if ($('#' + newTileId).hasClass('walkable'))
                         this._setMonster(newTileId, oldTileId);
                 }
-            } else if (this.ui.difficulty === 'hard') {
+            } else if (Game.gameSettings.difficulty === 'hard') {
                 this.moveRelatedToPlayer(targetPlayerLoc, 'toward');
             }
         }

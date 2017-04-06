@@ -5,8 +5,8 @@
 class Audio {
     constructor() {
         this.setVolume('music', 0.2);
-        this._soundOn = 'off';
-        this._musicOn = 'off';
+        this._soundOn = Game.gameSettings.soundOn;
+        this._musicOn = Game.gameSettings.musicOn;
     }
 
     /**
@@ -20,6 +20,7 @@ class Audio {
         if (this._soundOn) {
             this._musicOn = option || this._musicOn;
             this._musicOn === "on" ? audioEl.play() : audioEl.pause();
+            Game.gameSettings.musicOn = this._musicOn;
         }
     }
 
@@ -39,6 +40,7 @@ class Audio {
         for (let i=0; i < allAudio.length; i++) {
             allAudio[i].muted = this._soundOn !== "on";
         }
+        Game.gameSettings.soundOn = this._soundOn;
     }
 
     getSoundState() {

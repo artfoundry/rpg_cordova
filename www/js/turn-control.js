@@ -208,7 +208,7 @@ class TurnController {
             restartCallback = function() {
                 controller.grid.clearGrid();
                 controller.events.removeAllListeners();
-                game.initialize();
+                Game.initialize();
             },
             scoreValues = {
                 "kills" : this.players.player1.kills,
