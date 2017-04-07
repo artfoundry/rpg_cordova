@@ -20,6 +20,7 @@ class Grid {
             gridPixels = (this.gridWidth + 2) * this.tileSize,
             markup = '',
             id = '',
+            tileType = '',
             blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>',
             borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>';
 
@@ -31,7 +32,11 @@ class Grid {
                     if (rowNum === 0 || rowNum === grid.gridHeight + 1 || colNum === 0 || colNum === grid.gridWidth + 1) {
                         markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
                     } else {
-                        markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                        tileType = this.randomizeTileType(id, markup);
+                        if (tileType === 'ground')
+                            markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                        else if (tileType === 'wall')
+                            markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
                     }
                 }
                 markup += '</div>';
@@ -40,6 +45,42 @@ class Grid {
         });
         $gridEl.css('width', gridPixels + 1);
         $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></canvas>');
+    }
+
+    randomizeTileType(tileId, markup) {
+        let colIndex = tileId.indexOf('col'),
+            row = +tileId.slice(3, colIndex),
+            col = +tileId.slice(colIndex+3),
+            surroundingTiles = {
+                $tileAbove : $(markup).find('#row' + (row - 1) + 'col' + col),
+                $tileRight : $(markup).find('#row' + row + 'col' + (col + 1)),
+                $tileBelow : $(markup).find('#row' + (row + 1) + 'col' + col),
+                $tileLeft : $(markup).find('#row' + row + 'col' + (col - 1))
+            },
+            connections = 0,
+            tileType = '';
+
+        // if top and left are walls...
+        if (!surroundingTiles.$tileAbove.hasClass('walkable') && !surroundingTiles.$tileLeft.hasClass('walkable')) {
+            // ...and bottom and right are walls, then make this a wall
+            if (surroundingTiles.$tileRight.length > 0 && !surroundingTiles.$tileRight.hasClass('walkable') &&
+                surroundingTiles.$tileBelow.length > 0 && !surroundingTiles.$tileBelow.hasClass('walkable')) {
+                tileType = 'wall';
+            // otherwise, make it ground (to vary the tiles)
+            } else {
+                tileType = 'ground';
+            }
+        // otherwise randomize it and set the data connections to the number of surrounding walkable tiles
+        } else {
+            tileType = Math.random() >= 0.5 ? 'wall' : 'ground';
+        }
+        for (let t in surroundingTiles) {
+            if (surroundingTiles.hasOwnProperty(t) && surroundingTiles[t].hasClass('walkable')) {
+                connections += 1;
+            }
+        }
+        $(markup).find('#' + tileId).data('connections', connections);
+        return tileType;
     }
 
     clearGrid() {
