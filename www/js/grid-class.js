@@ -50,30 +50,42 @@ class Grid {
     randomizeTileType(tileId, markup) {
         let colIndex = tileId.indexOf('col'),
             row = +tileId.slice(3, colIndex),
-            col = +tileId.slice(colIndex+3),
+            col = +tileId.slice(colIndex + 3),
             surroundingTiles = {
-                $tileAbove : $(markup).find('#row' + (row - 1) + 'col' + col),
-                $tileRight : $(markup).find('#row' + row + 'col' + (col + 1)),
-                $tileBelow : $(markup).find('#row' + (row + 1) + 'col' + col),
-                $tileLeft : $(markup).find('#row' + row + 'col' + (col - 1))
+                $tileAboveLeft: $(markup).find('#row' + (row - 1) + 'col' + (col - 1)),
+                $tileAbove: $(markup).find('#row' + (row - 1) + 'col' + col),
+                $tileAboveRight: $(markup).find('#row' + (row - 1) + 'col' + (col + 1)),
+                $tileRight: $(markup).find('#row' + row + 'col' + (col + 1)),
+                $tileBelowRight: $(markup).find('#row' + (row + 1) + 'col' + (col + 1)),
+                $tileBelow: $(markup).find('#row' + (row + 1) + 'col' + col),
+                $tileBelowLeft: $(markup).find('#row' + (row + 1) + 'col' + (col - 1)),
+                $tileLeft: $(markup).find('#row' + row + 'col' + (col - 1))
             },
             connections = 0,
             tileType = '';
 
-        // if top and left are walls...
-        if (!surroundingTiles.$tileAbove.hasClass('walkable') && !surroundingTiles.$tileLeft.hasClass('walkable')) {
-            // ...and bottom and right are walls, then make this a wall
-            if (surroundingTiles.$tileRight.length > 0 && !surroundingTiles.$tileRight.hasClass('walkable') &&
-                surroundingTiles.$tileBelow.length > 0 && !surroundingTiles.$tileBelow.hasClass('walkable')) {
+        // if top and either left or right are walls...
+        if (surroundingTiles.$tileAbove.hasClass('tile-wall') && (surroundingTiles.$tileLeft.hasClass('tile-wall') || surroundingTiles.$tileRight.hasClass('tile-wall'))) {
+            // ...and bottom and right are walls OR left is a wall but top left is not a wall OR right is a wall but top right is not a wall...
+            if ((surroundingTiles.$tileRight.length > 0 && surroundingTiles.$tileRight.hasClass('tile-wall') &&
+                surroundingTiles.$tileBelow.length > 0 && surroundingTiles.$tileBelow.hasClass('tile-wall')) ||
+                (surroundingTiles.$tileLeft.hasClass('tile-wall') && !surroundingTiles.$tileAboveLeft.hasClass('tile-wall')) ||
+                (surroundingTiles.$tileRight.hasClass('tile-wall') && !surroundingTiles.$tileAboveRight.hasClass('tile-wall')))
+            {
                 tileType = 'wall';
-            // otherwise, make it ground (to vary the tiles)
             } else {
                 tileType = 'ground';
             }
-        // otherwise randomize it and set the data connections to the number of surrounding walkable tiles
+        // otherwise if top, left, and right aren't walls AND top left or top right is a wall
+        } else if (!surroundingTiles.$tileAbove.hasClass('tile-wall') && !surroundingTiles.$tileLeft.hasClass('tile-wall') && !surroundingTiles.$tileRight.hasClass('tile-wall') &&
+            (surroundingTiles.$tileAboveLeft.hasClass('tile-wall') || surroundingTiles.$tileAboveRight.hasClass('tile-wall'))) {
+            tileType = 'ground';
+
+        // otherwise randomize it
         } else {
             tileType = Math.random() >= 0.5 ? 'wall' : 'ground';
         }
+        // set the data connections to the number of surrounding walkable tiles
         for (let t in surroundingTiles) {
             if (surroundingTiles.hasOwnProperty(t) && surroundingTiles[t].hasClass('walkable')) {
                 connections += 1;
