@@ -4,7 +4,6 @@
 
 class Audio {
     constructor() {
-        this.setVolume('music', 0.2);
         this._soundOn = Game.gameSettings.soundOn;
         this._musicOn = Game.gameSettings.musicOn;
     }
@@ -57,8 +56,20 @@ class Audio {
         document.getElementById(sound).volume = level;
     }
 
-    playSoundEffect(sound) {
-        if (this._soundOn)
-            document.getElementById('sfx-' + sound).play();
+    /**
+     * function playSoundEffect
+     * Plays sound provided. If probability provided, only plays sound if random number is lower than probability
+     * @param sounds: string of name of mp3 file minus the leading 'sfx-' and the trailing '.mp3'
+     * @param probability: decimal value between 0 and .99 (set to 1 if not provided)
+     */
+    playSoundEffect(sounds, probability = 1) {
+        let magic8BallSaysYes = Math.random() < probability,
+            option = Math.floor(Math.random() * sounds.length);
+
+        if (this._soundOn) {
+            if (magic8BallSaysYes) {
+                document.getElementById('sfx-' + sounds[option]).play();
+            }
+        }
     }
 }

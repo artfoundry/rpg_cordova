@@ -87,7 +87,7 @@ class Grid {
                 $targetContent.fadeIn();
                 break;
             case 'image-swap':
-                let delay = params.delay === "death" ? 200 : 0;
+                let delay = params.delay === 'death' ? 200 : 0;
 
                 $targetContent.fadeOut(delay, function() {
                     grid.changeTileImg(params.position, params.addClasses, params.removeClasses);
@@ -99,10 +99,11 @@ class Grid {
             case 'attack':
                 let $blood;
                 if (params.attacker === 'player') {
-                    this.audio.playSoundEffect('shotgun');
+                    this.audio.playSoundEffect(['shotgun']);
                     $target.prepend("<div class='blood-monster'></div>");
                     $blood = $('.blood-monster');
                 } else {
+                    this.audio.playSoundEffect(['attack-shoggoth-01', 'attack-shoggoth-02', 'attack-shoggoth-03']);
                     $target.prepend("<div class='blood-human'></div>");
                     $blood = $('.blood-human');
                 }
