@@ -97,10 +97,15 @@ class Grid {
                 });
                 break;
             case 'attack':
-                if (params.attacker === 'player')
+                let $blood;
+                if (params.attacker === 'player') {
                     this.audio.playSoundEffect('shotgun');
-                $target.prepend("<div class='blood'></div>");
-                let $blood = $('.blood');
+                    $target.prepend("<div class='blood-monster'></div>");
+                    $blood = $('.blood-monster');
+                } else {
+                    $target.prepend("<div class='blood-human'></div>");
+                    $blood = $('.blood-human');
+                }
                 $blood
                     .css("transform", "rotate(" + imageRotation + "deg)")
                     .animate({"opacity": 1}, 0)

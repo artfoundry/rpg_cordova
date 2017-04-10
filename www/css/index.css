@@ -470,9 +470,20 @@ button:active {
     transform: scaleX(-1);
 }
 
-.blood {
+.blood-human {
     position: absolute;
-    background-image: url('../img/blood.png');
+    background-image: url('../img/blood_human.png');
+    background-size: 64px 64px;
+    background-repeat: no-repeat;
+    width: 64px;
+    height: 64px;
+    opacity: 0;
+    z-index: 1;
+}
+
+.blood-monster {
+    position: absolute;
+    background-image: url('../img/blood_monster.png');
     background-size: 64px 64px;
     background-repeat: no-repeat;
     width: 64px;
