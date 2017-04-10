@@ -3,12 +3,13 @@
  */
 
 class MonsterActions {
-    constructor(grid, ui, players, monsters, helpers) {
+    constructor(grid, ui, players, monsters, helpers, audio) {
         this.grid = grid;
         this.ui = ui;
         this.players = players;
         this.monsters = monsters;
         this.helpers = helpers;
+        this.audio = audio;
         this.monsterCount = Object.keys(this.monsters).length;
     }
 
@@ -90,6 +91,7 @@ class MonsterActions {
                         "type" : "attack",
                         "callback" : function() {
                             if (targetPlayer.health < 1) {
+                                monsterActions.audio.playSoundEffect(['death-human']);
                                 monsterActions.grid.changeTileImg(targetPlayer.pos, 'content-trans', 'content-player');
                                 setIsGameOver();
                             }

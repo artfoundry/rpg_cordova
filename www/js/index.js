@@ -28,10 +28,10 @@ let Game = {
             player1: new PlayerCharacter(playerOptions.player1, grid, helpers)
         };
         let monsters = {
-            monster1 : new ElderMonster(monsterOptions.monster1, grid, helpers)
+            monster1 : new ElderMonster(monsterOptions.monster1, grid, helpers, audio)
         };
-        let playerActions = new PlayerActions(grid, ui, players, monsters, helpers);
-        let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers);
+        let playerActions = new PlayerActions(grid, ui, players, monsters, helpers, audio);
+        let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers, audio);
         let turnController = new TurnController(grid, ui, players, playerActions, monsterActions, monsters, events);
 
         ui.initialize(turnController);

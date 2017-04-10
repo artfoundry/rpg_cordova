@@ -82,7 +82,8 @@ class UI {
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
-        this.audio.playSoundEffect('dungeon-ambience');
+        this.audio.playSoundEffect(['dungeon-ambience']);
+        this.audio.setVolume('music', 0.15);
         this.audio.setVolume('sfx-dungeon-ambience', 0.2);
 
         this.modalClose(params);
