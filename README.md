@@ -28,4 +28,6 @@ Game ends when either player or all monsters are dead.  Scoring is based on rema
 An Elder Sign artifact is placed randomly in the room, and the player must acquire it before being able to damage the Elder Thing. Acquiring the artifact adds to the score and killing the Elder further adds to the score.
 Addition of randomly generated walls/other barriers.
 
+*In progress*
+
 **Phase 3: More advanced game** (features not finalized)
