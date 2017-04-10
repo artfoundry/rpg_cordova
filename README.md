@@ -21,11 +21,11 @@ and spawns a Shoggoth each turn it can move but can't attack. Shoggoths move one
 and attacks player if next to it.  All monsters move after player moves.
 Game ends when either player or all monsters are dead.  Scoring is based on remaining health and number of kills at end of game.
 
-*Feature complete; just assets to update*
+*Completed*
 
 **Phase 2a: Expanded features**
 
 An Elder Sign artifact is placed randomly in the room, and the player must acquire it before being able to damage the Elder Thing. Acquiring the artifact adds to the score and killing the Elder further adds to the score.
-Addition of walls/other barriers, possibly randomly generated.
+Addition of randomly generated walls/other barriers.
 
 **Phase 3: More advanced game** (features not finalized)
