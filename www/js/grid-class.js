@@ -61,14 +61,15 @@ class Grid {
                 $tileBelowLeft: $(markup).find('#row' + (row + 1) + 'col' + (col - 1)),
                 $tileLeft: $(markup).find('#row' + row + 'col' + (col - 1))
             },
-            connections = 0,
             tileType = '';
 
+        if (this.countPreviousWalls(surroundingTiles) >= 3) {
+            tileType = 'ground';
         // if top and either left or right are walls...
-        if (surroundingTiles.$tileAbove.hasClass('tile-wall') && (surroundingTiles.$tileLeft.hasClass('tile-wall') || surroundingTiles.$tileRight.hasClass('tile-wall'))) {
-            // ...and bottom and right are walls OR left is a wall but top left is not a wall OR right is a wall but top right is not a wall...
-            if ((surroundingTiles.$tileRight.length > 0 && surroundingTiles.$tileRight.hasClass('tile-wall') &&
-                surroundingTiles.$tileBelow.length > 0 && surroundingTiles.$tileBelow.hasClass('tile-wall')) ||
+        } else if (surroundingTiles.$tileAbove.hasClass('tile-wall') && (surroundingTiles.$tileLeft.hasClass('tile-wall') || surroundingTiles.$tileRight.hasClass('tile-wall'))) {
+            // ...and bottom and right are walls OR left is a wall but top left is not a wall OR right is a wall but top right is not a wall... (basically don't leave catty-corner walls)
+            if ((surroundingTiles.$tileRight && surroundingTiles.$tileRight.hasClass('tile-wall') &&
+                surroundingTiles.$tileBelow && surroundingTiles.$tileBelow.hasClass('tile-wall')) ||
                 (surroundingTiles.$tileLeft.hasClass('tile-wall') && !surroundingTiles.$tileAboveLeft.hasClass('tile-wall')) ||
                 (surroundingTiles.$tileRight.hasClass('tile-wall') && !surroundingTiles.$tileAboveRight.hasClass('tile-wall')))
             {
@@ -85,14 +86,23 @@ class Grid {
         } else {
             tileType = Math.random() >= 0.5 ? 'wall' : 'ground';
         }
-        // set the data connections to the number of surrounding walkable tiles
-        for (let t in surroundingTiles) {
-            if (surroundingTiles.hasOwnProperty(t) && surroundingTiles[t].hasClass('walkable')) {
-                connections += 1;
-            }
-        }
-        $(markup).find('#' + tileId).data('connections', connections);
         return tileType;
+    }
+
+    /**
+     * function countPreviousWalls
+     * Looks at the three tiles above and the tile to the left to see if they're walls.
+     * Used to determine if the current tile should be ground or wall when randomizing tiles.
+     * @param surroundingTiles:
+     */
+    countPreviousWalls(surroundingTiles) {
+        let wallCount = 0;
+
+        for (let i in surroundingTiles) {
+            if (surroundingTiles.hasOwnProperty(i) && surroundingTiles[i].hasClass('tile-wall'))
+                wallCount += 1;
+        }
+        return wallCount;
     }
 
     clearGrid() {
