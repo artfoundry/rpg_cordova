@@ -215,9 +215,13 @@ class Monster {
     }
 
     _randomizeLoc() {
-        let row = Math.ceil(Math.random() * (this.gridHeight/2) + (this.gridHeight/3)),
-            col = Math.ceil(Math.random() * (this.gridWidth/2) + (this.gridWidth/3));
+        let row = 0,
+            col = 0;
 
+        while ($('#row' + row + 'col' + col).hasClass('tile-wall')) {
+            row = Math.ceil(Math.random() * (this.gridHeight/2) + (this.gridHeight/3));
+            col = Math.ceil(Math.random() * (this.gridWidth/2) + (this.gridWidth/3));
+        }
         this.pos = 'row' + row + 'col' + col;
     }
 }
