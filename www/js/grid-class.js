@@ -63,7 +63,7 @@ class Grid {
             },
             tileType = '';
 
-        if (this.countPreviousWalls(surroundingTiles) >= 3) {
+        if (this.countPreviousWalls(surroundingTiles) > 2) {
             tileType = 'ground';
         // if top and either left or right are walls...
         } else if (surroundingTiles.$tileAbove.hasClass('tile-wall') && (surroundingTiles.$tileLeft.hasClass('tile-wall') || surroundingTiles.$tileRight.hasClass('tile-wall'))) {
@@ -84,7 +84,7 @@ class Grid {
 
         // otherwise randomize it
         } else {
-            tileType = Math.random() >= 0.5 ? 'wall' : 'ground';
+            tileType = Math.random() >= 0.6 ? 'wall' : 'ground';
         }
         return tileType;
     }
