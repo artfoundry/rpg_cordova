@@ -3,7 +3,7 @@
  */
 
 class Monster {
-    constructor(monsterOptions, grid, helpers) {
+    constructor(monsterOptions, grid, helpers, audio) {
         this.name = monsterOptions.name;
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
@@ -11,6 +11,7 @@ class Monster {
         this.gridWidth = grid.gridWidth;
         this.gridHeight = grid.gridHeight;
         this.helpers = helpers;
+        this.audio = audio;
         this.row = 0;
         this.col = 0;
         this.pos = '';
@@ -189,8 +190,9 @@ class Monster {
                 "destinationId" : newTileId,
                 "type" : "move",
                 "callback" : function() {
-                    monster.grid.changeTileImg(newTileId, 'content-' + monster.type, 'content-trans');
-                    monster.grid.changeTileImg(oldTileId, 'content-trans', 'content-' + monster.type);
+                    monster.audio.playSoundEffect(['move-' + monster.subtype], .5);
+                    monster.grid.changeTileImg(newTileId, 'content-' + monster.subtype, 'content-trans');
+                    monster.grid.changeTileImg(oldTileId, 'content-trans', 'content-' + monster.subtype);
                     if (callback)
                         callback();
                 }
@@ -203,7 +205,7 @@ class Monster {
             animateMoveParams = {
                 "position" : newTileId,
                 "type" : "spawn",
-                "addClasses" : "content-" + monster.type,
+                "addClasses" : "content-" + monster.subtype,
                 "removeClasses" : "content-trans"
             };
             monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);

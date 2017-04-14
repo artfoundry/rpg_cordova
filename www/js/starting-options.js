@@ -21,8 +21,8 @@ let startingOptions = {
     "monsterOptions" : {
         "monster1" : {
             "name" : "Elder",
-            "type" : "elder",
-            "subtype" : "monster",
+            "type" : "monster",
+            "subtype" : "elder",
             "health" : 3
         }
     },

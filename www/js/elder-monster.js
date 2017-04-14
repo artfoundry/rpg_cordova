@@ -3,11 +3,12 @@
  */
 
 class ElderMonster extends Monster {
-    constructor(monsterOptions, grid, helpers) {
-        super(monsterOptions, grid, helpers);
+    constructor(monsterOptions, grid, helpers, audio) {
+        super(monsterOptions, grid, helpers, audio);
         this.oldPos = '';
         this.grid = grid;
         this.helpers = helpers;
+        this.audio = audio;
     }
 
     saveCurrentPos() {
@@ -17,11 +18,11 @@ class ElderMonster extends Monster {
     spawn() {
         let minionOptions = {
             "name" : "Shoggoth",
-            "type" : "minion",
-            "subtype" : "monster",
+            "type" : "monster",
+            "subtype" : "shoggoth",
             "health" : 1,
             "pos" : this.oldPos
         };
-        return new MinionMonster(minionOptions, this.grid, this.helpers);
+        return new MinionMonster(minionOptions, this.grid, this.helpers, this.audio);
     }
 }

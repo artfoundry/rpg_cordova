@@ -3,12 +3,13 @@
  */
 
 class PlayerActions {
-    constructor(grid, ui, players, monsters, helpers) {
+    constructor(grid, ui, players, monsters, helpers, audio) {
         this.grid = grid;
         this.ui = ui;
         this.players = players;
         this.monsters = monsters;
         this.helpers = helpers;
+        this.audio = audio;
     }
 
     /**
@@ -77,7 +78,7 @@ class PlayerActions {
                             "type" : "image-swap",
                             "delay" : "death",
                             "addClasses" : "content-trans",
-                            "removeClasses" : "content-" + targetMonster.type,
+                            "removeClasses" : "content-" + targetMonster.subtype,
                             "callback" : function() {
                                 playerActions.ui.updateStatusValue({id: ".kills", value: currentPlayer.getKills()});
                                 playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type, targetMonster.subtype);
@@ -85,6 +86,8 @@ class PlayerActions {
                             }
                         };
                         if (targetMonster.health < 1) {
+                            if (targetMonster.subtype === 'elder')
+                                playerActions.audio.playSoundEffect(['death-elder']);
                             this.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
                             animateAttackParams.callback = function() {
