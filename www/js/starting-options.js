@@ -6,7 +6,8 @@ let startingOptions = {
     "gridOptions" : {
         "width" : 10,
         "height" : 10,
-        "tileSize" : 64
+        "tileSize" : 64,
+        "randomization" : 0.6
     },
     "playerOptions" : {
         "player1" : {

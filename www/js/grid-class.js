@@ -9,6 +9,7 @@ class Grid {
         this.helpers = helpers;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
+        this.gridRandomFactor = gridOptions.randomization;
         this.tileSize = gridOptions.tileSize;
         this.audio = audio;
         this.ui = ui;
@@ -84,7 +85,7 @@ class Grid {
 
         // otherwise randomize it
         } else {
-            tileType = Math.random() >= 0.6 ? 'wall' : 'ground';
+            tileType = Math.random() >= this.gridRandomFactor ? 'wall' : 'ground';
         }
         return tileType;
     }
