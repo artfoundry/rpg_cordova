@@ -6,9 +6,10 @@
  */
 
 let Game = {
-    "initialGame" : true,
-    "gameSettings" : {},
-    "initialize" : function() {
+    'initialGame' : true,
+    'gameSettings' : {},
+    'fbServices' : {},
+    'initialize' : function() {
         let gridOptions = startingOptions.gridOptions;
         let playerOptions = startingOptions.playerOptions;
         let monsterOptions = startingOptions.monsterOptions;
@@ -17,6 +18,7 @@ let Game = {
             this.gameSettings.musicOn = startingOptions.audioOptions.musicOn;
             this.gameSettings.difficulty = startingOptions.uiOptions.difficulty;
             this.initialGame = false;
+            this.fbServices = new FirebaseServices();
         }
 
         let helpers = new Helpers(gridOptions);

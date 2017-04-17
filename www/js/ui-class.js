@@ -99,7 +99,9 @@ class UI {
         let section = '<section class="modal-section dynamic"></section>',
             $body = $('body'),
             scrollY = $body.scrollTop(),
-            scrollX = $body.scrollLeft();
+            scrollX = $body.scrollLeft(),
+            score = 0,
+            $lastSection;
 
         if (scrollX > 0 || scrollY > 0)
             this.scrollWindow(-scrollX, -scrollY);
@@ -110,9 +112,16 @@ class UI {
                 $('.modal-header').text(this.dialogs[messages[i].text]);
             else {
                 $('.modal-body-container').append(section);
-                $('.modal-section:last-child').addClass(messages[i].class).text(this.dialogs[messages[i].text]);
-                if (messages[i].text === 'score')
-                    $('.modal-section:last-child').append('<span class="score score-text">' + this.calcScore(messages[i].scoreValues) + '!</span>');
+                $lastSection = $('.modal-section:last-child');
+                $lastSection.addClass(messages[i].class).append('<span>' + this.dialogs[messages[i].text] + '</span>');
+                if (messages[i].text === 'score') {
+                    score = this.calcScore(messages[i].scoreValues);
+                    Game.fbServices.saveScore(score);
+                    $lastSection.children('span').addClass('subheader creepy-text push-right');
+                    $lastSection.append('<span class="score score-text">' + score + '!</span>');
+                    $lastSection.append('<div id="leaderboard"><span class="score-text">Leaderboard</span></div>')
+                    Game.fbServices.getScores(this.displayScores);
+                }
             }
         }
         for (let i = 0; i < buttons.length; i++) {
@@ -140,6 +149,13 @@ class UI {
         $('.modal').hide();
         if (params.callback)
             params.callback();
+    }
+
+    displayScores(scores) {
+        $('#leaderboard').append('<ol id="score-list"></ol>');
+        for (let s=0; s < scores.length; s++) {
+            $('#score-list').append('<li class="score"><span class="score-text">' + scores[s] + '</span></li>');
+        }
     }
 
     slideWindow(params) {

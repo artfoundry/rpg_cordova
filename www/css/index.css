@@ -348,17 +348,25 @@ button:active {
     font-family: 'Creepster', serif;
 }
 
+#leaderboard {
+    padding-top: 20px;
+}
+
 .score-text {
     font-size: 2em;
     font-family: 'Creepster', serif;
     color: orangered;
     text-shadow: 1px 1px 2px black;
     vertical-align: middle;
-    padding-left: 10px;
 }
 
 .subheader {
     font-size: 1.2em;
+    vertical-align: middle;
+}
+
+.push-right {
+    padding-right: 10px;
 }
 
 /**
