@@ -17,8 +17,8 @@ let Game = {
             this.gameSettings.soundOn = startingOptions.audioOptions.soundOn;
             this.gameSettings.musicOn = startingOptions.audioOptions.musicOn;
             this.gameSettings.difficulty = startingOptions.uiOptions.difficulty;
-            this.initialGame = false;
             this.fbServices = new FirebaseServices();
+            this.initialGame = false;
         }
 
         let helpers = new Helpers(gridOptions);

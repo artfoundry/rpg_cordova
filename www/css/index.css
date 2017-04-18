@@ -316,7 +316,7 @@ button:active {
 
 .modal-body-container {
     position: relative;
-    max-height: 500px;
+    max-height: 800px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -349,7 +349,26 @@ button:active {
 }
 
 #leaderboard {
-    padding-top: 20px;
+    margin-top: 20px;
+    padding-top: 10px;
+    text-align: center;
+    border-top: 1px solid black;
+}
+
+#leaderboard table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#leaderboard th, td {
+    text-align: center;
+    vertical-align: top;
+    font-weight: normal;
+}
+
+#leaderboard ol {
+    width: 20%;
+    margin: auto;
 }
 
 .score-text {

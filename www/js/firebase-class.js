@@ -21,18 +21,24 @@ class FirebaseServices {
     }
 
     saveScore(score) {
-        this.fbDatabase.ref('scores/').push({
+        this.fbDatabase.ref('scores/' + Game.gameSettings.difficulty).push({
             score: score
         });
     }
 
     getScores(callback) {
         let scores = this.fbDatabase.ref('/scores/').orderByChild('score').once('value', function(snapshot) {
-            let scores = [];
-            snapshot.forEach(function(childSnapshot) {
-                scores.push(childSnapshot.val().score);
+            let scores = {
+                "easy" : [],
+                "medium" : [],
+                "hard" : []
+            };
+            snapshot.forEach(function(difficulty) {
+                difficulty.forEach(function(childSnapshot) {
+                    scores[difficulty.key].push(childSnapshot.val().score);
+                });
             });
-            callback(scores.reverse());
+            callback(scores);
         });
     }
 }

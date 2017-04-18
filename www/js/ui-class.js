@@ -119,7 +119,7 @@ class UI {
                     Game.fbServices.saveScore(score);
                     $lastSection.children('span').addClass('subheader creepy-text push-right');
                     $lastSection.append('<span class="score score-text">' + score + '!</span>');
-                    $lastSection.append('<div id="leaderboard"><span class="score-text">Leaderboard</span></div>')
+                    $lastSection.append('<div id="leaderboard"><span class="score-text">Leaderboards</span></div>')
                     Game.fbServices.getScores(this.displayScores);
                 }
             }
@@ -152,9 +152,29 @@ class UI {
     }
 
     displayScores(scores) {
-        $('#leaderboard').append('<ol id="score-list"></ol>');
-        for (let s=0; s < scores.length; s++) {
-            $('#score-list').append('<li class="score"><span class="score-text">' + scores[s] + '</span></li>');
+        let scoresMarkup = `
+            <table>
+                <tbody>
+                    <tr class="creepy-text subheader">
+                        <th>Easy</th>
+                        <th>Medium</th>
+                        <th>Hard</th>
+                    </tr>
+                    <tr><td><ol id="score-list-easy"></ol></td>
+                        <td><ol id="score-list-medium"></ol></td>
+                        <td><ol id="score-list-hard"></ol></td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+        $('#leaderboard').append(scoresMarkup);
+        for (let list in scores) {
+            if (scores.hasOwnProperty(list) && scores[list].length > 0) {
+                scores[list].reverse();
+                for (let s=0; s < scores[list].length; s++) {
+                    $('#score-list-' + list).append('<li class="score"><span class="score-text">' + scores[list][s] + '</span></li>');
+                }
+            }
         }
     }
 
