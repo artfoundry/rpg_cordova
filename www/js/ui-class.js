@@ -114,13 +114,13 @@ class UI {
                 $('.modal-body-container').append(section);
                 $lastSection = $('.modal-section:last-child');
                 $lastSection.addClass(messages[i].class).append('<span>' + this.dialogs[messages[i].text] + '</span>');
+
                 if (messages[i].text === 'score') {
                     score = this.calcScore(messages[i].scoreValues);
-                    Game.fbServices.saveScore(score);
                     $lastSection.children('span').addClass('subheader creepy-text push-right');
-                    $lastSection.append('<span class="score score-text">' + score + '!</span>');
-                    $lastSection.append('<div id="leaderboard"><span class="score-text">Leaderboards</span></div>')
-                    Game.fbServices.getScores(this.displayScores);
+                    $lastSection.append('<span class="score score-text">' + score + '</span>');
+                    $lastSection.append('<div id="leaderboard"><span class="score-text">Monster Leaders</span></div>');
+                    Game.fbServices.saveScore(score, this.displayScores);
                 }
             }
         }
@@ -151,8 +151,9 @@ class UI {
             params.callback();
     }
 
-    displayScores(scores) {
-        let scoresMarkup = `
+    displayScores() {
+        let scores = Game.fbServices.scores,
+            scoresMarkup = `
             <table>
                 <tbody>
                     <tr class="creepy-text subheader">
@@ -167,6 +168,7 @@ class UI {
                 </tbody>
             </table>
         `;
+
         $('#leaderboard').append(scoresMarkup);
         for (let list in scores) {
             if (scores.hasOwnProperty(list) && scores[list].length > 0) {

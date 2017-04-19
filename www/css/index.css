@@ -311,7 +311,7 @@ button:active {
 
 .modal-footer {
     margin: auto;
-    padding: 10px;
+    padding: 10px 0 20px;
 }
 
 .modal-body-container {

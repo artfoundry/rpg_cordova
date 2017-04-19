@@ -4,41 +4,63 @@
 
 class FirebaseServices {
     constructor() {
-        this.config = {
+        this.isOnline = this._initialize();
+        if (this.isOnline) {
+            this.fbDatabase = firebase.database();
+            this.scores = {
+                "easy": [],
+                "medium": [],
+                "hard": []
+            };
+            this._getScores();
+        }
+    }
+
+    _initialize() {
+        let config = {
             apiKey: "AIzaSyC5sUa2U_VhSpnN7E6SzJGg8LrF6O4d84U",
             authDomain: "monsters-330fe.firebaseapp.com",
             databaseURL: "https://monsters-330fe.firebaseio.com",
             projectId: "monsters-330fe",
             storageBucket: "monsters-330fe.appspot.com",
             messagingSenderId: "569925957074"
-        };
-        this.initialize();
-        this.fbDatabase = firebase.database();
+        },
+        initResult = true;
+
+        try {
+            firebase.initializeApp(config);
+        } catch (e) {
+            alert(e + ' Unable to connect to the server. Reload the game to try again.');
+            initResult = false;
+        }
+        return initResult;
     }
 
-    initialize() {
-        firebase.initializeApp(this.config);
-    }
-
-    saveScore(score) {
-        this.fbDatabase.ref('scores/' + Game.gameSettings.difficulty).push({
-            score: score
-        });
-    }
-
-    getScores(callback) {
-        let scores = this.fbDatabase.ref('/scores/').orderByChild('score').once('value', function(snapshot) {
-            let scores = {
-                "easy" : [],
-                "medium" : [],
-                "hard" : []
-            };
-            snapshot.forEach(function(difficulty) {
-                difficulty.forEach(function(childSnapshot) {
-                    scores[difficulty.key].push(childSnapshot.val().score);
-                });
+    saveScore(score, callback) {
+        if (this.isOnline) {
+            this.fbDatabase.ref('scores/' + Game.gameSettings.difficulty).push({
+                score: score
             });
-            callback(scores);
-        });
+            callback();
+        }
+    }
+
+    _getScores() {
+        let newScores,
+            fbServices = this;
+
+        if (this.isOnline) {
+            for (let list in this.scores) {
+                if (this.scores.hasOwnProperty(list)) {
+                    this.fbDatabase.ref('/scores/' + list).orderByChild('score').limitToLast(10).on('value', function(snapshot) {
+                        newScores = [];
+                        snapshot.forEach(function(childSnapshot) {
+                            newScores.push(childSnapshot.val().score);
+                        });
+                        fbServices.scores[list] = newScores;
+                    });
+                }
+            }
+        }
     }
 }
