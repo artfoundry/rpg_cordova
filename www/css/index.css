@@ -63,6 +63,10 @@ button:active {
     z-index: 6;
 }
 
+.creepy-text {
+    font-family: 'Creepster', serif;
+}
+
 #testing {
     position: fixed;
     height: 10px;
@@ -344,8 +348,10 @@ button:active {
     margin: 10px;
 }
 
-.creepy-text {
-    font-family: 'Creepster', serif;
+#modal-online-option {
+    margin: 0 10px 0 0;
+    padding: 5px 10px;
+    float: left;
 }
 
 #leaderboard {
@@ -412,12 +418,11 @@ button:active {
 
 .panel-header {
     padding: 10px 8px 8px;
-    font-family: 'Creepster', serif;
     font-size: 1.5em;
     text-shadow: 0 0 5px orangered;
 }
 
-.panel-body-container section {
+.panel-body-container .dynamic {
     padding: 0 20px;
     margin: 20px auto;
 }
@@ -427,7 +432,6 @@ button:active {
     width: 25%;
     float: left;
     text-align: right;
-    font-family: 'Creepster', serif;
     font-size: 1.1em;
     text-shadow: 0 0 5px orangered;
 }

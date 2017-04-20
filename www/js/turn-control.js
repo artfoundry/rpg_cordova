@@ -53,6 +53,7 @@ class TurnController {
                 {"class" : "modal-header", "text" : "dialogHeader"},
                 {"class" : "modal-body left-content subheader creepy-text", "text" : "gameIntro", "hidden" : false},
                 {"class" : "modal-body left-content", "text" : "instructions", "hidden" : false},
+                {"class" : "modal-body left-content", "text" : "online", "hidden" : false},
                 {"class" : "modal-tips", "text" : "tips", "hidden" : true}
             ],
             buttons = [
