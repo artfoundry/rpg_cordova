@@ -21,43 +21,53 @@ class UI {
         };
         this.defaultPanelOptions = [
             {
-                'element' : '.panel-header',
-                'content' : ' <span class="dynamic creepy-text">Options</span>'
+                'container' : '.panel-header',
+                'content' : '<span class="dynamic creepy-text">Options</span>'
             },
             {
-                'element' : '.panel-body-container',
-                'target' : '#panel-options-diff',
+                'container' : '.panel-body-container',
+                'id' : '#panel-options-diff',
+                'actionTarget' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.setGameDifficulty.bind(this),
                 'runCallbackNow' : true
             },
             {
-                'element' : '.panel-body-container',
-                'target' : '#panel-options-snd',
+                'container' : '.panel-body-container',
+                'id' : '#panel-options-snd',
+                'actionTarget' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateSoundSetting.bind(this),
                 'runCallbackNow' : true
             },
             {
-                'element' : '.panel-body-container',
-                'target' : '#panel-options-music',
+                'container' : '.panel-body-container',
+                'id' : '#panel-options-music',
+                'actionTarget' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateMusicSetting.bind(this),
                 'runCallbackNow' : true
             },
             {
-                'element' : '.panel-footer',
+                'container' : '.panel-footer',
                 'content' : '<button class="panel-button dynamic">Close</button>',
-                'target' : '.panel-button',
+                'actionTarget' : '.panel-button',
                 'disabled' : false,
                 'callback' : this.panelClose.bind(this),
                 'runCallbackNow' : false
             }
         ];
+        this.$panelPartials = $('<div></div>');
+        this.gameIsOnline = false;
     }
 
     initialize(turnController) {
+        this.preLoadPartials();
         this.runTurnCycle = turnController.runTurnCycle;
+    }
+
+    preLoadPartials() {
+        this.$panelPartials.load('html/panel-options.html');
     }
 
     updateUIAtStart(params) {
@@ -114,6 +124,8 @@ class UI {
             this.scrollWindow(-scrollX, -scrollY);
 
         $('.modal').show();
+
+        // set up modal text content
         for (let i = 0; i < messages.length; i++) {
             if (messages[i].class === "modal-header")
                 $('.modal-header').text(this.dialogs[messages[i].text]);
@@ -136,6 +148,8 @@ class UI {
                 }
             }
         }
+
+        // set up modal buttons
         for (let i = 0; i < buttons.length; i++) {
             let action = {
                     "modal-button" : buttons[i].action.bind(this)
@@ -156,6 +170,8 @@ class UI {
 
     modalClose(params) {
         this.events.removeClickListener('.modal-button');
+        if (this.gameIsOnline)
+            this.defaultPanelOptions[1].disabled = true;
         // remove dynamically added content
         $('.modal .dynamic').remove();
         $('.modal').hide();
@@ -164,16 +180,16 @@ class UI {
     }
 
     changeOnlineStatus(params) {
-        let $onlineButton = $('#modal-online-option'),
-            isOnline = $onlineButton.hasClass('option-highlight');
+        let $onlineButton = $('#modal-online-option');
 
         if (params.options) {
-            if (isOnline) {
+            if (this.gameIsOnline) {
                 $onlineButton.removeClass('option-highlight');
+                this.gameIsOnline = false;
             } else {
-                this.panelOpen(params);
-                this.defaultPanelOptions[1].disabled = true;
+                this.gameIsOnline = true;
                 $onlineButton.addClass('option-highlight');
+                this.panelOpen(params);
             }
         } else {
             this.panelClose();
@@ -256,25 +272,25 @@ class UI {
 
         for (let option = 0; option < params.options.length; option++) {
             let currentOption = params.options[option],
-                target = currentOption.target ? currentOption.target : null,
-                activateButtons = () => {
-                    if (target && currentOption.disabled === false)
-                        ui.events.setUpGeneralInteractionListeners(target, currentOption.callback);
-                    if (currentOption.callback && currentOption.runCallbackNow) {
-                        currentOption.callback();
-                    }
-                    if (currentOption.disabled === true)
-                        $(target).addClass('option-disabled');
-                };
+                wrapperID = currentOption.id ? currentOption.id : null,
+                $partials = this.$panelPartials, // convert to string during assignment
+                target = currentOption.actionTarget ? currentOption.actionTarget : null;
 
             if (currentOption.content) {
-                $(currentOption.element).append(currentOption.content);
-                activateButtons();
+                $(currentOption.container).append(currentOption.content);
             }
-            else {
-                $(currentOption.element).append('<div class="dynamic"></div>');
-                $(currentOption.element + ' div:last-child').load('html/panel-options.html ' + target, activateButtons);
+            else if (wrapperID) {
+                // $(currentOption.container).append('<div class="dynamic"></div>');
+                $(currentOption.container).append($partials.find(wrapperID));
             }
+
+            if (target && currentOption.disabled === false)
+                ui.events.setUpGeneralInteractionListeners(target, currentOption.callback);
+            if (currentOption.callback && currentOption.runCallbackNow) {
+                currentOption.callback();
+            }
+            if (currentOption.disabled === true)
+                $(target).addClass('option-disabled');
         }
     }
 
