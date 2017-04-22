@@ -9,76 +9,74 @@ class UI {
         this.events = events;
         this.runTurnCycle = function() {};
         this.dialogs = {
-            "dialogHeader"  : "Welcome to Monsters!",
+            "dialogHeader"  : "Here Be Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
             "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\nClicking on the Options button in the upper right will allow you to change the difficulty level and turn the sound and music on/off.",
+            "online"        : "Play online (selecting this will post your score to the leaderboards and disable difficulty level switching mid-game)",
             "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health and number of monsters killed.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "Your final score for the game is: ",
             "wait"          : "Wait...something is moving in the darkness..."
         };
-        this.panelOptions = [
+        this.defaultPanelOptions = [
             {
-                'element' : '.panel-header',
-                'content' : ' <span class="dynamic">Options</span>'
+                'container' : '.panel-header',
+                'content' : '<span class="dynamic creepy-text">Options</span>'
             },
             {
-                'element' : '.panel-body-container',
-                'content' : `<section class="dynamic">
-                                <span class="panel-option-label">Difficulty: </span>
-                                <span id="panel-options-diff" class="panel-options">
-                                    <span id="panel-option-diff-easy" class="panel-option" data-options-difficulty="easy">Easy</span>
-                                    <span id="panel-option-diff-medium" class="panel-option" data-options-difficulty="medium">Medium</span>
-                                    <span id="panel-option-diff-hard" class="panel-option" data-options-difficulty="hard">Hard</span>
-                                </span>
-                            </section>`,
-                'target' : '#panel-options-diff',
+                'container' : '.panel-body-container',
+                'id' : '#panel-options-diff',
+                'buttonContainer' : '.panel-options',
+                'disabled' : false,
                 'callback' : this.setGameDifficulty.bind(this),
                 'runCallbackNow' : true
             },
             {
-                'element' : '.panel-body-container',
-                'content' : `<section class="dynamic">
-                                <span class="panel-option-label">Sound: </span>
-                                <span id="panel-options-snd" class="panel-options">
-                                    <span id="panel-option-snd-on" class="panel-option" data-options-snd="on">On</span>
-                                    <span id="panel-option-snd-off" class="panel-option" data-options-snd="off">Off</span>
-                                </span>
-                            </section>`,
-                'target' : '#panel-options-snd',
+                'container' : '.panel-body-container',
+                'id' : '#panel-options-snd',
+                'buttonContainer' : '.panel-options',
+                'disabled' : false,
                 'callback' : this.updateSoundSetting.bind(this),
                 'runCallbackNow' : true
             },
             {
-                'element' : '.panel-body-container',
-                'content' : `<section class="dynamic">
-                                <span class="panel-option-label">Music: </span>
-                                <span id="panel-options-music" class="panel-options">
-                                    <span id="panel-option-music-on" class="panel-option" data-options-music="on">On</span>
-                                    <span id="panel-option-music-off" class="panel-option" data-options-music="off">Off</span>
-                                </span>
-                            </section>`,
-                'target' : '#panel-options-music',
+                'container' : '.panel-body-container',
+                'id' : '#panel-options-music',
+                'buttonContainer' : '.panel-options',
+                'disabled' : false,
                 'callback' : this.updateMusicSetting.bind(this),
                 'runCallbackNow' : true
             },
             {
-                'element' : '.panel-footer',
+                'container' : '.panel-footer',
                 'content' : '<button class="panel-button dynamic">Close</button>',
-                'target' : '.panel-button',
+                'buttonContainer' : '.panel-button',
+                'disabled' : false,
                 'callback' : this.panelClose.bind(this),
                 'runCallbackNow' : false
             }
         ];
+        this.$panelPartials = $('<div></div>');
+        this.gameIsOnline = false;
     }
 
     initialize(turnController) {
+        this.preLoadPartials();
         this.runTurnCycle = turnController.runTurnCycle;
     }
 
+    preLoadPartials() {
+        this.$panelPartials.load('html/panel-options.html');
+    }
+
     updateUIAtStart(params) {
-        this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
+        let panelCallbacks = {
+            'open' : this.panelOpen.bind(this),
+            'close' : this.panelClose.bind(this)
+        };
+
+        this.setUpPanelTrigger('#button-options', panelCallbacks, this.defaultPanelOptions);
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
@@ -87,6 +85,20 @@ class UI {
         this.audio.setVolume('sfx-dungeon-ambience', 0.2);
 
         this.modalClose(params);
+    }
+
+    setUpPanelTrigger(target, callbacks, options) {
+        let targetActions = {
+                'openPanel' : callbacks.open,
+                'closePanel' : callbacks.close
+            },
+            actionParam = {
+                'openPanel' : {
+                    'options' : options
+                }
+            };
+
+        this.events.setUpClickListener(target, targetActions, actionParam);
     }
 
     /**
@@ -99,22 +111,48 @@ class UI {
         let section = '<section class="modal-section dynamic"></section>',
             $body = $('body'),
             scrollY = $body.scrollTop(),
-            scrollX = $body.scrollLeft();
+            scrollX = $body.scrollLeft(),
+            score = 0,
+            panelCallbacks = {
+                'open' : this.changeOnlineStatus.bind(this),
+                'close' : this.changeOnlineStatus.bind(this)
+            },
+            panelOptions = this.defaultPanelOptions.slice(0, 2).concat(this.defaultPanelOptions.slice(4)),
+            $lastSection;
 
         if (scrollX > 0 || scrollY > 0)
             this.scrollWindow(-scrollX, -scrollY);
 
         $('.modal').show();
+
+        // set up modal text content
         for (let i = 0; i < messages.length; i++) {
             if (messages[i].class === "modal-header")
                 $('.modal-header').text(this.dialogs[messages[i].text]);
             else {
                 $('.modal-body-container').append(section);
-                $('.modal-section:last-child').addClass(messages[i].class).text(this.dialogs[messages[i].text]);
-                if (messages[i].text === 'score')
-                    $('.modal-section:last-child').append('<span class="score score-text">' + this.calcScore(messages[i].scoreValues) + '!</span>');
+                $lastSection = $('.modal-section:last-child');
+                $lastSection.addClass(messages[i].class).append('<span>' + this.dialogs[messages[i].text] + '</span>');
+
+                if (messages[i].text === 'online') {
+                    $lastSection.prepend('<span id="modal-online-option" class="panel-option openPanel" data-options-difficulty="online">Online</span>');
+                    this.setUpPanelTrigger('#modal-online-option', panelCallbacks, panelOptions);
+                }
+
+                if (messages[i].text === 'score') {
+                    score = this.calcScore(messages[i].scoreValues);
+                    $lastSection.children('span').addClass('subheader creepy-text push-right');
+                    $lastSection.append('<span class="score score-text">' + score + '</span>');
+                    $lastSection.append('<div id="leaderboard"><span class="score-text">Monster Leaders</span></div>');
+                    if (this.gameIsOnline)
+                        Game.fbServices.saveScore(score, this.displayScores);
+                    else
+                        this.displayScores();
+                }
             }
         }
+
+        // set up modal buttons
         for (let i = 0; i < buttons.length; i++) {
             let action = {
                     "modal-button" : buttons[i].action.bind(this)
@@ -135,11 +173,59 @@ class UI {
 
     modalClose(params) {
         this.events.removeClickListener('.modal-button');
+        if (this.gameIsOnline)
+            this.defaultPanelOptions[1].disabled = true;
         // remove dynamically added content
         $('.modal .dynamic').remove();
         $('.modal').hide();
         if (params.callback)
             params.callback();
+    }
+
+    changeOnlineStatus(params) {
+        let $onlineButton = $('#modal-online-option');
+
+        if (params.options) {
+            if (this.gameIsOnline) {
+                $onlineButton.removeClass('option-highlight');
+                this.gameIsOnline = false;
+            } else {
+                this.gameIsOnline = true;
+                $onlineButton.addClass('option-highlight');
+                this.panelOpen(params);
+            }
+        } else {
+            this.panelClose();
+        }
+    }
+
+    displayScores() {
+        let scores = Game.fbServices.scores,
+            scoresMarkup = `
+            <table>
+                <tbody>
+                    <tr class="creepy-text subheader">
+                        <th>Easy</th>
+                        <th>Medium</th>
+                        <th>Hard</th>
+                    </tr>
+                    <tr><td><ol id="score-list-easy"></ol></td>
+                        <td><ol id="score-list-medium"></ol></td>
+                        <td><ol id="score-list-hard"></ol></td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+
+        $('#leaderboard').append(scoresMarkup);
+        for (let list in scores) {
+            if (scores.hasOwnProperty(list) && scores[list].length > 0) {
+                scores[list].reverse();
+                for (let s=0; s < scores[list].length; s++) {
+                    $('#score-list-' + list).append('<li class="score"><span class="score-text">' + scores[list][s] + '</span></li>');
+                }
+            }
+        }
     }
 
     slideWindow(params) {
@@ -174,68 +260,79 @@ class UI {
     }
 
     /**
-     * function optionsOpen
-     * Sets up and appends a panel, using this.panelOptions for the dynamic content
+     * function panelOpen
+     * Sets up and displays a panel
+     *
+     * @param params: object containing at least an options array (of objects)
      */
-    panelOpen() {
+    panelOpen(params) {
         this.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
+        $('#button-options').addClass('closePanel').removeClass('openPanel');
 
-        for (let option = 0; option < this.panelOptions.length; option++) {
-            let currentOption = this.panelOptions[option],
-                target = currentOption.target ? currentOption.target : null;
-            $(currentOption.element).append(currentOption.content);
-            if (target)
-                this.events.setUpGeneralInteractionListeners(target, currentOption.callback);
+        for (let option = 0; option < params.options.length; option++) {
+            let currentOption = params.options[option],
+                wrapperID = currentOption.id ? currentOption.id : null,
+                buttonContainer = currentOption.buttonContainer ? currentOption.buttonContainer : null,
+                listenerTarget = wrapperID ? wrapperID : buttonContainer;
+
+            if (currentOption.content) {
+                $(currentOption.container).append(currentOption.content);
+            }
+            else if (wrapperID) {
+                this.$panelPartials.find(wrapperID).clone().appendTo($(currentOption.container));
+            }
+
+            if (buttonContainer && currentOption.disabled === false)
+                this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback);
+
             if (currentOption.callback && currentOption.runCallbackNow) {
                 currentOption.callback();
             }
+
+            if (currentOption.disabled === true)
+                $(buttonContainer).find('.panel-option').addClass('option-disabled');
         }
-        // remove the click-to-open listener for the Options button...
-        this.events.removeClickListener('#button-options');
-        // ...and set the button to close the panel instead
-        this.events.setUpGeneralInteractionListeners('#button-options', this.panelClose.bind(this));
     }
 
     panelClose() {
         $('#grid-cover').hide();
         $('.panel').hide();
+        $('#button-options').addClass('openPanel').removeClass('closePanel');
         this.helpers.setKeysEnabled();
-        this.events.removeClickListener('#button-options');
-        this.events.setUpGeneralInteractionListeners('#button-options', this.panelOpen.bind(this));
         // remove dynamically added content
         $('.panel .dynamic').remove();
     }
 
     setGameDifficulty(setting = Game.gameSettings.difficulty) {
-        $('#panel-options-diff').children().removeClass('option-highlight');
+        $('#panel-options-diff').find('.panel-option').removeClass('option-highlight');
         $('#panel-option-diff-' + setting).addClass('option-highlight');
         Game.gameSettings.difficulty = setting;
     }
 
     updateSoundSetting(setting = this.audio.getSoundState()) {
         this.audio.setSoundState(setting);
-        $('#panel-options-snd').children().removeClass('option-highlight');
+        $('#panel-options-snd').find('.panel-option').removeClass('option-highlight');
         $('#panel-option-snd-' + setting).addClass('option-highlight');
         if ($('#panel-options-music').length === 1)
             this.updateMusicSetting();
     }
 
     updateMusicSetting(setting = this.audio.getMusicState()) {
-        let $musicOptions = $('#panel-options-music'),
+        let $musicOptions = $('#panel-options-music').find('.panel-option'),
             soundSetting = this.audio.getSoundState();
 
         this.audio.setMusicState(setting);
-        $musicOptions.find('.panel-option').removeClass('option-highlight');
+        $musicOptions.removeClass('option-highlight');
         $('#panel-option-music-' + setting).addClass('option-highlight');
 
         if (soundSetting === 'off') {
-            $musicOptions.children('.panel-option').addClass('option-disabled');
+            $musicOptions.addClass('option-disabled');
             this.events.removeClickListener('#panel-options-music');
         }
         else {
-            $musicOptions.children().removeClass('option-disabled');
+            $musicOptions.removeClass('option-disabled');
             this.events.setUpGeneralInteractionListeners('#panel-options-music', this.updateMusicSetting.bind(this));
         }
     }

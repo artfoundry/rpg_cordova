@@ -63,6 +63,10 @@ button:active {
     z-index: 6;
 }
 
+.creepy-text {
+    font-family: 'Creepster', serif;
+}
+
 #testing {
     position: fixed;
     height: 10px;
@@ -311,12 +315,12 @@ button:active {
 
 .modal-footer {
     margin: auto;
-    padding: 10px;
+    padding: 10px 0 20px;
 }
 
 .modal-body-container {
     position: relative;
-    max-height: 500px;
+    max-height: 800px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -344,8 +348,33 @@ button:active {
     margin: 10px;
 }
 
-.creepy-text {
-    font-family: 'Creepster', serif;
+#modal-online-option {
+    margin: 0 10px 0 0;
+    padding: 5px 10px;
+    float: left;
+}
+
+#leaderboard {
+    margin-top: 20px;
+    padding-top: 10px;
+    text-align: center;
+    border-top: 1px solid black;
+}
+
+#leaderboard table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#leaderboard th, td {
+    text-align: center;
+    vertical-align: top;
+    font-weight: normal;
+}
+
+#leaderboard ol {
+    width: 20%;
+    margin: auto;
 }
 
 .score-text {
@@ -354,11 +383,15 @@ button:active {
     color: orangered;
     text-shadow: 1px 1px 2px black;
     vertical-align: middle;
-    padding-left: 10px;
 }
 
 .subheader {
     font-size: 1.2em;
+    vertical-align: middle;
+}
+
+.push-right {
+    padding-right: 10px;
 }
 
 /**
@@ -385,12 +418,11 @@ button:active {
 
 .panel-header {
     padding: 10px 8px 8px;
-    font-family: 'Creepster', serif;
     font-size: 1.5em;
     text-shadow: 0 0 5px orangered;
 }
 
-.panel-body-container section {
+.panel-body-container .dynamic {
     padding: 0 20px;
     margin: 20px auto;
 }
@@ -400,7 +432,6 @@ button:active {
     width: 25%;
     float: left;
     text-align: right;
-    font-family: 'Creepster', serif;
     font-size: 1.1em;
     text-shadow: 0 0 5px orangered;
 }

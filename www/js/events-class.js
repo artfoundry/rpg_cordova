@@ -13,7 +13,7 @@ class Events {
         this.helpers = helpers;
     }
 
-    setUpGeneralInteractionListeners(target, targetAction, params) {
+    setUpGeneralInteractionListeners(target, targetAction, params = null) {
         $(target).click((e) => {
             let $target = $(e.target),
                 selectedOpt = Object.keys($target.data())[0],

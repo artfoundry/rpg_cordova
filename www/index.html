@@ -32,7 +32,7 @@
                     <span class="stats">
                         <span class="pc-health">Health: <span class="status-value"></span></span>
                         <span class="kills">Kills: <span class="status-value"></span></span>
-                        <button id="button-options" class="statusbar-button">Options</button>
+                        <button id="button-options" class="statusbar-button openPanel">Options</button>
                     </span>
                 </div>
                 <div class="status-message"><span class="status-text"></span></div>
@@ -73,10 +73,22 @@
         <audio id="sfx-attack-shoggoth-03" src="audio/attack-shoggoth-03.mp3"></audio>
 
         <!--<script type="text/javascript" src="cordova.js"></script>-->
+        <script src="https://www.gstatic.com/firebasejs/3.7.6/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.7.6/firebase-database.js"></script>
+        <!-- Not currently used
+        <script src="https://www.gstatic.com/firebasejs/3.7.6/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.7.6/firebase-messaging.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.7.6/firebase-storage.js"></script>
+        -->
+        <script src="https://www.gstatic.com/firebasejs/3.7.8/firebase.js"></script>
+        <script>
+
+        </script>
         <script src="lib/jquery-3.2.0.min.js"></script>
         <script src="lib/jquery-ui.min.js"></script>
         <script type="text/javascript" src="js/starting-options.js"></script>
         <script type="text/javascript" src="js/helpers.js"></script>
+        <script type="text/javascript" src="js/firebase-class.js"></script>
         <script type="text/javascript" src="js/audio-class.js"></script>
         <script type="text/javascript" src="js/grid-class.js"></script>
         <script type="text/javascript" src="js/ui-class.js"></script>
