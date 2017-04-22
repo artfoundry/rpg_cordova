@@ -27,7 +27,7 @@ class UI {
             {
                 'container' : '.panel-body-container',
                 'id' : '#panel-options-diff',
-                'actionTarget' : '.panel-options',
+                'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.setGameDifficulty.bind(this),
                 'runCallbackNow' : true
@@ -35,7 +35,7 @@ class UI {
             {
                 'container' : '.panel-body-container',
                 'id' : '#panel-options-snd',
-                'actionTarget' : '.panel-options',
+                'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateSoundSetting.bind(this),
                 'runCallbackNow' : true
@@ -43,7 +43,7 @@ class UI {
             {
                 'container' : '.panel-body-container',
                 'id' : '#panel-options-music',
-                'actionTarget' : '.panel-options',
+                'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateMusicSetting.bind(this),
                 'runCallbackNow' : true
@@ -51,7 +51,7 @@ class UI {
             {
                 'container' : '.panel-footer',
                 'content' : '<button class="panel-button dynamic">Close</button>',
-                'actionTarget' : '.panel-button',
+                'buttonContainer' : '.panel-button',
                 'disabled' : false,
                 'callback' : this.panelClose.bind(this),
                 'runCallbackNow' : false
@@ -144,7 +144,10 @@ class UI {
                     $lastSection.children('span').addClass('subheader creepy-text push-right');
                     $lastSection.append('<span class="score score-text">' + score + '</span>');
                     $lastSection.append('<div id="leaderboard"><span class="score-text">Monster Leaders</span></div>');
-                    Game.fbServices.saveScore(score, this.displayScores);
+                    if (this.gameIsOnline)
+                        Game.fbServices.saveScore(score, this.displayScores);
+                    else
+                        this.displayScores();
                 }
             }
         }
@@ -263,8 +266,6 @@ class UI {
      * @param params: object containing at least an options array (of objects)
      */
     panelOpen(params) {
-        let ui = this;
-
         this.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
@@ -273,24 +274,25 @@ class UI {
         for (let option = 0; option < params.options.length; option++) {
             let currentOption = params.options[option],
                 wrapperID = currentOption.id ? currentOption.id : null,
-                $partials = this.$panelPartials, // convert to string during assignment
-                target = currentOption.actionTarget ? currentOption.actionTarget : null;
+                buttonContainer = currentOption.buttonContainer ? currentOption.buttonContainer : null,
+                listenerTarget = wrapperID ? wrapperID : buttonContainer;
 
             if (currentOption.content) {
                 $(currentOption.container).append(currentOption.content);
             }
             else if (wrapperID) {
-                // $(currentOption.container).append('<div class="dynamic"></div>');
-                $(currentOption.container).append($partials.find(wrapperID));
+                this.$panelPartials.find(wrapperID).clone().appendTo($(currentOption.container));
             }
 
-            if (target && currentOption.disabled === false)
-                ui.events.setUpGeneralInteractionListeners(target, currentOption.callback);
+            if (buttonContainer && currentOption.disabled === false)
+                this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback);
+
             if (currentOption.callback && currentOption.runCallbackNow) {
                 currentOption.callback();
             }
+
             if (currentOption.disabled === true)
-                $(target).addClass('option-disabled');
+                $(buttonContainer).find('.panel-option').addClass('option-disabled');
         }
     }
 
