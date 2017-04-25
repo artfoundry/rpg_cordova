@@ -460,6 +460,14 @@ button:active {
     border-bottom: 1px solid lightblue;
 }
 
+#modal-online-option.panel-option {
+    background-color: orangered;
+}
+
+#modal-online-option.option-highlight {
+    background-color: darkred;
+}
+
 .option-disabled {
     opacity: 0.3;
     cursor: default;
