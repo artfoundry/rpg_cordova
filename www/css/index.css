@@ -73,7 +73,7 @@ button:active {
     z-index: 10;
     top: 10px;
     left: 10px;
-    opacity: .5;
+    opacity: .1;
     border: none;
     border-radius: 2px;
     box-shadow: none;
@@ -458,6 +458,14 @@ button:active {
     background-color: darkslategray;
     border-top: 1px solid black;
     border-bottom: 1px solid lightblue;
+}
+
+#modal-online-option.panel-option {
+    background-color: orangered;
+}
+
+#modal-online-option.option-highlight {
+    background-color: darkred;
 }
 
 .option-disabled {

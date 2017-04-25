@@ -117,6 +117,7 @@ class UI {
                 'open' : this.changeOnlineStatus.bind(this),
                 'close' : this.changeOnlineStatus.bind(this)
             },
+            // when opening the options panel from the modal, it should only contain the header, diff level, and button
             panelOptions = this.defaultPanelOptions.slice(0, 2).concat(this.defaultPanelOptions.slice(4)),
             $lastSection;
 
