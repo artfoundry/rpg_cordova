@@ -73,7 +73,7 @@ button:active {
     z-index: 10;
     top: 10px;
     left: 10px;
-    opacity: .5;
+    opacity: .1;
     border: none;
     border-radius: 2px;
     box-shadow: none;
