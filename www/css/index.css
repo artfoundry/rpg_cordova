@@ -331,8 +331,16 @@ button:active {
     width: 90%;
     left: 0;
     text-align: left;
-    padding: 5% 5% 0;
+    padding: 2% 5% 0;
     white-space: pre-wrap;
+}
+
+.subheader {
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+    vertical-align: middle;
 }
 
 .left-content {
@@ -385,13 +393,14 @@ button:active {
     vertical-align: middle;
 }
 
-.subheader {
+.column-header {
+    width: 33%;
     font-size: 1.2em;
-    vertical-align: middle;
 }
 
-.push-right {
-    padding-right: 10px;
+.score-headers {
+    display: inline-block;
+    width: 150px;
 }
 
 /**
@@ -461,11 +470,11 @@ button:active {
 }
 
 #modal-online-option.panel-option {
-    background-color: orangered;
+    background-color: slateblue;
 }
 
 #modal-online-option.option-highlight {
-    background-color: darkred;
+    background-color: orangered;
 }
 
 .option-disabled {

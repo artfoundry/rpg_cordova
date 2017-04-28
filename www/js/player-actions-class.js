@@ -86,8 +86,10 @@ class PlayerActions {
                             }
                         };
                         if (targetMonster.health < 1) {
-                            if (targetMonster.subtype === 'elder')
+                            if (targetMonster.subtype === 'elder') {
                                 playerActions.audio.playSoundEffect(['death-elder']);
+                                currentPlayer.elderKilled = true;
+                            }
                             this.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
                             animateAttackParams.callback = function() {
