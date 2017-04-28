@@ -196,11 +196,11 @@ class UI {
         let scores = this.calcScore(scoreValues);
 
         el.children('span').addClass('subheader creepy-text');
-        el.append('<div><span class="scoreHeaders">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
-        el.append('<div><span class="scoreHeaders">Remaining health: </span><span class="score score-text">' + scores.health + '</span></div>');
-        el.append('<div><span class="scoreHeaders">Slaying the Elder: </span><span class="score score-text">' + scores.elder + '</span></div>');
-        el.append('<div><span class="scoreHeaders">Winning the game: </span><span class="score score-text">' + scores.win + '</span></div>');
-        el.append('<div><span class="scoreHeaders">Final score: </span><span class="score score-text">' + scores.total + '</span></div>');
+        el.append('<div><span class="score-headers">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
+        el.append('<div><span class="score-headers">Remaining health: </span><span class="score score-text">' + scores.health + '</span></div>');
+        el.append('<div><span class="score-headers">Slaying the Elder: </span><span class="score score-text">' + scores.elder + '</span></div>');
+        el.append('<div><span class="score-headers">Winning the game: </span><span class="score score-text">' + scores.win + '</span></div>');
+        el.append('<div><span class="score-headers">Final score: </span><span class="score score-text">' + scores.total + '</span></div>');
 
         el.append('<div id="leaderboard"><span class="score-text">Monster Leaders</span></div>');
 
@@ -215,12 +215,13 @@ class UI {
             scoresMarkup = `
                 <table>
                     <tbody>
-                        <tr class="creepy-text subheader">
-                            <th>Easy</th>
-                            <th>Medium</th>
-                            <th>Hard</th>
+                        <tr>
+                            <th class="creepy-text column-header">Easy</th>
+                            <th class="creepy-text column-header">Medium</th>
+                            <th class="creepy-text column-header">Hard</th>
                         </tr>
-                        <tr><td><ol id="score-list-easy"></ol></td>
+                        <tr>
+                            <td><ol id="score-list-easy"></ol></td>
                             <td><ol id="score-list-medium"></ol></td>
                             <td><ol id="score-list-hard"></ol></td>
                         </tr>

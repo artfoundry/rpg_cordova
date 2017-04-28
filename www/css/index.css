@@ -335,6 +335,14 @@ button:active {
     white-space: pre-wrap;
 }
 
+.subheader {
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
 .left-content {
     float: left;
 }
@@ -385,13 +393,12 @@ button:active {
     vertical-align: middle;
 }
 
-.subheader {
+.column-header {
+    width: 33%;
     font-size: 1.2em;
-    line-height: 2em;
-    vertical-align: middle;
 }
 
-.scoreHeaders {
+.score-headers {
     display: inline-block;
     width: 150px;
 }
