@@ -13,10 +13,10 @@ class UI {
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
             "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\nClicking on the Options button in the upper right will allow you to change the difficulty level and turn the sound and music on/off.",
             "online"        : "Play online (selecting this will post your score to the leaderboards and disable difficulty level switching mid-game)",
-            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health and number of monsters killed.",
+            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health, number of monsters killed, whether you kill the Elder, and whether you win the game.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
-            "score"         : "Your final score for the game is: ",
+            "score"         : "Score for this game",
             "wait"          : "Wait...something is moving in the darkness..."
         };
         this.defaultPanelOptions = [
@@ -112,7 +112,6 @@ class UI {
             $body = $('body'),
             scrollY = $body.scrollTop(),
             scrollX = $body.scrollLeft(),
-            score = 0,
             panelCallbacks = {
                 'open' : this.changeOnlineStatus.bind(this),
                 'close' : this.changeOnlineStatus.bind(this)
@@ -141,14 +140,7 @@ class UI {
                 }
 
                 if (messages[i].text === 'score') {
-                    score = this.calcScore(messages[i].scoreValues);
-                    $lastSection.children('span').addClass('subheader creepy-text push-right');
-                    $lastSection.append('<span class="score score-text">' + score + '</span>');
-                    $lastSection.append('<div id="leaderboard"><span class="score-text">Monster Leaders</span></div>');
-                    if (this.gameIsOnline)
-                        Game.fbServices.saveScore(score, this.displayScores);
-                    else
-                        this.displayScores();
+                    this.displayScore($lastSection, messages[i].scoreValues);
                 }
             }
         }
@@ -200,23 +192,41 @@ class UI {
         }
     }
 
-    displayScores() {
+    displayScore(el, scoreValues) {
+        let scores = this.calcScore(scoreValues);
+
+        el.children('span').addClass('subheader creepy-text');
+        el.append('<div><span class="scoreHeaders">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
+        el.append('<div><span class="scoreHeaders">Remaining health: </span><span class="score score-text">' + scores.health + '</span></div>');
+        el.append('<div><span class="scoreHeaders">Slaying the Elder: </span><span class="score score-text">' + scores.elder + '</span></div>');
+        el.append('<div><span class="scoreHeaders">Winning the game: </span><span class="score score-text">' + scores.win + '</span></div>');
+        el.append('<div><span class="scoreHeaders">Final score: </span><span class="score score-text">' + scores.total + '</span></div>');
+
+        el.append('<div id="leaderboard"><span class="score-text">Monster Leaders</span></div>');
+
+        if (this.gameIsOnline)
+            Game.fbServices.saveScore(scores.total, this.displayLeaderboards);
+        else
+            this.displayLeaderboards();
+    }
+
+    displayLeaderboards() {
         let scores = Game.fbServices.scores,
             scoresMarkup = `
-            <table>
-                <tbody>
-                    <tr class="creepy-text subheader">
-                        <th>Easy</th>
-                        <th>Medium</th>
-                        <th>Hard</th>
-                    </tr>
-                    <tr><td><ol id="score-list-easy"></ol></td>
-                        <td><ol id="score-list-medium"></ol></td>
-                        <td><ol id="score-list-hard"></ol></td>
-                    </tr>
-                </tbody>
-            </table>
-        `;
+                <table>
+                    <tbody>
+                        <tr class="creepy-text subheader">
+                            <th>Easy</th>
+                            <th>Medium</th>
+                            <th>Hard</th>
+                        </tr>
+                        <tr><td><ol id="score-list-easy"></ol></td>
+                            <td><ol id="score-list-medium"></ol></td>
+                            <td><ol id="score-list-hard"></ol></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
 
         $('#leaderboard').append(scoresMarkup);
         for (let list in scores) {
@@ -339,9 +349,18 @@ class UI {
     }
 
     calcScore(scoreValues) {
-        if (scoreValues.health < 0)
-            scoreValues.health = 0;
-        return (scoreValues.kills*5) + (scoreValues.health*10);
+        let kills = scoreValues.kills * 5,
+            health = scoreValues.health <= 0 ? 0 : scoreValues.health * 10,
+            elderPoints = scoreValues.elderKilled ? 25 : 0,
+            winPoints = scoreValues.gameWon ? 50 : 0;
+
+        return {
+            'kills' : kills,
+            'health' : health,
+            'elder' : elderPoints,
+            'win' : winPoints,
+            'total' : kills + health + elderPoints + winPoints
+        };
     }
 
     updateStatusValue(params) {

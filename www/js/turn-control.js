@@ -213,7 +213,9 @@ class TurnController {
             },
             scoreValues = {
                 "kills" : this.players.player1.kills,
-                "health" : this.players.player1.health
+                "health" : this.players.player1.health,
+                "elderKilled" : this.players.player1.elderKilled,
+                "gameWon" : message === "gameOverWin"
             },
             endingMessages = [
                 {"class" : "modal-header", "text" : "dialogHeader"},

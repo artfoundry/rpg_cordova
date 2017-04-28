@@ -331,7 +331,7 @@ button:active {
     width: 90%;
     left: 0;
     text-align: left;
-    padding: 5% 5% 0;
+    padding: 2% 5% 0;
     white-space: pre-wrap;
 }
 
@@ -387,11 +387,13 @@ button:active {
 
 .subheader {
     font-size: 1.2em;
+    line-height: 2em;
     vertical-align: middle;
 }
 
-.push-right {
-    padding-right: 10px;
+.scoreHeaders {
+    display: inline-block;
+    width: 150px;
 }
 
 /**
@@ -461,11 +463,11 @@ button:active {
 }
 
 #modal-online-option.panel-option {
-    background-color: orangered;
+    background-color: slateblue;
 }
 
 #modal-online-option.option-highlight {
-    background-color: darkred;
+    background-color: orangered;
 }
 
 .option-disabled {
