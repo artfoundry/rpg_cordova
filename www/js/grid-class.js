@@ -13,6 +13,7 @@ class Grid {
         this.tileSize = gridOptions.tileSize;
         this.audio = audio;
         this.ui = ui;
+        this.lightRadius = 2;
     }
 
     drawGrid() {
@@ -68,7 +69,8 @@ class Grid {
             tileType = 'ground';
         // if top and either left or right are walls...
         } else if (surroundingTiles.$tileAbove.hasClass('tile-wall') && (surroundingTiles.$tileLeft.hasClass('tile-wall') || surroundingTiles.$tileRight.hasClass('tile-wall'))) {
-            // ...and bottom and right are walls OR left is a wall but top left is not a wall OR right is a wall but top right is not a wall... (basically don't leave catty-corner walls)
+            // ...and bottom and right are walls OR left is a wall but top left is not a wall OR right is a wall but top right is not a wall...
+            // (basically don't leave catty-corner walls)
             if ((surroundingTiles.$tileRight && surroundingTiles.$tileRight.hasClass('tile-wall') &&
                 surroundingTiles.$tileBelow && surroundingTiles.$tileBelow.hasClass('tile-wall')) ||
                 (surroundingTiles.$tileLeft.hasClass('tile-wall') && !surroundingTiles.$tileAboveLeft.hasClass('tile-wall')) ||
@@ -124,6 +126,76 @@ class Grid {
 
     setTileWalkable(position, name, type, subtype) {
         $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable');
+    }
+
+    setLighting(newPos, currentPos) {
+        let oldPos = currentPos || newPos,
+            newLightPos = $('#' + newPos).offset(),
+            currentLightPos = $('#' + oldPos + ' .content').offset(),
+            lightingParams = {},
+            grid = this;
+
+        lightingParams.gridPos = $('.grid').offset();
+        lightingParams.radius = this.lightRadius * grid.tileSize + (grid.tileSize/2);
+        lightingParams.newLightPosTop = Math.round(newLightPos.top - lightingParams.gridPos.top - (lightingParams.radius/3));
+        lightingParams.newLightPosLeft = Math.round(newLightPos.left - lightingParams.gridPos.left + (lightingParams.radius/6));
+        lightingParams.currentLightPosLeft = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).left;
+        lightingParams.currentLightPosTop = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).top;
+        lightingParams.canvas = document.getElementById("canvas-lighting");
+        lightingParams.currentPos = currentPos;
+
+        this._drawLightCircle(lightingParams);
+
+        if (newPos !== oldPos) {
+            let lightingLoop = function() {
+                lightingParams.animID = requestAnimationFrame(lightingLoop);
+                grid._drawLightCircle(lightingParams);
+            };
+            lightingLoop();
+        }
+    }
+
+    _drawLightCircle(lightingParams) {
+        let canvas = lightingParams.canvas,
+            radius = lightingParams.radius,
+            cx = lightingParams.currentLightPosLeft,
+            cy = lightingParams.currentLightPosTop,
+            ctx = canvas.getContext("2d"),
+            cw = canvas.width,
+            ch = canvas.height,
+            radialGradient = ctx.createRadialGradient(cx, cy, 1, cx, cy, radius);
+
+        ctx.save();
+        ctx.clearRect(0, 0, cw, ch);
+        radialGradient.addColorStop(0, 'rgba(0,0,0,1)');
+        radialGradient.addColorStop(.65, 'rgba(0,0,0,1)');
+        radialGradient.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI*2);
+        ctx.fillStyle = radialGradient;
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-out';
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.restore();
+
+        if (lightingParams.animID) {
+            let $charPos = $('#' + lightingParams.currentPos + ' .content'),
+                currentLightPos = $charPos.offset();
+
+            lightingParams.currentLightPosLeft = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).left;
+            lightingParams.currentLightPosTop = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).top;
+            if (lightingParams.newLightPosLeft === lightingParams.currentLightPosLeft && lightingParams.newLightPosTop === lightingParams.currentLightPosTop)
+                cancelAnimationFrame(lightingParams.animID);
+        }
+    }
+
+    _calcCurrentPosition(currentLightPos, gridPos, radius) {
+        let position = {};
+
+        position.left = Math.round(currentLightPos.left - gridPos.left + (radius/6));
+        position.top = Math.round(currentLightPos.top - gridPos.top - (radius/3));
+        return position;
     }
 
     /**
