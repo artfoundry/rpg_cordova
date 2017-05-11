@@ -18,8 +18,8 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, playerActions, monsterActions, monsters, events) {
-        this.grid = grid;
+    constructor(dungeon, ui, players, playerActions, monsterActions, monsters, events) {
+        this.grid = dungeon.levels[0];
         this.ui = ui;
         this.players = players;
         this.playerActions = playerActions;
@@ -35,12 +35,12 @@ class TurnController {
         this.grid.drawGrid();
 
         // for testing
-        if ($('#testing').length === 0) {
-            $('#app').prepend('<button id="testing"></button>');
-        }
-        $('#testing').click(function() {
-            $('#canvas-lighting').toggle();
-        });
+        // if ($('#testing').length === 0) {
+        //     $('#app').prepend('<button id="testing"></button>');
+        // }
+        // $('#testing').click(function() {
+        //     $('#canvas-lighting').toggle();
+        // });
         // end test code
 
         this.players.player1.initialize();

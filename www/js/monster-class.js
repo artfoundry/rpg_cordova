@@ -3,14 +3,12 @@
  */
 
 class Monster {
-    constructor(monsterOptions, grid, helpers, audio) {
+    constructor(monsterOptions, dungeon, audio) {
         this.name = monsterOptions.name;
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health; // used by player-actions for attacks
-        this.gridWidth = grid.gridWidth;
-        this.gridHeight = grid.gridHeight;
-        this.helpers = helpers;
+        this.grid = dungeon.levels[0];
         this.audio = audio;
         this.row = 0;
         this.col = 0;
@@ -41,12 +39,12 @@ class Monster {
 
         // start searching from radius 2 because moveMonsters() already checks for players 1 space away to attack
         for (let radius=2; radius <= searchRadius; radius++) {
-            $targets = $targets.add(this.helpers.checkForNearbyCharacters(this, 'player', radius));
+            $targets = $targets.add(Game.helpers.checkForNearbyCharacters(this, 'player', radius));
         }
         if ($targets.length === 0)
             this.randomMove();
         else {
-            targetPlayerLoc = this.helpers.getRowCol($targets[0].id);
+            targetPlayerLoc = Game.helpers.getRowCol($targets[0].id);
             rowDiff = targetPlayerLoc.row - this.row;
             colDiff = targetPlayerLoc.col - this.col;
             if (Game.gameSettings.difficulty === 'medium') {
@@ -68,7 +66,7 @@ class Monster {
     }
 
     avoidPlayer(playerTile, callback) {
-        let targetPlayerLoc = this.helpers.getRowCol(playerTile.id);
+        let targetPlayerLoc = Game.helpers.getRowCol(playerTile.id);
 
         this.moveRelatedToPlayer(targetPlayerLoc, 'away', callback);
     }
@@ -212,8 +210,8 @@ class Monster {
             monster.grid.animateTile(animateMoveParams);
         }
 
-        monster.row = this.helpers.getRowCol(newTileId).row;
-        monster.col = this.helpers.getRowCol(newTileId).col;
+        monster.row = Game.helpers.getRowCol(newTileId).row;
+        monster.col = Game.helpers.getRowCol(newTileId).col;
     }
 
     _randomizeLoc() {
@@ -221,8 +219,8 @@ class Monster {
             col = 0;
 
         while ($('#row' + row + 'col' + col).hasClass('tile-wall')) {
-            row = Math.ceil(Math.random() * (this.gridHeight/2) + (this.gridHeight/3));
-            col = Math.ceil(Math.random() * (this.gridWidth/2) + (this.gridWidth/3));
+            row = Math.ceil(Math.random() * (this.grid.gridHeight/2) + (this.grid.gridHeight/3));
+            col = Math.ceil(Math.random() * (this.grid.gridWidth/2) + (this.grid.gridWidth/3));
         }
         this.pos = 'row' + row + 'col' + col;
     }

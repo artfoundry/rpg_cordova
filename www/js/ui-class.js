@@ -3,8 +3,7 @@
  */
 
 class UI {
-    constructor(helpers, audio, events) {
-        this.helpers = helpers;
+    constructor(audio, events) {
         this.audio = audio;
         this.events = events;
         this.runTurnCycle = function() {};
@@ -278,7 +277,7 @@ class UI {
      * @param params: object containing at least an options array (of objects)
      */
     panelOpen(params) {
-        this.helpers.setKeysDisabled();
+        Game.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
         $('#button-options').addClass('closePanel').removeClass('openPanel');
@@ -312,7 +311,7 @@ class UI {
         $('#grid-cover').hide();
         $('.panel').hide();
         $('#button-options').addClass('openPanel').removeClass('closePanel');
-        this.helpers.setKeysEnabled();
+        Game.helpers.setKeysEnabled();
         // remove dynamically added content
         $('.panel .dynamic').remove();
     }

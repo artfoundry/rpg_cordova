@@ -7,9 +7,8 @@
  */
 
 class PlayerCharacter {
-    constructor(playerOptions, grid, helpers) {
-        this.grid = grid;
-        this.helpers = helpers;
+    constructor(playerOptions, dungeon) {
+        this.grid = dungeon.levels[0];
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
         this.type = playerOptions.type;
@@ -65,7 +64,7 @@ class PlayerCharacter {
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
         }
 
-        player.row = this.helpers.getRowCol(newPosId).row;
-        player.col = this.helpers.getRowCol(newPosId).col;
+        player.row = Game.helpers.getRowCol(newPosId).row;
+        player.col = Game.helpers.getRowCol(newPosId).col;
     }
 }

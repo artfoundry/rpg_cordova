@@ -3,12 +3,11 @@
  */
 
 class MonsterActions {
-    constructor(grid, ui, players, monsters, helpers, audio) {
-        this.grid = grid;
+    constructor(dungeon, ui, players, monsters, audio) {
+        this.grid = dungeon.levels[0];
         this.ui = ui;
         this.players = players;
         this.monsters = monsters;
-        this.helpers = helpers;
         this.audio = audio;
         this.monsterCount = Object.keys(this.monsters).length;
     }
@@ -31,7 +30,7 @@ class MonsterActions {
                 return;
             else if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 currentMonster = this.monsters[monster];
-                nearbyPlayerTiles = this.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
+                nearbyPlayerTiles = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
                 if (currentMonster.name === 'Elder') {
                     currentMonster.saveCurrentPos();
                 } else if (nearbyPlayerTiles) {

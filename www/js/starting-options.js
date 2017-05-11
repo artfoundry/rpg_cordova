@@ -2,7 +2,7 @@
  * Created by David on 4/5/17.
  */
 
-let startingOptions = {
+let StartingOptions = {
     "gridOptions" : {
         "width" : 10,
         "height" : 10,

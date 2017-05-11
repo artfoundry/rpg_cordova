@@ -1,13 +1,13 @@
 /**
  * Created by dsmarkowitz on 12/19/16.
  *
- * Helper functions used by player and turn-control classes.
+ * Helper functions used by most classes.
  */
 
 
 class Helpers {
-    constructor(gridOptions) {
-        this.grid = gridOptions;
+    constructor() {
+        this.grid = StartingOptions.gridOptions;
     }
 
     /**
@@ -127,6 +127,7 @@ class Helpers {
         return $('body').hasClass('keys-enabled');
     }
 
+    // Currently not in use - was more annoying than helpful
     isOffScreen(element) {
         let height = element.outerHeight(),
             width = element.outerWidth(),

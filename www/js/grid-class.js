@@ -5,8 +5,7 @@
  */
 
 class Grid {
-    constructor(helpers, gridOptions, audio, ui) {
-        this.helpers = helpers;
+    constructor(gridOptions, audio, ui) {
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
         this.gridRandomFactor = gridOptions.randomization;
@@ -81,8 +80,12 @@ class Grid {
                 tileType = 'ground';
             }
         // otherwise if top, left, and right aren't walls AND top left or top right is a wall
-        } else if (!surroundingTiles.$tileAbove.hasClass('tile-wall') && !surroundingTiles.$tileLeft.hasClass('tile-wall') && !surroundingTiles.$tileRight.hasClass('tile-wall') &&
-            (surroundingTiles.$tileAboveLeft.hasClass('tile-wall') || surroundingTiles.$tileAboveRight.hasClass('tile-wall'))) {
+        } else if (
+            !surroundingTiles.$tileAbove.hasClass('tile-wall') &&
+            !surroundingTiles.$tileLeft.hasClass('tile-wall') &&
+            !surroundingTiles.$tileRight.hasClass('tile-wall') &&
+            (surroundingTiles.$tileAboveLeft.hasClass('tile-wall') || surroundingTiles.$tileAboveRight.hasClass('tile-wall')))
+        {
             tileType = 'ground';
 
         // otherwise randomize it
@@ -274,8 +277,8 @@ class Grid {
         let $target = $('#' + position),
             $targetContent = $target.children('.content'),
             $destinationContent = $('#' + destination).children('.content'),
-            destinationPosValues = this.helpers.getRowCol(destination),
-            currentPosValues = this.helpers.getRowCol(position),
+            destinationPosValues = Game.helpers.getRowCol(destination),
+            currentPosValues = Game.helpers.getRowCol(position),
             moveDirection = {
                 vertMov : destinationPosValues.row - currentPosValues.row,
                 horizMov : destinationPosValues.col - currentPosValues.col

@@ -9,10 +9,6 @@
 
 
 class Events {
-    constructor(helpers) {
-        this.helpers = helpers;
-    }
-
     setUpGeneralInteractionListeners(target, targetAction, params = null) {
         $(target).click((e) => {
             let $target = $(e.target),
@@ -49,11 +45,11 @@ class Events {
     setUpArrowKeysListener(targetActions, params, playerPos) {
         let destinationTile = '';
 
-        this.helpers.setKeysEnabled();
+        Game.helpers.setKeysEnabled();
         
         $('body').keyup((e) => {
-            if (this.helpers.getKeysEnabled()) {
-                destinationTile = document.getElementById(this.helpers.checkPlayerDestination(e.which, playerPos));
+            if (Game.helpers.getKeysEnabled()) {
+                destinationTile = document.getElementById(Game.helpers.checkPlayerDestination(e.which, playerPos));
                 this.processAction(targetActions, params, destinationTile);
             }
         });

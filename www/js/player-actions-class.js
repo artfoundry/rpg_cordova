@@ -3,12 +3,11 @@
  */
 
 class PlayerActions {
-    constructor(grid, ui, players, monsters, helpers, audio) {
-        this.grid = grid;
+    constructor(dungeon, ui, players, monsters, audio) {
+        this.grid = dungeon.levels[0];
         this.ui = ui;
         this.players = players;
         this.monsters = monsters;
-        this.helpers = helpers;
         this.audio = audio;
     }
 
@@ -64,7 +63,7 @@ class PlayerActions {
                 if (targetMonster.pos === targetTile.id) {
                     targetLoc = $('#' + targetMonster.pos)[0];
                     // check if there are actually monsters nearby
-                    nearbyMonsterList = this.helpers.checkForNearbyCharacters(currentPlayer, 'monster', 1);
+                    nearbyMonsterList = Game.helpers.checkForNearbyCharacters(currentPlayer, 'monster', 1);
                     // if attack target matches monster in list of nearby monsters, then we have our target
                     if (nearbyMonsterList.indexOf(targetLoc) !== -1) {
                         targetMonster.health -= 1;
@@ -90,7 +89,7 @@ class PlayerActions {
                                 playerActions.audio.playSoundEffect(['death-elder']);
                                 currentPlayer.elderKilled = true;
                             }
-                            this.helpers.killObject(this.monsters, monsterNum);
+                            Game.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
                             animateAttackParams.callback = function() {
                                 playerActions.grid.animateTile(animateDeathParams);
