@@ -16,7 +16,7 @@ class PlayerActions {
      * Moves player character to newTile
      * Parameters:
      * - params: Object sent by TurnController containing player object and callback under "walkable" key
-     * - newTile: String of tile's id in the format "row#col#"
+     * - newTile: jQuery object of tile to which player is moving
      */
     movePlayer(params, newTile) {
         let player = this.players[params.player],
@@ -37,6 +37,17 @@ class PlayerActions {
         ) {
             player.setPlayer(currentPos, newTilePos, callback);
         }
+    }
+
+    pickUpItem(params, targetTile) {
+        let player = this.players[params.player],
+            $targetTile = $(targetTile),
+            itemType = $targetTile.data('itemType'),
+            itemName = $targetTile.data('itemName');
+
+        player.inventory.items[itemType] = itemName;
+        this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
+        this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
     }
 
     /**

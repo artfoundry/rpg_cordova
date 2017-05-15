@@ -8,10 +8,12 @@ class Dungeon {
         this.audio = audio;
         this.ui = ui;
         this.gridOptions = StartingOptions.gridOptions;
+        this.levelItems = this.gridOptions.items;
     }
 
     createNewLevel() {
         let grid = new Grid(this.gridOptions, this.audio, this.ui);
+        grid.drawGrid(this.levelItems);
         this.levels.push(grid);
     }
 }

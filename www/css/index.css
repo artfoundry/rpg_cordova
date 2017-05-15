@@ -281,6 +281,10 @@ button:active {
     background-image: url('../img/elder.png');
 }
 
+.content-elder-sign {
+    background-image: url('../img/elder-sign.png');
+}
+
 /**
  *  Modal
  */

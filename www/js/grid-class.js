@@ -15,7 +15,7 @@ class Grid {
         this.lightRadius = 2;
     }
 
-    drawGrid() {
+    drawGrid(items) {
         let grid = this,
             $gridEl = $('.grid'),
             gridPixels = (this.gridWidth + 2) * this.tileSize,
@@ -44,6 +44,7 @@ class Grid {
             }
             return markup;
         });
+        this.addItems(items);
         $gridEl.css('width', gridPixels + 1);
         $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></canvas>');
     }
@@ -109,6 +110,26 @@ class Grid {
                 wallCount += 1;
         }
         return wallCount;
+    }
+
+    /**
+     * function addItems
+     * Randomly adds all passed items into walkable tiles
+     * @param items: object of
+     */
+    addItems(items) {
+        for (let item in items) {
+            if (items.hasOwnProperty(item)) {
+                let itemLoc = '',
+                    itemName = items[item];
+                do {
+                    itemLoc = 'row' + Math.ceil(Math.random() * this.gridHeight) + 'col' + Math.ceil(Math.random() * this.gridWidth);
+                } while (!$('#' + itemLoc).hasClass('walkable'));
+                this.changeTileSetting(itemLoc, itemName, 'item', item);
+                this.changeTileImg(itemLoc, 'content-' + itemName, 'content-trans');
+                $('#' + itemLoc).data('itemType', item).data('itemName', itemName);
+            }
+        }
     }
 
     clearGrid() {

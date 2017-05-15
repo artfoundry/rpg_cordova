@@ -18,6 +18,15 @@ class PlayerCharacter {
         this.col = 0;
         this.kills = 0;
         this.elderKilled = false;
+        this.quests = {
+            'currentQuests'      : Quests.elderSign,
+            'completedQuests'    : null
+        };
+        this.inventory = {
+            'armor'     : {},
+            'items'     : {},
+            'weapons'   : {}
+        };
     }
 
     initialize() {

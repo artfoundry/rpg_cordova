@@ -32,15 +32,13 @@ class TurnController {
     }
 
     initialize() {
-        this.grid.drawGrid();
-
         // for testing
-        // if ($('#testing').length === 0) {
-        //     $('#app').prepend('<button id="testing"></button>');
-        // }
-        // $('#testing').click(function() {
-        //     $('#canvas-lighting').toggle();
-        // });
+        if ($('#testing').length === 0) {
+            $('#app').prepend('<button id="testing"></button>');
+        }
+        $('#testing').click(function() {
+            $('#canvas-lighting').toggle();
+        });
         // end test code
 
         this.players.player1.initialize();
@@ -145,9 +143,10 @@ class TurnController {
      *
      * Sets up player click and key handlers for monster turn using events class (in order to send status message)
      *
-     * parameters:
-     * -target (class ".tile")
-     * -targetActions: keys are tile classes, values are actions to take
+     * parameters sent to event handler:
+     * -tileListenerTarget (class ".tile")
+     * -targetAction: callback that displays the message
+     * -params: values are keys to react to (display message) if user types them
      ****************************/
     _setupMonsterTurnInteractionHandlers() {
         let turnCycle = this,
@@ -170,16 +169,18 @@ class TurnController {
      *
      * Sets up click and key handlers for player turn using events class
      *
-     * parameters:
-     * -target (class ".tile")
+     * parameters to send to event handler:
+     * -tileListenerTarget (class ".tile")
      * -targetActions: keys are tile classes, values are actions to take
      * -params: parameters to send to each target action
+     * -this.players.player1.pos: player's current position
      ****************************/
     _setupPlayerTurnInteractionHandlers() {
         let targetActions = {
                 "walkable": this.playerActions.movePlayer.bind(this.playerActions),
                 "impassable": this.grid.animateTile.bind(this),
-                "monster": this.playerActions.playerAttack.bind(this.playerActions)
+                "monster": this.playerActions.playerAttack.bind(this.playerActions),
+                "item": this.playerActions.pickUpItem.bind(this.playerActions)
             },
             params = {
                 "walkable": {
@@ -193,6 +194,9 @@ class TurnController {
                 "monster": {
                     "player": "player1",
                     "callback" : this.endTurn.bind(this)
+                },
+                "item": {
+                    "player": "player1"
                 }
             };
             this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);

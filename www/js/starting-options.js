@@ -7,7 +7,10 @@ let StartingOptions = {
         "width" : 10,
         "height" : 10,
         "tileSize" : 64,
-        "randomization" : 0.6
+        "randomization" : 0.6,
+        "items" : {
+            "questItem" : "elder-sign"
+        }
     },
     "playerOptions" : {
         "player1" : {
