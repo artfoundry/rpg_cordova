@@ -14,13 +14,15 @@ class PlayerCharacter {
         this.type = playerOptions.type;
         this.subtype = playerOptions.subtype;
         this.health = playerOptions.health;
+        this.startingQuest = playerOptions.startingQuest;
         this.row = 0;
         this.col = 0;
         this.kills = 0;
         this.elderKilled = false;
         this.quests = {
-            'currentQuests'      : Quests.elderSign,
-            'completedQuests'    : null
+            'currentQuest'      : '',
+            'questGoals'        : {},
+            'completedQuests'   : null
         };
         this.inventory = {
             'armor'     : {},
@@ -33,6 +35,7 @@ class PlayerCharacter {
         this.setPlayer(this.pos);
         this.grid.setLighting(this.pos);
         this.resetKills();
+        this.handleQuest(this.startingQuest);
     }
 
     resetKills() {
@@ -51,10 +54,10 @@ class PlayerCharacter {
         let player = this,
             newPosId = newPos || currentPos,
             animateMoveParams = {
-                "position" : currentPos,
-                "destinationId" : newPosId,
-                "type" : "move",
-                "callback" : function() {
+                'position' : currentPos,
+                'destinationId' : newPosId,
+                'type' : 'move',
+                'callback' : function() {
                     player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
                     player.grid.changeTileImg(currentPos, 'content-trans', 'content-' + player.type);
                     if (callback)
@@ -75,5 +78,15 @@ class PlayerCharacter {
 
         player.row = Game.helpers.getRowCol(newPosId).row;
         player.col = Game.helpers.getRowCol(newPosId).col;
+    }
+
+    handleQuest(questName) {
+        if (questName === this.quests.currentQuest) {
+            // check if quest goals have been met, and if so, move quest to completed and get new quest
+
+        } else if (this.quests.currentQuest === '') {
+            this.quests.currentQuest = questName;
+            this.quests.questGoals = Quests[questName].questGoals;
+        }
     }
 }

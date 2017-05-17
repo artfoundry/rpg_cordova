@@ -18,6 +18,7 @@ let StartingOptions = {
             "type" : "player",
             "subtype" : "investigator",
             "startPos" : "row1col1",
+            "startingQuest" : "elderSign",
             "health" : 3
         }
     },
