@@ -29,8 +29,8 @@
             <div class="statusbar-container">
                 <div class="statusbar">
                     <span id="pc-buttons" class="button-container">
-                        <button class="statusbar-button statusbar-button-leftcap">Inventory</button>
-                        <button class="statusbar-button statusbar-button-rightcap">Quests</button>
+                        <button id="pc-button-inv" class="statusbar-button statusbar-button-leftcap open-panel">Inventory</button>
+                        <button id="pc-button-quests" class="statusbar-button statusbar-button-rightcap open-panel">Quests</button>
                     </span>
                     <span class="title">Monsters!</span>
                     <span class="stats">
@@ -63,17 +63,17 @@
 
             <div id="inventory">
                 <div class="inv-container">
-                    <header class="inv-header">Inventory</header>
-                    <div class="inv-body-container"></div>
-                    <footer class="inv-footer"></footer>
+                    <header class="header">Inventory</header>
+                    <div class="body-container"></div>
+                    <footer class="footer"></footer>
                 </div>
             </div>
 
             <div id="quests">
                 <div class="quests-container">
-                    <header class="quests-header"></header>
-                    <div class="quests-body-container"></div>
-                    <footer class="quests-footer"><button class="">Options</button></footer>
+                    <header class="header">Quests</header>
+                    <div class="body-container"></div>
+                    <footer class="footer"></footer>
                 </div>
             </div>
 
@@ -81,9 +81,7 @@
             <div class="grid"></div>
         </div>
 
-        <audio id="music" src="audio/MonsterMusic.mp3" loop>
-            Your browser does not support the audio element.
-        </audio>
+        <audio id="music" src="audio/MonsterMusic.mp3" loop>Your browser does not support the audio element.</audio>
         <audio id="sfx-dungeon-ambience" src="audio/dungeon-ambience.mp3" loop></audio>
         <audio id="sfx-shotgun" src="audio/shotgun.mp3"></audio>
         <audio id="sfx-death-human" src="audio/death-human.mp3"></audio>

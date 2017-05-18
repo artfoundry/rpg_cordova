@@ -25,7 +25,7 @@ let Game = {
         let events = new Events();
         let ui = new UI(audio, events);
         let dungeon = new Dungeon(audio, ui);
-        dungeon.createNewLevel()
+        dungeon.createNewLevel();
 
         let players = {
             player1: new PlayerCharacter(playerOptions.player1, dungeon)
