@@ -20,13 +20,19 @@ figure {
     padding: 0;
 }
 
+.button-container {
+    display: inline-block;
+    margin: 0 10px;
+    box-shadow: inset 0 0 8px black;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, rgba(130, 190, 210, 0.8) 15%, rgba(70, 70, 70, 0.8) 40%, rgba(50, 50, 50, 0.8) 70%, rgba(80, 120, 140, 0.2) 80%, rgba(50, 50, 50, 0.8) 100%);
+}
+
 button {
-    background: linear-gradient(to bottom, rgba(80,80,80,0.4) 0%, rgba(130,190,210,0.8) 15%, rgba(70,70,70,0.8) 40%, rgba(50,50,50,0.8) 70%, rgba(80,120,140,0.2) 80%, rgba(50,50,50,0.8) 100%);
     border: 1px solid darkblue;
     border-top: 1px solid lightblue;
     border-bottom: 1px solid darkslateblue;
     border-radius: 12px;
-    box-shadow: inset 0 0 8px black;
     color: lightgray;
     font-size: 1em;
     line-height: 1.5em;
@@ -98,7 +104,7 @@ button:active {
     z-index: 6;
     padding: 10px;
     margin: 0 0 20px;
-    text-align: left;
+    text-align: center;
     background: linear-gradient(to bottom, rgba(96,173,188,1) 0%,rgba(10,8,9,1) 100%);
     color: orangered;
     text-shadow: 1px 1px 2px black;
@@ -108,7 +114,6 @@ button:active {
 }
 
 .statusbar .title {
-    float: left;
     font-family: 'Creepster', serif;
     font-size: 1.4em;
 }
@@ -145,8 +150,8 @@ button:active {
 }
 
 .stats {
-    float: right;
-    width: 55%;
+    position: absolute;
+    right: 0;
     min-width: 300px;
     white-space: normal;
     text-align: right;
@@ -180,8 +185,31 @@ button:active {
 .statusbar-button {
     width: 70px;
     height: 28px;
-    margin: 0 10px;
+    margin: 0;
     font-size: .8em;
+    background-color: transparent;
+}
+
+#pc-buttons {
+    position: absolute;
+    left: 0;
+}
+
+.statusbar-button-leftcap {
+    float: left;
+    margin-right: 0;
+    border-radius: 12px 0 0 12px;
+}
+
+.statusbar-button-rightcap {
+    float: right;
+    margin-left: 0;
+    border-radius: 0 12px 12px 0;
+}
+
+.statusbar-button-middle {
+    margin: 0;
+    border-radius: 0;
 }
 
 /**
@@ -319,7 +347,7 @@ button:active {
 
 .modal-footer {
     margin: auto;
-    padding: 10px 0 20px;
+    padding: 20px 0 30px;
 }
 
 .modal-body-container {
@@ -357,7 +385,8 @@ button:active {
 
 .modal-button {
     width: 100px;
-    margin: 10px;
+    margin: 0;
+    background-color: transparent;
 }
 
 #modal-online-option {
@@ -492,7 +521,75 @@ button:active {
 
 .panel-button {
     width: 100px;
+    background-color: transparent;
 }
+
+/**
+ * Inventory
+ */
+
+#inventory {
+    display: none;
+    position: fixed;
+    z-index: 5;
+    width: 30%;
+    min-width: 300px;
+    max-width: 400px;
+    height: 300px;
+    top: 240px;
+    left: 0;
+    border-radius: 15px;
+    border: 1px darkslateblue solid;
+    background: linear-gradient(to bottom, rgba(96, 173, 188, 1) 0%, rgba(50, 50, 50, 1) 97%, rgba(150, 150, 180, 1) 100%);
+    box-shadow: 0 0 10px 6px black;
+    color: black;
+    font-size: 1em;
+}
+
+.inv-header {
+    padding: 10px 8px 8px;
+    font-size: 1.5em;
+    text-shadow: 0 0 5px orangered;
+}
+
+.inv-body-container {
+    padding: 0 20px;
+    margin: 20px auto;
+}
+
+/**
+ * Quests
+ */
+
+#quests {
+    display: none;
+    position: fixed;
+    z-index: 5;
+    width: 30%;
+    min-width: 300px;
+    max-width: 400px;
+    height: 150px;
+    top: 40px;
+    left: 0;
+    border-radius: 15px;
+    border: 1px darkslateblue solid;
+    background: linear-gradient(to bottom, rgba(96, 173, 188, 1) 0%, rgba(50, 50, 50, 1) 97%, rgba(150, 150, 180, 1) 100%);
+    box-shadow: 0 0 10px 6px black;
+    color: black;
+    font-size: 1em;
+}
+
+.quests-header {
+    padding: 10px 8px 8px;
+    font-size: 1.5em;
+    text-shadow: 0 0 5px orangered;
+}
+
+.quests-body-container {
+    padding: 0 20px;
+    margin: 20px auto;
+}
+
 
 /**
  * Animations

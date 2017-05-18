@@ -28,11 +28,17 @@
             <div class="left-side-bar"></div>
             <div class="statusbar-container">
                 <div class="statusbar">
+                    <span id="pc-buttons" class="button-container">
+                        <button class="statusbar-button statusbar-button-leftcap">Inventory</button>
+                        <button class="statusbar-button statusbar-button-rightcap">Quests</button>
+                    </span>
                     <span class="title">Monsters!</span>
                     <span class="stats">
                         <span class="pc-health">Health: <span class="status-value"></span></span>
                         <span class="kills">Kills: <span class="status-value"></span></span>
-                        <button id="button-options" class="statusbar-button openPanel">Options</button>
+                        <span class="button-container">
+                            <button id="button-options" class="statusbar-button open-panel">Options</button>
+                        </span>
                     </span>
                 </div>
                 <div class="status-message"><span class="status-text"></span></div>
@@ -52,6 +58,22 @@
                     <header class="panel-header"></header>
                     <div class="panel-body-container"></div>
                     <footer class="panel-footer"></footer>
+                </div>
+            </div>
+
+            <div id="inventory">
+                <div class="inv-container">
+                    <header class="inv-header">Inventory</header>
+                    <div class="inv-body-container"></div>
+                    <footer class="inv-footer"></footer>
+                </div>
+            </div>
+
+            <div id="quests">
+                <div class="quests-container">
+                    <header class="quests-header"></header>
+                    <div class="quests-body-container"></div>
+                    <footer class="quests-footer"><button class="">Options</button></footer>
                 </div>
             </div>
 

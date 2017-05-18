@@ -49,7 +49,7 @@ class UI {
             },
             {
                 'container' : '.panel-footer',
-                'content' : '<button class="panel-button dynamic">Close</button>',
+                'content' : '<span class="button-container dynamic"><button class="panel-button">Close</button></span>',
                 'buttonContainer' : '.panel-button',
                 'disabled' : false,
                 'callback' : this.panelClose.bind(this),
@@ -88,11 +88,11 @@ class UI {
 
     setUpPanelTrigger(target, callbacks, options) {
         let targetActions = {
-                'openPanel' : callbacks.open,
-                'closePanel' : callbacks.close
+                'open-panel' : callbacks.open,
+                'close-panel' : callbacks.close
             },
             actionParam = {
-                'openPanel' : {
+                'open-panel' : {
                     'options' : options
                 }
             };
@@ -134,7 +134,7 @@ class UI {
                 $lastSection.addClass(messages[i].class).append('<span>' + this.dialogs[messages[i].text] + '</span>');
 
                 if (messages[i].text === 'online') {
-                    $lastSection.prepend('<span id="modal-online-option" class="panel-option openPanel" data-options-difficulty="online">Online</span>');
+                    $lastSection.prepend('<span id="modal-online-option" class="panel-option open-panel" data-options-difficulty="online">Online</span>');
                     this.setUpPanelTrigger('#modal-online-option', panelCallbacks, panelOptions);
                 }
 
@@ -154,7 +154,7 @@ class UI {
                 },
                 $button;
 
-            $('.modal-footer').append('<button id="' + buttons[i].id + '" class="modal-button dynamic"></button>');
+            $('.modal-footer').append('<span class="button-container"><button id="' + buttons[i].id + '" class="modal-button dynamic"></button></span>');
             $button = $('#' + buttons[i].id);
             $button.text(buttons[i].label);
             this.events.setUpClickListener('#' + buttons[i].id, action, params);
@@ -280,7 +280,7 @@ class UI {
         Game.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
-        $('#button-options').addClass('closePanel').removeClass('openPanel');
+        $('#button-options').addClass('close-panel').removeClass('open-panel');
 
         for (let option = 0; option < params.options.length; option++) {
             let currentOption = params.options[option],
@@ -310,7 +310,7 @@ class UI {
     panelClose() {
         $('#grid-cover').hide();
         $('.panel').hide();
-        $('#button-options').addClass('openPanel').removeClass('closePanel');
+        $('#button-options').addClass('open-panel').removeClass('close-panel');
         Game.helpers.setKeysEnabled();
         // remove dynamically added content
         $('.panel .dynamic').remove();
@@ -381,6 +381,26 @@ class UI {
         }
         else
             $element.text(params.value);
+    }
+
+    /**
+     * Game Info Panels
+     */
+
+    openInventory() {
+        $('#inventory').show();
+    }
+
+    closeInventory() {
+        $('#inventory').hide();
+    }
+
+    openQuests() {
+        $('#quests').show();
+    }
+
+    closeQuests() {
+        $('#quests').hide();
     }
 
 

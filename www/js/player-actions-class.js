@@ -46,6 +46,12 @@ class PlayerActions {
             itemName = $targetTile.data('itemName');
 
         player.inventory.items[itemType] = itemName;
+        if (itemType === 'questItem') {
+            for (let quest in Quests) {
+                if (Quests.hasOwnProperty(quest) && Quests[quest].goals.target === itemName)
+                    player.handleQuest(quest);
+            }
+        }
         this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
         this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
     }
