@@ -529,18 +529,18 @@ button:active {
  */
 
 #pc-panels {
-    position: absolute;
+    position: fixed;
     top: 100px;
     left: 3%;
+    z-index: 5;
 }
 
 #pc-panels > div {
     display: none;
     position: relative;
-    z-index: 5;
     min-width: 300px;
     max-width: 400px;
-    min-height: 200px;
+    min-height: 150px;
     opacity: 0.8;
     border-radius: 0 15px 15px 0;
     border: 1px darkslateblue solid;
