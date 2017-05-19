@@ -310,9 +310,14 @@ class UI {
         if (params.content) {
             $button.addClass('close-panel').removeClass('open-panel');
             $target.show();
-            $targetBodyContainer.text(params.content);
+            for (let item in params.content) {
+                if (params.content.hasOwnProperty(item)) {
+                    $targetBodyContainer.append("<div>" + params.content[item] + "</div>");
+                }
+            }
         } else {
             $button.addClass('open-panel').removeClass('close-panel');
+            $targetBodyContainer.html('');
             $target.hide();
         }
     }

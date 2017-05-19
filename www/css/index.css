@@ -437,7 +437,7 @@ button:active {
 }
 
 /**
- * Panel
+ * Dynamic Panel
  */
 
 .panel {
@@ -525,71 +525,42 @@ button:active {
 }
 
 /**
- * Inventory
+ * PC Panels
  */
 
-#inventory {
+#pc-panels {
+    position: absolute;
+    top: 100px;
+    left: 3%;
+}
+
+#pc-panels > div {
     display: none;
-    position: fixed;
+    position: relative;
     z-index: 5;
-    width: 30%;
     min-width: 300px;
     max-width: 400px;
-    height: 300px;
-    top: 240px;
-    left: 0;
-    border-radius: 15px;
+    min-height: 200px;
+    opacity: 0.8;
+    border-radius: 0 15px 15px 0;
     border: 1px darkslateblue solid;
-    background: linear-gradient(to bottom, rgba(96, 173, 188, 1) 0%, rgba(50, 50, 50, 1) 97%, rgba(150, 150, 180, 1) 100%);
-    box-shadow: 0 0 10px 6px black;
+    background: rgb(96, 173, 188);
+    box-shadow: 2px 0 2px black;
     color: black;
     font-size: 1em;
 }
 
-.inv-header {
+.header {
     padding: 10px 8px 8px;
+    font-family: 'Creepster', serif;
     font-size: 1.5em;
     text-shadow: 0 0 5px orangered;
 }
 
-.inv-body-container {
+.body-container {
     padding: 0 20px;
     margin: 20px auto;
 }
-
-/**
- * Quests
- */
-
-#quests {
-    display: none;
-    position: fixed;
-    z-index: 5;
-    width: 30%;
-    min-width: 300px;
-    max-width: 400px;
-    height: 150px;
-    top: 40px;
-    left: 0;
-    border-radius: 15px;
-    border: 1px darkslateblue solid;
-    background: linear-gradient(to bottom, rgba(96, 173, 188, 1) 0%, rgba(50, 50, 50, 1) 97%, rgba(150, 150, 180, 1) 100%);
-    box-shadow: 0 0 10px 6px black;
-    color: black;
-    font-size: 1em;
-}
-
-.quests-header {
-    padding: 10px 8px 8px;
-    font-size: 1.5em;
-    text-shadow: 0 0 5px orangered;
-}
-
-.quests-body-container {
-    padding: 0 20px;
-    margin: 20px auto;
-}
-
 
 /**
  * Animations
