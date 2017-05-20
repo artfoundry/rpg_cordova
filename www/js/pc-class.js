@@ -14,19 +14,17 @@ class PlayerCharacter {
         this.type = playerOptions.type;
         this.subtype = playerOptions.subtype;
         this.health = playerOptions.health;
-        this.startingQuest = playerOptions.startingQuest;
         this.row = 0;
         this.col = 0;
         this.kills = 0;
-        this.elderKilled = false;
         this.quests = {
-            'currentQuest'      : '',
-            'questGoals'        : {},
-            'completedQuests'   : null
+            'currentQuest'      : playerOptions.startingQuest,
+            'questGoal'        : Quests[playerOptions.startingQuest].goals,
+            'completedQuests'   : []
         };
         this.inventory = {
             'armor'     : {},
-            'items'     : {},
+            'items'     : {'questGoals' : []},
             'weapons'   : {}
         };
     }
@@ -35,7 +33,6 @@ class PlayerCharacter {
         this.setPlayer(this.pos);
         this.grid.setLighting(this.pos);
         this.resetKills();
-        this.handleQuest(this.startingQuest);
     }
 
     resetKills() {
@@ -80,13 +77,23 @@ class PlayerCharacter {
         player.col = Game.helpers.getRowCol(newPosId).col;
     }
 
-    handleQuest(questName) {
-        if (questName === this.quests.currentQuest) {
-            // check if quest goals have been met, and if so, move quest to completed and get new quest
+    /**
+     * function handleQuest
+     * Called when an item is acquired or monster killed or some other condition met that matches a current quest goal,
+     * and then determines what goal has been met and if quest is complete.
+     * Called by: player-actions-class.pickupItem, player-actions-class.playerAttack
+     * @param questGoal : string
+     */
 
-        } else if (this.quests.currentQuest === '') {
-            this.quests.currentQuest = questName;
-            this.quests.questGoals = Quests[questName].questGoals;
+    handleQuest(questGoal) {
+        let currentQuest = this.quests.currentQuest;
+
+        if ((this.quests.questGoal.action === 'Acquire' && this.inventory.questGoals.includes(questGoal)) ||
+            (this.quests.questGoal.action === 'Kill' && this.quests.questGoal.target === questGoal))
+        {
+            this.quests.completedQuests.push(this.quests.currentQuest);
+            this.quests.currentQuest = Quests[currentQuest].nextQuest || null;
+            // need call to UI to update panel if open
         }
     }
 }

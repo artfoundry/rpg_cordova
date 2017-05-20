@@ -218,7 +218,7 @@ class TurnController {
             scoreValues = {
                 'kills' : this.players.player1.kills,
                 'health' : this.players.player1.health,
-                'elderKilled' : this.players.player1.elderKilled,
+                'elderKilled' : this.players.player1.quests.completedQuests.includes('killElder'),
                 'gameWon' : message === 'gameOverWin'
             },
             endingMessages = [

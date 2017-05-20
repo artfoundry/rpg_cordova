@@ -8,6 +8,7 @@ class Monster {
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health; // used by player-actions for attacks
+        this.questGoal = monsterOptions.questGoal || null;
         this.grid = dungeon.levels[0];
         this.audio = audio;
         this.row = 0;
@@ -180,7 +181,8 @@ class Monster {
 
     _setMonster(newTileId, oldTileId, callback) {
         let monster = this,
-            animateMoveParams = {};
+            animateMoveParams = {},
+            questName = monster.questGoal ? monster.questName : null;
 
         if (oldTileId) {
             animateMoveParams = {
@@ -196,7 +198,7 @@ class Monster {
                 }
             };
             monster.grid.setTileWalkable(oldTileId, monster.name, monster.type, monster.subtype);
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
             monster.grid.animateTile(animateMoveParams);
             monster.pos = newTileId;
         } else {
@@ -206,7 +208,7 @@ class Monster {
                 "addClasses" : "content-" + monster.subtype,
                 "removeClasses" : "content-trans"
             };
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
             monster.grid.animateTile(animateMoveParams);
         }
 

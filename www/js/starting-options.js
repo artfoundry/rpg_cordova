@@ -9,7 +9,10 @@ let StartingOptions = {
         "tileSize" : 64,
         "randomization" : 0.6,
         "items" : {
-            "questItem" : "elder-sign"
+            "elder-sign" : {
+                "itemType" : "questGoal",
+                "questName" : "elderSign"
+            }
         }
     },
     "playerOptions" : {
@@ -27,7 +30,9 @@ let StartingOptions = {
             "name" : "Elder",
             "type" : "monster",
             "subtype" : "elder",
-            "health" : 3
+            "health" : 3,
+            "questGoal" : true,
+            "questName" : "killElder"
         }
     },
     "audioOptions" : {

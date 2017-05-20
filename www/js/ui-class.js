@@ -312,7 +312,7 @@ class UI {
             $target.show();
             for (let item in params.content) {
                 if (params.content.hasOwnProperty(item)) {
-                    $targetBodyContainer.append("<div>" + params.content[item] + "</div>");
+                    $targetBodyContainer.append("<div>" + item + " : " + params.content[item] + "</div>");
                 }
             }
         } else {

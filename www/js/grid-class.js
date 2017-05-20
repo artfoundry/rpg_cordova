@@ -120,14 +120,13 @@ class Grid {
     addItems(items) {
         for (let item in items) {
             if (items.hasOwnProperty(item)) {
-                let itemLoc = '',
-                    itemName = items[item];
+                let itemLoc = '';
+
                 do {
                     itemLoc = 'row' + Math.ceil(Math.random() * this.gridHeight) + 'col' + Math.ceil(Math.random() * this.gridWidth);
                 } while (!$('#' + itemLoc).hasClass('walkable'));
-                this.changeTileSetting(itemLoc, itemName, 'item', item);
-                this.changeTileImg(itemLoc, 'content-' + itemName, 'content-trans');
-                $('#' + itemLoc).data('itemType', item).data('itemName', itemName);
+                this.changeTileSetting(itemLoc, item, 'item', item.itemType, item.questName);
+                this.changeTileImg(itemLoc, 'content-' + item, 'content-trans');
             }
         }
     }
@@ -136,8 +135,12 @@ class Grid {
         $('.grid').children().remove();
     }
 
-    changeTileSetting(position, name, type, subtype) {
-        $('#' + position).addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
+    changeTileSetting(position, name, type, subtype, questName = null) {
+        let $position = $('#' + position);
+        $position.addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
+        $position.data('itemType', subtype).data('itemName', name);
+        if (questName)
+            $position.data('questName', questName);
     }
 
     changeTileImg(position, addClasses, removeClasses) {
@@ -149,7 +152,7 @@ class Grid {
     }
 
     setTileWalkable(position, name, type, subtype) {
-        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable');
+        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable').removeData();
     }
 
     setLighting(newPos, currentPos) {

@@ -43,14 +43,15 @@ class PlayerActions {
         let player = this.players[params.player],
             $targetTile = $(targetTile),
             itemType = $targetTile.data('itemType'),
-            itemName = $targetTile.data('itemName');
+            itemName = $targetTile.data('itemName'),
+            questName = $targetTile.data('questName');
 
-        player.inventory.items[itemType] = itemName;
-        if (itemType === 'questItem') {
-            for (let quest in Quests) {
-                if (Quests.hasOwnProperty(quest) && Quests[quest].goals.target === itemName)
-                    player.handleQuest(quest);
-            }
+        player.inventory.items[itemType] ? player.inventory.items[itemType].push(itemName) : player.inventory.items[itemType] = [itemName];
+
+        // need call to UI to update panel if open
+
+        if (itemType === 'questGoal' && this._checkCurrentQuest(player, questName, itemName)) {
+            player.handleQuest(itemName);
         }
         this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
         this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
@@ -104,7 +105,9 @@ class PlayerActions {
                         if (targetMonster.health < 1) {
                             if (targetMonster.subtype === 'elder') {
                                 playerActions.audio.playSoundEffect(['death-elder']);
-                                currentPlayer.elderKilled = true;
+                            }
+                            if (targetMonster.questGoal && this._checkCurrentQuest(currentPlayer, targetMonster.questName, targetMonster.name)) {
+                                currentPlayer.handleQuest(targetMonster.name);
                             }
                             Game.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
@@ -120,6 +123,14 @@ class PlayerActions {
                 }
             }
         }
+    }
+
+    _checkCurrentQuest(player, questName, targetToCheck) {
+        let result = false;
+
+        if (player.quests.currentQuest === questName && player.quests.questGoals.target === targetToCheck)
+            result = true;
+        return result;
     }
 
     static _getTopTileId(row, col) { return 'row' + (row - 1) + 'col' + col; }
