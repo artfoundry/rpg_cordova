@@ -10,7 +10,7 @@ let StartingOptions = {
         "randomization" : 0.6,
         "items" : {
             "elder-sign" : {
-                "itemType" : "questGoal",
+                "itemType" : "questItems",
                 "questName" : "elderSign"
             }
         }

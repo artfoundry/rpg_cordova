@@ -19,13 +19,10 @@ class PlayerCharacter {
         this.kills = 0;
         this.quests = {
             'currentQuest'      : playerOptions.startingQuest,
-            'questGoal'        : Quests[playerOptions.startingQuest].goals,
             'completedQuests'   : []
         };
         this.inventory = {
-            'armor'     : {},
-            'items'     : {'questGoals' : []},
-            'weapons'   : {}
+            'Items'     : []
         };
     }
 
@@ -88,11 +85,12 @@ class PlayerCharacter {
     handleQuest(questGoal) {
         let currentQuest = this.quests.currentQuest;
 
-        if ((this.quests.questGoal.action === 'Acquire' && this.inventory.questGoals.includes(questGoal)) ||
-            (this.quests.questGoal.action === 'Kill' && this.quests.questGoal.target === questGoal))
+        if ((Quests[currentQuest].goals.action === 'Acquire' && this.inventory.items.includes(questGoal)) ||
+            (Quests[currentQuest].goals.action === 'Kill' && Quests[currentQuest].goals.target === questGoal))
         {
             this.quests.completedQuests.push(this.quests.currentQuest);
             this.quests.currentQuest = Quests[currentQuest].nextQuest || null;
+
             // need call to UI to update panel if open
         }
     }

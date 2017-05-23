@@ -50,7 +50,7 @@ class PlayerActions {
 
         // need call to UI to update panel if open
 
-        if (itemType === 'questGoal' && this._checkCurrentQuest(player, questName, itemName)) {
+        if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName)) {
             player.handleQuest(itemName);
         }
         this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);

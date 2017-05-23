@@ -3,10 +3,11 @@
  */
 
 let Items = {
-    'questItems' : {
-        'elder-sign' : {
-            'name'          : "Elder Sign",
-            'description'   : "An ancient runic tablet with a possible connection to an even older race called the Elders."
+    'elder-sign' : {
+        'name'          : "Elder Sign",
+        'description'   : "An ancient runic tablet with a possible connection to an even older race called the Elders.",
+        'internalOnly'  : {
+            'questItem' : true
         }
     }
 };

@@ -74,12 +74,16 @@ class UI {
                 'open' : this.dynamicPanelOpen.bind(this),
                 'close' : this.dynamicPanelClose.bind(this)
             },
-            staticPanelCallbacks = {
-                'open' : this.staticPanelToggle.bind(this),
-                'close' : this.staticPanelToggle.bind(this)
-            },
             dynamicPanelParams = {
                 'open' : this.defaultDynamicPanelOptions
+            },
+            inventoryPanelCallbacks = {
+                'open' : this.inventoryPanelToggle.bind(this),
+                'close' : this.inventoryPanelToggle.bind(this)
+            },
+            questsPanelCallbacks = {
+                'open' : this.questsPanelToggle.bind(this),
+                'close' : this.questsPanelToggle.bind(this)
             },
             invPanelParams = {
                 'open' : {
@@ -92,11 +96,16 @@ class UI {
                     'target' : '#inventory'
                 }
             },
+            currentQuest = params.player.quests.currentQuest,
             questsPanelParams = {
                 'open' : {
                     'button' : '#pc-button-quests',
                     'target' : '#quests',
-                    'content' : params.player.quests
+                    'content' : {
+                        'questName' : Quests[currentQuest].questName,
+                        'questText' : Quests[currentQuest].questText,
+                        'completed' : params.player.quests.completedQuests
+                    }
                 },
                 'close' : {
                     'button' : '#pc-button-quests',
@@ -105,8 +114,8 @@ class UI {
             };
 
         this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
-        this.setUpPanelTrigger('#pc-button-inv', staticPanelCallbacks, invPanelParams);
-        this.setUpPanelTrigger('#pc-button-quests', staticPanelCallbacks, questsPanelParams);
+        this.setUpPanelTrigger('#pc-button-inv', inventoryPanelCallbacks, invPanelParams);
+        this.setUpPanelTrigger('#pc-button-quests', questsPanelCallbacks, questsPanelParams);
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
@@ -302,17 +311,28 @@ class UI {
         $('.status-text').text('');
     }
 
-    staticPanelToggle(params) {
+    questsPanelToggle(params) {
         let $button = $(params.button),
             $target = $(params.target),
-            $targetBodyContainer = $(params.target + ' .body-container');
+            $targetBodyContainer = $(params.target + ' .body-container'),
+            questList = [];
 
         if (params.content) {
             $button.addClass('close-panel').removeClass('open-panel');
             $target.show();
             for (let item in params.content) {
                 if (params.content.hasOwnProperty(item)) {
-                    $targetBodyContainer.append("<div>" + item + " : " + params.content[item] + "</div>");
+                    if (item === 'questName') {
+                        $targetBodyContainer.append('<div class="quest-name">' + params.content[item] + '</div>');
+                    } else if (item === 'questText') {
+                        $targetBodyContainer.append('<div class="quest-description">' + params.content[item] + '</div>');
+                    } else {
+                        $targetBodyContainer.append('<div class="quest-completed-header">Completed quests</div>');
+                        questList = params.content[item];
+                        for (let name=0; name < questList.length; name++) {
+                            $targetBodyContainer.append('<div class="quest-name">' + questList[name] + '</div>');
+                        }
+                    }
                 }
             }
         } else {
@@ -320,6 +340,41 @@ class UI {
             $targetBodyContainer.html('');
             $target.hide();
         }
+    }
+
+    inventoryPanelToggle(params) {
+        let $button = $(params.button),
+            $target = $(params.target),
+            $targetBodyContainer = $(params.target + ' .body-container'),
+            invItemName = '',
+            invItemList = [];
+
+        if (params.content) {
+            $button.addClass('close-panel').removeClass('open-panel');
+            $target.show();
+            for (let item in params.content) {
+                if (params.content.hasOwnProperty(item)) {
+                    invItemList = params.content[item];
+                    $targetBodyContainer.append('<div class="inventory-items-header">' + item + '</div>');
+                    if (invItemList.length > 0) {
+                        for (let i=0; i < invItemList.length; i++) {
+                            invItemName = invItemList[i];
+                            $targetBodyContainer.append('<div class="inventory-item-name inventory-item-' + invItemName + '">' + Items[invItemName].name + '</div>');
+                            $targetBodyContainer.append('<div class="inventory-item-description">' + Items[invItemName].description + '</div>');
+                        }
+                    }
+                }
+            }
+        } else {
+            $button.addClass('open-panel').removeClass('close-panel');
+            $targetBodyContainer.html('');
+            $target.hide();
+        }
+    }
+
+    processPanelItems(itemsObject) {
+
+
     }
 
     /**
