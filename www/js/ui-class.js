@@ -322,10 +322,12 @@ class UI {
 
         $targetBodyContainer.append('<div class="quest-name">' + questName + '</div>');
         $targetBodyContainer.append('<div class="quest-description">' + questText + '</div>');
-        $targetBodyContainer.append('<h4 class="quest-completed-header">Completed quests</h4>');
-        for (let name=0; name < questList.length; name++) {
-            questID = questList[name];
-            $targetBodyContainer.append('<div class="quest-name">&#8730; ' + Quests[questID].questName + '</div>');
+        if (questList.length > 0) {
+            $targetBodyContainer.append('<h4 class="quest-completed-header">Completed quests</h4>');
+            for (let name=0; name < questList.length; name++) {
+                questID = questList[name];
+                $targetBodyContainer.append('<div class="quest-name">&#8730; ' + Quests[questID].questName + '</div>');
+            }
         }
     }
 

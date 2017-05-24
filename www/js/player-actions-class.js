@@ -51,7 +51,7 @@ class PlayerActions {
         // need call to UI to update panel if open
 
         if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName)) {
-            player.handleQuest(itemName);
+            this.handleQuest(itemName);
         }
         this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
         this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
@@ -107,7 +107,7 @@ class PlayerActions {
                                 playerActions.audio.playSoundEffect(['death-elder']);
                             }
                             if (targetMonster.questGoal && this._checkCurrentQuest(currentPlayer, targetMonster.questName, targetMonster.name)) {
-                                currentPlayer.handleQuest(targetMonster.name);
+                                playerActions.handleQuest(targetMonster.name);
                             }
                             Game.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
@@ -131,6 +131,32 @@ class PlayerActions {
         if (player.quests.currentQuest === questName && Quests[questName].goals.target === targetToCheck)
             result = true;
         return result;
+    }
+
+    /**
+     * function handleQuest
+     * Called when an item is acquired or monster killed or some other condition met that matches a current quest goal,
+     * and then determines what goal has been met and if quest is complete.
+     * Called by: player-actions-class.pickupItem, player-actions-class.playerAttack
+     * @param questGoal : string
+     */
+
+    handleQuest(questGoal) {
+        let player = this.players.player1,
+            currentQuest = player.quests.currentQuest,
+            updatedQuestInfo = {};
+
+        if ((Quests[currentQuest].goals.action === 'Acquire' && Quests[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
+            (Quests[currentQuest].goals.action === 'Kill' && Quests[currentQuest].goals.target === questGoal))
+        {
+            player.quests.completedQuests.push(currentQuest);
+            player.quests.currentQuest = Quests[currentQuest].nextQuest || null;
+            updatedQuestInfo = {
+                'currentQuest' : player.quests.currentQuest,
+                'completedQuests' : player.quests.completedQuests
+            };
+            this.ui.updateQuestPanelInfo(updatedQuestInfo);
+        }
     }
 
     static _getTopTileId(row, col) { return 'row' + (row - 1) + 'col' + col; }

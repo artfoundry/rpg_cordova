@@ -73,25 +73,4 @@ class PlayerCharacter {
         player.row = Game.helpers.getRowCol(newPosId).row;
         player.col = Game.helpers.getRowCol(newPosId).col;
     }
-
-    /**
-     * function handleQuest
-     * Called when an item is acquired or monster killed or some other condition met that matches a current quest goal,
-     * and then determines what goal has been met and if quest is complete.
-     * Called by: player-actions-class.pickupItem, player-actions-class.playerAttack
-     * @param questGoal : string
-     */
-
-    handleQuest(questGoal) {
-        let currentQuest = this.quests.currentQuest;
-
-        if ((Quests[currentQuest].goals.action === 'Acquire' && Quests[currentQuest].goals.target === questGoal && this.inventory.Items.includes(questGoal)) ||
-            (Quests[currentQuest].goals.action === 'Kill' && Quests[currentQuest].goals.target === questGoal))
-        {
-            this.quests.completedQuests.push(this.quests.currentQuest);
-            this.quests.currentQuest = Quests[currentQuest].nextQuest || null;
-
-            // need call to UI to update panel if open
-        }
-    }
 }

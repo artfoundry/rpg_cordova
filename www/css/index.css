@@ -538,8 +538,8 @@ button:active {
 #pc-panels > div {
     display: none;
     position: relative;
-    min-width: 300px;
-    max-width: 400px;
+    min-width: 200px;
+    max-width: 350px;
     min-height: 150px;
     max-height: 300px;
     opacity: 0.8;
@@ -551,29 +551,49 @@ button:active {
     font-size: 1em;
 }
 
-.header {
-    padding: 10px 8px 8px;
+#pc-panels header {
+    margin: 10px 20px;
     font-family: 'Creepster', serif;
     font-size: 1.5em;
     text-shadow: 0 0 5px orangered;
 }
 
-.body-container {
-    padding: 0 20px;
-    margin: 20px auto;
-    overflow: hidden;
+#pc-panels footer {
+    margin: 20px;
+}
+
+#pc-panels .body-container {
+    max-height: 200px;
+    margin: 0 20px;
+    padding: 0 10px 0 0;
+    overflow: auto;
     white-space: normal;
     text-align: left;
+}
+
+#pc-panels .body-container::-webkit-scrollbar
+{
+    width: 12px;
+}
+
+#pc-panels .body-container::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background-color: darkslateblue;
+}
+
+.quest-completed-header, .inventory-items-header {
+    margin: 10px 0;
+    border-bottom: 1px solid darkslateblue;
+    color: darkslateblue;
 }
 
 .quest-name, .inventory-item-name {
     font-weight: bold;
 }
 
-.quest-completed-header, .inventory-items-header {
-    margin-bottom: 5px;
-    border-bottom: 1px solid darkslateblue;
-    color: darkslateblue;
+.inventory-item-description, .quest-description {
+    margin-bottom: 20px;
 }
 
 /**
