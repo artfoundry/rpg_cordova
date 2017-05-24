@@ -125,7 +125,7 @@ class Grid {
                 do {
                     itemLoc = 'row' + Math.ceil(Math.random() * this.gridHeight) + 'col' + Math.ceil(Math.random() * this.gridWidth);
                 } while (!$('#' + itemLoc).hasClass('walkable'));
-                this.changeTileSetting(itemLoc, item, 'item', item.itemType, item.questName);
+                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName);
                 this.changeTileImg(itemLoc, 'content-' + item, 'content-trans');
             }
         }

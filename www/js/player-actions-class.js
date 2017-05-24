@@ -46,7 +46,7 @@ class PlayerActions {
             itemName = $targetTile.data('itemName'),
             questName = $targetTile.data('questName');
 
-        player.inventory.items[itemType] ? player.inventory.items[itemType].push(itemName) : player.inventory.items[itemType] = [itemName];
+        player.inventory.Items.push(itemName);
 
         // need call to UI to update panel if open
 
@@ -128,7 +128,7 @@ class PlayerActions {
     _checkCurrentQuest(player, questName, targetToCheck) {
         let result = false;
 
-        if (player.quests.currentQuest === questName && player.quests.questGoals.target === targetToCheck)
+        if (player.quests.currentQuest === questName && Quests[questName].goals.target === targetToCheck)
             result = true;
         return result;
     }

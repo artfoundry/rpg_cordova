@@ -96,21 +96,8 @@ class UI {
                     'target' : '#inventory'
                 }
             },
-            currentQuest = params.player.quests.currentQuest,
             questsPanelParams = {
-                'open' : {
-                    'button' : '#pc-button-quests',
-                    'target' : '#quests',
-                    'content' : {
-                        'questName' : Quests[currentQuest].questName,
-                        'questText' : Quests[currentQuest].questText,
-                        'completed' : params.player.quests.completedQuests
-                    }
-                },
-                'close' : {
-                    'button' : '#pc-button-quests',
-                    'target' : '#quests'
-                }
+                'open' : params.player.quests
             };
 
         this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
@@ -311,34 +298,34 @@ class UI {
         $('.status-text').text('');
     }
 
-    questsPanelToggle(params) {
-        let $button = $(params.button),
-            $target = $(params.target),
-            $targetBodyContainer = $(params.target + ' .body-container'),
-            questList = [];
+    questsPanelToggle(content) {
+        let $button = $('#pc-button-quests'),
+            $target = $('#quests');
 
-        if (params.content) {
+        if (content) {
             $button.addClass('close-panel').removeClass('open-panel');
             $target.show();
-            for (let item in params.content) {
-                if (params.content.hasOwnProperty(item)) {
-                    if (item === 'questName') {
-                        $targetBodyContainer.append('<div class="quest-name">' + params.content[item] + '</div>');
-                    } else if (item === 'questText') {
-                        $targetBodyContainer.append('<div class="quest-description">' + params.content[item] + '</div>');
-                    } else {
-                        $targetBodyContainer.append('<div class="quest-completed-header">Completed quests</div>');
-                        questList = params.content[item];
-                        for (let name=0; name < questList.length; name++) {
-                            $targetBodyContainer.append('<div class="quest-name">' + questList[name] + '</div>');
-                        }
-                    }
-                }
-            }
+            this.updateQuestPanelInfo(content);
         } else {
             $button.addClass('open-panel').removeClass('close-panel');
-            $targetBodyContainer.html('');
+            $target.find('.body-container').html('');
             $target.hide();
+        }
+    }
+
+    updateQuestPanelInfo(content) {
+        let $targetBodyContainer = $('#quests .body-container'),
+            questName = Quests[content.currentQuest].questName,
+            questText = Quests[content.currentQuest].questText,
+            questList = content.completedQuests,
+            questID = '';
+
+        $targetBodyContainer.append('<div class="quest-name">' + questName + '</div>');
+        $targetBodyContainer.append('<div class="quest-description">' + questText + '</div>');
+        $targetBodyContainer.append('<h4 class="quest-completed-header">Completed quests</h4>');
+        for (let name=0; name < questList.length; name++) {
+            questID = questList[name];
+            $targetBodyContainer.append('<div class="quest-name">&#8730; ' + Quests[questID].questName + '</div>');
         }
     }
 
@@ -355,7 +342,7 @@ class UI {
             for (let item in params.content) {
                 if (params.content.hasOwnProperty(item)) {
                     invItemList = params.content[item];
-                    $targetBodyContainer.append('<div class="inventory-items-header">' + item + '</div>');
+                    $targetBodyContainer.append('<h4 class="inventory-items-header">' + item + '</h4>');
                     if (invItemList.length > 0) {
                         for (let i=0; i < invItemList.length; i++) {
                             invItemName = invItemList[i];
@@ -370,11 +357,6 @@ class UI {
             $targetBodyContainer.html('');
             $target.hide();
         }
-    }
-
-    processPanelItems(itemsObject) {
-
-
     }
 
     /**

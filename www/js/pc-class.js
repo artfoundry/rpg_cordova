@@ -85,7 +85,7 @@ class PlayerCharacter {
     handleQuest(questGoal) {
         let currentQuest = this.quests.currentQuest;
 
-        if ((Quests[currentQuest].goals.action === 'Acquire' && this.inventory.items.includes(questGoal)) ||
+        if ((Quests[currentQuest].goals.action === 'Acquire' && Quests[currentQuest].goals.target === questGoal && this.inventory.Items.includes(questGoal)) ||
             (Quests[currentQuest].goals.action === 'Kill' && Quests[currentQuest].goals.target === questGoal))
         {
             this.quests.completedQuests.push(this.quests.currentQuest);

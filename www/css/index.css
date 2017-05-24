@@ -11,7 +11,6 @@ div {
     width: auto;
     margin: 0;
     padding: 0;
-    white-space: nowrap;
 }
 
 figure {
@@ -355,6 +354,7 @@ button:active {
     max-height: 800px;
     overflow-y: auto;
     overflow-x: hidden;
+    white-space: nowrap;
 }
 
 .modal-section {
@@ -541,6 +541,7 @@ button:active {
     min-width: 300px;
     max-width: 400px;
     min-height: 150px;
+    max-height: 300px;
     opacity: 0.8;
     border-radius: 0 15px 15px 0;
     border: 1px darkslateblue solid;
@@ -560,6 +561,19 @@ button:active {
 .body-container {
     padding: 0 20px;
     margin: 20px auto;
+    overflow: hidden;
+    white-space: normal;
+    text-align: left;
+}
+
+.quest-name, .inventory-item-name {
+    font-weight: bold;
+}
+
+.quest-completed-header, .inventory-items-header {
+    margin-bottom: 5px;
+    border-bottom: 1px solid darkslateblue;
+    color: darkslateblue;
 }
 
 /**
