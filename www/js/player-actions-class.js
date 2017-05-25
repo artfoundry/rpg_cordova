@@ -47,12 +47,10 @@ class PlayerActions {
             questName = $targetTile.data('questName');
 
         player.inventory.Items.push(itemName);
+        this.ui.updateInventoryInfo(player.inventory);
 
-        // need call to UI to update panel if open
-
-        if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName)) {
+        if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
             this.handleQuest(itemName);
-        }
         this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
         this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
     }
