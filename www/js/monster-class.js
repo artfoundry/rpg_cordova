@@ -8,6 +8,7 @@ class Monster {
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health; // used by player-actions for attacks
+        this.location = monsterOptions.location;
         this.questGoal = monsterOptions.questGoal || null;
         this.grid = dungeon.levels[0];
         this.audio = audio;
@@ -17,7 +18,7 @@ class Monster {
     }
 
     initialize() {
-        this.pos = Game.helpers.randomizeLoc('center');
+        this.pos = Game.helpers.randomizeLoc(this.location);
         this._setMonster(this.pos);
     }
 

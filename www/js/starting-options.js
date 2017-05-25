@@ -32,6 +32,7 @@ let StartingOptions = {
             "type" : "monster",
             "subtype" : "elder",
             "health" : 3,
+            "location" : "center",
             "questGoal" : true,
             "questName" : "killElder"
         }
