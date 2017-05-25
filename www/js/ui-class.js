@@ -16,7 +16,8 @@ class UI {
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "How're your monster slaying skills?",
-            "wait"          : "Wait...something is moving in the darkness..."
+            "wait"          : "Wait...something is moving in the darkness...",
+            "fear"          : "Just the sight of the Elder horrifies you, preventing you from even thinking of attacking it!"
         };
         this.defaultDynamicPanelOptions = [
             {

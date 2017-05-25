@@ -59,29 +59,36 @@ class PlayerActions {
      * function playerAttack
      * For registering an attack by a monster on a player or vice versa
      * @param targetTile - jquery element target of attack
-     * @param params - object in which targets key contains list of game characters, either players or monsters
+     * @param params - object containing player and callback
      * @private
      */
     playerAttack(params, targetTile) {
         let playerActions = this,
             monsterNum,
-            nearbyMonsterList,
-            targetLoc,
             targetMonster,
             currentPlayer = playerActions.players[params.player],
             callback = params.callback,
             animateAttackParams,
-            animateDeathParams;
+            animateDeathParams,
+            animateFearParams;
 
         for (monsterNum in this.monsters) {
-            if (Object.prototype.hasOwnProperty.call(this.monsters, monsterNum)) {
+            if (this.monsters.hasOwnProperty(monsterNum)) {
                 targetMonster = this.monsters[monsterNum];
                 if (targetMonster.pos === targetTile.id) {
-                    targetLoc = $('#' + targetMonster.pos)[0];
-                    // check if there are actually monsters nearby
-                    nearbyMonsterList = Game.helpers.checkForNearbyCharacters(currentPlayer, 'monster', 1);
-                    // if attack target matches monster in list of nearby monsters, then we have our target
-                    if (nearbyMonsterList.indexOf(targetLoc) !== -1) {
+                    if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elder-sign')) {
+                        this.ui.displayStatus('fear');
+                        setTimeout(function() {
+                            playerActions.ui.hideStatus();
+                        }, 2500);
+
+                        animateFearParams = {
+                            'position' : currentPlayer.pos,
+                            'type' : 'impassable'
+                        };
+                        this.grid.animateTile(animateFearParams);
+                        break;
+                    } else {
                         targetMonster.health -= 1;
                         animateAttackParams = {
                             "position" : targetMonster.pos,
@@ -144,8 +151,8 @@ class PlayerActions {
             currentQuest = player.quests.currentQuest,
             updatedQuestInfo = {};
 
-        if ((Quests[currentQuest].goals.action === 'Acquire' && QUESTS[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
-            (Quests[currentQuest].goals.action === 'Kill' && QUESTS[currentQuest].goals.target === questGoal))
+        if ((QUESTS[currentQuest].goals.action === 'Acquire' && QUESTS[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
+            (QUESTS[currentQuest].goals.action === 'Kill' && QUESTS[currentQuest].goals.target === questGoal))
         {
             player.quests.completedQuests.push(currentQuest);
             player.quests.currentQuest = QUESTS[currentQuest].nextQuest || null;
