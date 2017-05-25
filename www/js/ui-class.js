@@ -319,8 +319,8 @@ class UI {
 
     updateQuestPanelInfo(questInfo) {
         let $targetBodyContainer = $('#quests .body-container'),
-            questName = Quests[questInfo.currentQuest].questName,
-            questText = Quests[questInfo.currentQuest].questText,
+            questName = QUESTS[questInfo.currentQuest].questName,
+            questText = QUESTS[questInfo.currentQuest].questText,
             questList = questInfo.completedQuests,
             questID = '';
 
@@ -332,7 +332,7 @@ class UI {
             $targetBodyContainer.append('<h4 class="quest-completed-header">Completed quests</h4>');
             for (let name=0; name < questList.length; name++) {
                 questID = questList[name];
-                $targetBodyContainer.append('<div class="quest-name">&#8730; ' + Quests[questID].questName + '</div>');
+                $targetBodyContainer.append('<div class="quest-name">&#8730; ' + QUESTS[questID].questName + '</div>');
             }
         }
     }
@@ -353,8 +353,8 @@ class UI {
                         invItemName = invItemList[i];
                         $targetBodyContainer
                             .append('<div class="inventory-item-' + invItemName + '"></div>')
-                            .append('<div class="inventory-item-name">' + Items[invItemName].name + '</div>')
-                            .append('<div class="inventory-item-description">' + Items[invItemName].description + '</div>');
+                            .append('<div class="inventory-item-name">' + ITEMS[invItemName].name + '</div>')
+                            .append('<div class="inventory-item-description">' + ITEMS[invItemName].description + '</div>');
                     }
                 }
             }

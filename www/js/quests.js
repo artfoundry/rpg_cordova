@@ -2,7 +2,7 @@
  * Created by David on 5/12/17.
  */
 
-let Quests = {
+const QUESTS = {
     'elderSign' : {
         'questName'     : "Elder Sign",
         'questText'     : "You have entered these catacombs to find an ancient tablet called the Elder Sign. It's unknown what significance it could have for humanity, but some old runic texts reference it as having a possible connection to an ancient race called the Elders. Find the Elder Sign!",

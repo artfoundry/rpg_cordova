@@ -126,7 +126,7 @@ class PlayerActions {
     _checkCurrentQuest(player, questName, targetToCheck) {
         let result = false;
 
-        if (player.quests.currentQuest === questName && Quests[questName].goals.target === targetToCheck)
+        if (player.quests.currentQuest === questName && QUESTS[questName].goals.target === targetToCheck)
             result = true;
         return result;
     }
@@ -144,11 +144,11 @@ class PlayerActions {
             currentQuest = player.quests.currentQuest,
             updatedQuestInfo = {};
 
-        if ((Quests[currentQuest].goals.action === 'Acquire' && Quests[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
-            (Quests[currentQuest].goals.action === 'Kill' && Quests[currentQuest].goals.target === questGoal))
+        if ((Quests[currentQuest].goals.action === 'Acquire' && QUESTS[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
+            (Quests[currentQuest].goals.action === 'Kill' && QUESTS[currentQuest].goals.target === questGoal))
         {
             player.quests.completedQuests.push(currentQuest);
-            player.quests.currentQuest = Quests[currentQuest].nextQuest || null;
+            player.quests.currentQuest = QUESTS[currentQuest].nextQuest || null;
             updatedQuestInfo = {
                 'currentQuest' : player.quests.currentQuest,
                 'completedQuests' : player.quests.completedQuests
