@@ -17,7 +17,7 @@ class Monster {
     }
 
     initialize() {
-        this._randomizeLoc();
+        this.pos = Game.helpers.randomizeLoc('center');
         this._setMonster(this.pos);
     }
 
@@ -214,16 +214,5 @@ class Monster {
 
         monster.row = Game.helpers.getRowCol(newTileId).row;
         monster.col = Game.helpers.getRowCol(newTileId).col;
-    }
-
-    _randomizeLoc() {
-        let row = 0,
-            col = 0;
-
-        while ($('#row' + row + 'col' + col).hasClass('tile-wall')) {
-            row = Math.ceil(Math.random() * (this.grid.gridHeight/2) + (this.grid.gridHeight/3));
-            col = Math.ceil(Math.random() * (this.grid.gridWidth/2) + (this.grid.gridWidth/3));
-        }
-        this.pos = 'row' + row + 'col' + col;
     }
 }

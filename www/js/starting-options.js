@@ -7,11 +7,12 @@ let StartingOptions = {
         "width" : 10,
         "height" : 10,
         "tileSize" : 64,
-        "randomization" : 0.6,
+        "randomization" : 0.6, // determines what type of tile is chosen
         "items" : {
             "elder-sign" : {
                 "itemType" : "questItems",
-                "questName" : "elderSign"
+                "questName" : "elderSign",
+                "location" : "bottom"
             }
         }
     },

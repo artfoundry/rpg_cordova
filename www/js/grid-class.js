@@ -120,11 +120,8 @@ class Grid {
     addItems(items) {
         for (let item in items) {
             if (items.hasOwnProperty(item)) {
-                let itemLoc = '';
+                let itemLoc = Game.helpers.randomizeLoc(items[item].location);
 
-                do {
-                    itemLoc = 'row' + Math.ceil(Math.random() * this.gridHeight) + 'col' + Math.ceil(Math.random() * this.gridWidth);
-                } while (!$('#' + itemLoc).hasClass('walkable'));
                 this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName);
                 this.changeTileImg(itemLoc, 'content-' + item, 'content-trans');
             }
