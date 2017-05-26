@@ -314,6 +314,15 @@ class UI {
             .removeClass('button-highlight', 500);
     }
 
+    showFearEffect(intensity) {
+        $('#fear-effect').show();
+        $('#fear-effect')
+            .animate({ opacity: intensity }, 500)
+            .animate({ opacity: 0 }, 500, function() {
+                $('#fear-effect').hide();
+            })
+    }
+
     staticPanelToggle(params) {
         let $button = $(params.button),
             $target = $(params.target);
