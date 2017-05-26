@@ -210,6 +210,10 @@ button:active {
     border-radius: 0;
 }
 
+.button-highlight {
+    background-color: orangered;
+}
+
 /**
  *  Grid
  */

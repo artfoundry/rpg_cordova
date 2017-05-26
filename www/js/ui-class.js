@@ -189,7 +189,7 @@ class UI {
                 },
                 $button;
 
-            $('.modal-footer').append('<span class="button-container"><button id="' + buttons[i].id + '" class="modal-button dynamic"></button></span>');
+            $('.modal-footer').append('<span class="button-container dynamic"><button id="' + buttons[i].id + '" class="modal-button"></button></span>');
             $button = $('#' + buttons[i].id);
             $button.text(buttons[i].label);
             this.events.setUpClickListener('#' + buttons[i].id, action, params);
@@ -232,6 +232,7 @@ class UI {
         el.children('span').addClass('subheader creepy-text');
         el.append('<div><span class="score-headers">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
         el.append('<div><span class="score-headers">Remaining health: </span><span class="score score-text">' + scores.health + '</span></div>');
+        el.append('<div><span class="score-headers">Acquired the Elder Sign: </span><span class="score score-text">' + scores.elderSign + '</span></div>');
         el.append('<div><span class="score-headers">Slaying the Elder: </span><span class="score score-text">' + scores.elder + '</span></div>');
         el.append('<div><span class="score-headers">Winning the game: </span><span class="score score-text">' + scores.win + '</span></div>');
         el.append('<div><span class="score-headers">Final score: </span><span class="score score-text">' + scores.total + '</span></div>');
@@ -305,6 +306,14 @@ class UI {
         $('.status-text').text('');
     }
 
+    highlightButton(button) {
+        $(button)
+            .addClass('button-highlight', 500)
+            .removeClass('button-highlight', 500)
+            .addClass('button-highlight', 500)
+            .removeClass('button-highlight', 500);
+    }
+
     staticPanelToggle(params) {
         let $button = $(params.button),
             $target = $(params.target);
@@ -320,15 +329,17 @@ class UI {
 
     updateQuestPanelInfo(questInfo) {
         let $targetBodyContainer = $('#quests .body-container'),
-            questName = QUESTS[questInfo.currentQuest].questName,
-            questText = QUESTS[questInfo.currentQuest].questText,
+            questName = questInfo.currentQuest ? QUESTS[questInfo.currentQuest].questName : null,
+            questText = questInfo.currentQuest ? QUESTS[questInfo.currentQuest].questText : null,
             questList = questInfo.completedQuests,
             questID = '';
 
         $targetBodyContainer.html('');
-        $targetBodyContainer
-            .append('<div class="quest-name">' + questName + '</div>')
-            .append('<div class="quest-description">' + questText + '</div>');
+        if (questName) {
+            $targetBodyContainer
+                .append('<div class="quest-name">' + questName + '</div>')
+                .append('<div class="quest-description">' + questText + '</div>');
+        }
         if (questList.length > 0) {
             $targetBodyContainer.append('<h4 class="quest-completed-header">Completed quests</h4>');
             for (let name=0; name < questList.length; name++) {
@@ -443,12 +454,14 @@ class UI {
     calcScore(scoreValues) {
         let kills = scoreValues.kills * 5,
             health = scoreValues.health <= 0 ? 0 : scoreValues.health * 10,
+            elderSign = scoreValues.elderSign ? 20 : 0,
             elderPoints = scoreValues.elderKilled ? 25 : 0,
             winPoints = scoreValues.gameWon ? 50 : 0;
 
         return {
             'kills' : kills,
             'health' : health,
+            'elderSign' : elderSign,
             'elder' : elderPoints,
             'win' : winPoints,
             'total' : kills + health + elderPoints + winPoints

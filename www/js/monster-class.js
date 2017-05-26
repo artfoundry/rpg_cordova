@@ -10,6 +10,7 @@ class Monster {
         this.health = monsterOptions.health; // used by player-actions for attacks
         this.location = monsterOptions.location;
         this.questGoal = monsterOptions.questGoal || null;
+        this.questName = monsterOptions.questName || null;
         this.grid = dungeon.levels[0];
         this.audio = audio;
         this.row = 0;

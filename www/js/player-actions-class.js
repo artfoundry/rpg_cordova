@@ -80,7 +80,7 @@ class PlayerActions {
                         this.ui.displayStatus('fear');
                         setTimeout(function() {
                             playerActions.ui.hideStatus();
-                        }, 2500);
+                        }, 3000);
 
                         animateFearParams = {
                             'position' : currentPlayer.pos,
@@ -161,6 +161,7 @@ class PlayerActions {
                 'completedQuests' : player.quests.completedQuests
             };
             this.ui.updateQuestPanelInfo(updatedQuestInfo);
+            this.ui.highlightButton('#pc-button-quests');
         }
     }
 
