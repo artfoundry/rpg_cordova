@@ -30,7 +30,7 @@ class UI {
                 'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.setGameDifficulty.bind(this),
-                'runCallbackNow' : true
+                'runCallbackOnOpen' : true
             },
             {
                 'container' : '.panel-body-container',
@@ -38,7 +38,7 @@ class UI {
                 'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateSoundSetting.bind(this),
-                'runCallbackNow' : true
+                'runCallbackOnOpen' : true
             },
             {
                 'container' : '.panel-body-container',
@@ -46,7 +46,7 @@ class UI {
                 'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateMusicSetting.bind(this),
-                'runCallbackNow' : true
+                'runCallbackOnOpen' : true
             },
             {
                 'container' : '.panel-footer',
@@ -54,7 +54,7 @@ class UI {
                 'buttonContainer' : '.panel-button',
                 'disabled' : false,
                 'callback' : this.dynamicPanelClose.bind(this),
-                'runCallbackNow' : false
+                'runCallbackOnOpen' : false
             }
         ];
         this.$panelPartials = $('<div></div>');
@@ -414,7 +414,7 @@ class UI {
             if (buttonContainer && currentOption.disabled === false)
                 this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback);
 
-            if (currentOption.callback && currentOption.runCallbackNow) {
+            if (currentOption.callback && currentOption.runCallbackOnOpen) {
                 currentOption.callback();
             }
 
