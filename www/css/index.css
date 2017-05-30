@@ -11,7 +11,6 @@ div {
     width: auto;
     margin: 0;
     padding: 0;
-    white-space: nowrap;
 }
 
 figure {
@@ -20,13 +19,19 @@ figure {
     padding: 0;
 }
 
+.button-container {
+    display: inline-block;
+    margin: 0 10px;
+    box-shadow: inset 0 0 8px black;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, rgba(130, 190, 210, 0.8) 15%, rgba(70, 70, 70, 0.8) 40%, rgba(50, 50, 50, 0.8) 70%, rgba(80, 120, 140, 0.2) 80%, rgba(50, 50, 50, 0.8) 100%);
+}
+
 button {
-    background: linear-gradient(to bottom, rgba(80,80,80,0.4) 0%, rgba(130,190,210,0.8) 15%, rgba(70,70,70,0.8) 40%, rgba(50,50,50,0.8) 70%, rgba(80,120,140,0.2) 80%, rgba(50,50,50,0.8) 100%);
     border: 1px solid darkblue;
     border-top: 1px solid lightblue;
     border-bottom: 1px solid darkslateblue;
     border-radius: 12px;
-    box-shadow: inset 0 0 8px black;
     color: lightgray;
     font-size: 1em;
     line-height: 1.5em;
@@ -67,6 +72,16 @@ button:active {
     font-family: 'Creepster', serif;
 }
 
+#fear-effect {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: orangered;
+    z-index: 20;
+    opacity: 0;
+}
+
 #testing {
     position: fixed;
     height: 10px;
@@ -98,7 +113,7 @@ button:active {
     z-index: 6;
     padding: 10px;
     margin: 0 0 20px;
-    text-align: left;
+    text-align: center;
     background: linear-gradient(to bottom, rgba(96,173,188,1) 0%,rgba(10,8,9,1) 100%);
     color: orangered;
     text-shadow: 1px 1px 2px black;
@@ -108,13 +123,11 @@ button:active {
 }
 
 .statusbar .title {
-    float: left;
     font-family: 'Creepster', serif;
     font-size: 1.4em;
 }
 
 .status-message {
-    /*display: none;*/
     position: absolute;
     top: 0;
     left: 50%;
@@ -145,8 +158,8 @@ button:active {
 }
 
 .stats {
-    float: right;
-    width: 55%;
+    position: absolute;
+    right: 0;
     min-width: 300px;
     white-space: normal;
     text-align: right;
@@ -180,8 +193,35 @@ button:active {
 .statusbar-button {
     width: 70px;
     height: 28px;
-    margin: 0 10px;
+    margin: 0;
     font-size: .8em;
+    background-color: transparent;
+}
+
+#pc-buttons {
+    position: absolute;
+    left: 0;
+}
+
+.statusbar-button-leftcap {
+    float: left;
+    margin-right: 0;
+    border-radius: 12px 0 0 12px;
+}
+
+.statusbar-button-rightcap {
+    float: right;
+    margin-left: 0;
+    border-radius: 0 12px 12px 0;
+}
+
+.statusbar-button-middle {
+    margin: 0;
+    border-radius: 0;
+}
+
+.button-highlight {
+    background-color: orangered;
 }
 
 /**
@@ -281,6 +321,10 @@ button:active {
     background-image: url('../img/elder.png');
 }
 
+.content-elder-sign {
+    background-image: url('../img/elder-sign.png');
+}
+
 /**
  *  Modal
  */
@@ -315,7 +359,7 @@ button:active {
 
 .modal-footer {
     margin: auto;
-    padding: 10px 0 20px;
+    padding: 20px 0 30px;
 }
 
 .modal-body-container {
@@ -323,6 +367,7 @@ button:active {
     max-height: 800px;
     overflow-y: auto;
     overflow-x: hidden;
+    white-space: nowrap;
 }
 
 .modal-section {
@@ -353,7 +398,8 @@ button:active {
 
 .modal-button {
     width: 100px;
-    margin: 10px;
+    margin: 0;
+    background-color: transparent;
 }
 
 #modal-online-option {
@@ -404,7 +450,7 @@ button:active {
 }
 
 /**
- * Panel
+ * Dynamic Panel
  */
 
 .panel {
@@ -488,6 +534,84 @@ button:active {
 
 .panel-button {
     width: 100px;
+    background-color: transparent;
+}
+
+/**
+ * PC Panels
+ */
+
+#pc-panels {
+    position: fixed;
+    top: 100px;
+    left: 3%;
+    height: 0;
+    z-index: 5;
+}
+
+#pc-panels > div {
+    position: relative;
+    min-width: 200px;
+    max-width: 350px;
+    min-height: 150px;
+    max-height: 300px;
+    opacity: 0.8;
+    left: 0;
+    border-radius: 0 15px 15px 0;
+    border: 1px darkslateblue solid;
+    background: rgb(96, 173, 188);
+    box-shadow: 2px 0 2px black;
+    color: black;
+    font-size: 1em;
+}
+
+#pc-panels .hiding {
+    left: -110%;
+}
+
+#pc-panels header {
+    margin: 10px 20px;
+    font-family: 'Creepster', serif;
+    font-size: 1.5em;
+    text-shadow: 0 0 5px orangered;
+}
+
+#pc-panels footer {
+    margin: 20px;
+}
+
+#pc-panels .body-container {
+    max-height: 200px;
+    margin: 0 20px;
+    padding: 0 10px 0 0;
+    overflow: auto;
+    white-space: normal;
+    text-align: left;
+}
+
+#pc-panels .body-container::-webkit-scrollbar
+{
+    width: 12px;
+}
+
+#pc-panels .body-container::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background-color: darkslateblue;
+}
+
+.quest-completed-header, .inventory-items-header {
+    margin: 10px 0;
+    border-bottom: 1px solid darkslateblue;
+    color: darkslateblue;
+}
+
+.quest-name, .inventory-item-name {
+    font-weight: bold;
+}
+
+.inventory-item-description, .quest-description {
+    margin-bottom: 20px;
 }
 
 /**
@@ -538,4 +662,16 @@ button:active {
     height: 64px;
     opacity: 0;
     z-index: 1;
+}
+
+/*
+ * Items
+ */
+
+.inventory-item-elder-sign {
+    background-image: url('../img/elder-sign.png');
+    width: 64px;
+    height: 64px;
+    float: left;
+    margin: 5px 10px 5px 0;
 }

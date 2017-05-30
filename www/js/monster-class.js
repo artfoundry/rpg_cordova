@@ -3,14 +3,15 @@
  */
 
 class Monster {
-    constructor(monsterOptions, grid, helpers, audio) {
+    constructor(monsterOptions, dungeon, audio) {
         this.name = monsterOptions.name;
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health; // used by player-actions for attacks
-        this.gridWidth = grid.gridWidth;
-        this.gridHeight = grid.gridHeight;
-        this.helpers = helpers;
+        this.location = monsterOptions.location;
+        this.questGoal = monsterOptions.questGoal || null;
+        this.questName = monsterOptions.questName || null;
+        this.grid = dungeon.levels[0];
         this.audio = audio;
         this.row = 0;
         this.col = 0;
@@ -18,7 +19,7 @@ class Monster {
     }
 
     initialize() {
-        this._randomizeLoc();
+        this.pos = Game.helpers.randomizeLoc(this.location);
         this._setMonster(this.pos);
     }
 
@@ -41,12 +42,12 @@ class Monster {
 
         // start searching from radius 2 because moveMonsters() already checks for players 1 space away to attack
         for (let radius=2; radius <= searchRadius; radius++) {
-            $targets = $targets.add(this.helpers.checkForNearbyCharacters(this, 'player', radius));
+            $targets = $targets.add(Game.helpers.checkForNearbyCharacters(this, 'player', radius));
         }
         if ($targets.length === 0)
             this.randomMove();
         else {
-            targetPlayerLoc = this.helpers.getRowCol($targets[0].id);
+            targetPlayerLoc = Game.helpers.getRowCol($targets[0].id);
             rowDiff = targetPlayerLoc.row - this.row;
             colDiff = targetPlayerLoc.col - this.col;
             if (Game.gameSettings.difficulty === 'medium') {
@@ -68,7 +69,7 @@ class Monster {
     }
 
     avoidPlayer(playerTile, callback) {
-        let targetPlayerLoc = this.helpers.getRowCol(playerTile.id);
+        let targetPlayerLoc = Game.helpers.getRowCol(playerTile.id);
 
         this.moveRelatedToPlayer(targetPlayerLoc, 'away', callback);
     }
@@ -182,7 +183,8 @@ class Monster {
 
     _setMonster(newTileId, oldTileId, callback) {
         let monster = this,
-            animateMoveParams = {};
+            animateMoveParams = {},
+            questName = monster.questGoal ? monster.questName : null;
 
         if (oldTileId) {
             animateMoveParams = {
@@ -198,7 +200,7 @@ class Monster {
                 }
             };
             monster.grid.setTileWalkable(oldTileId, monster.name, monster.type, monster.subtype);
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
             monster.grid.animateTile(animateMoveParams);
             monster.pos = newTileId;
         } else {
@@ -208,18 +210,11 @@ class Monster {
                 "addClasses" : "content-" + monster.subtype,
                 "removeClasses" : "content-trans"
             };
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype);
+            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
             monster.grid.animateTile(animateMoveParams);
         }
 
-        monster.row = this.helpers.getRowCol(newTileId).row;
-        monster.col = this.helpers.getRowCol(newTileId).col;
-    }
-
-    _randomizeLoc() {
-        let row = Math.ceil(Math.random() * (this.gridHeight/2) + (this.gridHeight/3)),
-            col = Math.ceil(Math.random() * (this.gridWidth/2) + (this.gridWidth/3));
-
-        this.pos = 'row' + row + 'col' + col;
+        monster.row = Game.helpers.getRowCol(newTileId).row;
+        monster.col = Game.helpers.getRowCol(newTileId).col;
     }
 }

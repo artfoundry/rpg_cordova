@@ -5,21 +5,23 @@
  */
 
 class Grid {
-    constructor(helpers, gridOptions, audio, ui) {
-        this.helpers = helpers;
+    constructor(gridOptions, audio, ui) {
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
+        this.gridRandomFactor = gridOptions.randomization;
         this.tileSize = gridOptions.tileSize;
         this.audio = audio;
         this.ui = ui;
+        this.lightRadius = 2;
     }
 
-    drawGrid() {
+    drawGrid(items) {
         let grid = this,
             $gridEl = $('.grid'),
             gridPixels = (this.gridWidth + 2) * this.tileSize,
             markup = '',
             id = '',
+            tileType = '',
             blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>',
             borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>';
 
@@ -31,23 +33,111 @@ class Grid {
                     if (rowNum === 0 || rowNum === grid.gridHeight + 1 || colNum === 0 || colNum === grid.gridWidth + 1) {
                         markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
                     } else {
-                        markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                        tileType = this.randomizeTileType(id, markup);
+                        if (tileType === 'ground')
+                            markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                        else if (tileType === 'wall')
+                            markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
                     }
                 }
                 markup += '</div>';
             }
             return markup;
         });
+        this.addItems(items);
         $gridEl.css('width', gridPixels + 1);
         $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></canvas>');
+    }
+
+    randomizeTileType(tileId, markup) {
+        let colIndex = tileId.indexOf('col'),
+            row = +tileId.slice(3, colIndex),
+            col = +tileId.slice(colIndex + 3),
+            surroundingTiles = {
+                $tileAboveLeft: $(markup).find('#row' + (row - 1) + 'col' + (col - 1)),
+                $tileAbove: $(markup).find('#row' + (row - 1) + 'col' + col),
+                $tileAboveRight: $(markup).find('#row' + (row - 1) + 'col' + (col + 1)),
+                $tileRight: $(markup).find('#row' + row + 'col' + (col + 1)),
+                $tileBelowRight: $(markup).find('#row' + (row + 1) + 'col' + (col + 1)),
+                $tileBelow: $(markup).find('#row' + (row + 1) + 'col' + col),
+                $tileBelowLeft: $(markup).find('#row' + (row + 1) + 'col' + (col - 1)),
+                $tileLeft: $(markup).find('#row' + row + 'col' + (col - 1))
+            },
+            tileType = '';
+
+        if (this.countPreviousWalls(surroundingTiles) > 2) {
+            tileType = 'ground';
+        // if top and either left or right are walls...
+        } else if (surroundingTiles.$tileAbove.hasClass('tile-wall') && (surroundingTiles.$tileLeft.hasClass('tile-wall') || surroundingTiles.$tileRight.hasClass('tile-wall'))) {
+            // ...and bottom and right are walls OR left is a wall but top left is not a wall OR right is a wall but top right is not a wall...
+            // (basically don't leave catty-corner walls)
+            if ((surroundingTiles.$tileRight && surroundingTiles.$tileRight.hasClass('tile-wall') &&
+                surroundingTiles.$tileBelow && surroundingTiles.$tileBelow.hasClass('tile-wall')) ||
+                (surroundingTiles.$tileLeft.hasClass('tile-wall') && !surroundingTiles.$tileAboveLeft.hasClass('tile-wall')) ||
+                (surroundingTiles.$tileRight.hasClass('tile-wall') && !surroundingTiles.$tileAboveRight.hasClass('tile-wall')))
+            {
+                tileType = 'wall';
+            } else {
+                tileType = 'ground';
+            }
+        // otherwise if top, left, and right aren't walls AND top left or top right is a wall
+        } else if (
+            !surroundingTiles.$tileAbove.hasClass('tile-wall') &&
+            !surroundingTiles.$tileLeft.hasClass('tile-wall') &&
+            !surroundingTiles.$tileRight.hasClass('tile-wall') &&
+            (surroundingTiles.$tileAboveLeft.hasClass('tile-wall') || surroundingTiles.$tileAboveRight.hasClass('tile-wall')))
+        {
+            tileType = 'ground';
+
+        // otherwise randomize it
+        } else {
+            tileType = Math.random() >= this.gridRandomFactor ? 'wall' : 'ground';
+        }
+        return tileType;
+    }
+
+    /**
+     * function countPreviousWalls
+     * Looks at the three tiles above and the tile to the left to see if they're walls.
+     * Used to determine if the current tile should be ground or wall when randomizing tiles.
+     * @param surroundingTiles:
+     */
+    countPreviousWalls(surroundingTiles) {
+        let wallCount = 0;
+
+        for (let i in surroundingTiles) {
+            if (surroundingTiles.hasOwnProperty(i) && surroundingTiles[i].hasClass('tile-wall'))
+                wallCount += 1;
+        }
+        return wallCount;
+    }
+
+    /**
+     * function addItems
+     * Randomly adds all passed items into walkable tiles
+     * @param items: object of
+     */
+    addItems(items) {
+        for (let item in items) {
+            if (items.hasOwnProperty(item)) {
+                let itemLoc = Game.helpers.randomizeLoc(items[item].location);
+
+                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName);
+                this.changeTileImg(itemLoc, 'content-' + item, 'content-trans');
+            }
+        }
     }
 
     clearGrid() {
         $('.grid').children().remove();
     }
 
-    changeTileSetting(position, name, type, subtype) {
-        $('#' + position).addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
+    changeTileSetting(position, name, type, subtype, questName = null) {
+        let $position = $('#' + position);
+        $position.addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
+        $position.data('itemType', subtype).data('itemName', name);
+        if (questName)
+            $position.data('questName', questName);
     }
 
     changeTileImg(position, addClasses, removeClasses) {
@@ -59,7 +149,77 @@ class Grid {
     }
 
     setTileWalkable(position, name, type, subtype) {
-        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable');
+        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable').removeData();
+    }
+
+    setLighting(newPos, currentPos) {
+        let oldPos = currentPos || newPos,
+            newLightPos = $('#' + newPos).offset(),
+            currentLightPos = $('#' + oldPos + ' .content').offset(),
+            lightingParams = {},
+            grid = this;
+
+        lightingParams.gridPos = $('.grid').offset();
+        lightingParams.radius = this.lightRadius * grid.tileSize + (grid.tileSize/2);
+        lightingParams.newLightPosTop = Math.round(newLightPos.top - lightingParams.gridPos.top - (lightingParams.radius/3));
+        lightingParams.newLightPosLeft = Math.round(newLightPos.left - lightingParams.gridPos.left + (lightingParams.radius/6));
+        lightingParams.currentLightPosLeft = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).left;
+        lightingParams.currentLightPosTop = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).top;
+        lightingParams.canvas = document.getElementById("canvas-lighting");
+        lightingParams.currentPos = currentPos;
+
+        this._drawLightCircle(lightingParams);
+
+        if (newPos !== oldPos) {
+            let lightingLoop = function() {
+                lightingParams.animID = requestAnimationFrame(lightingLoop);
+                grid._drawLightCircle(lightingParams);
+            };
+            lightingLoop();
+        }
+    }
+
+    _drawLightCircle(lightingParams) {
+        let canvas = lightingParams.canvas,
+            radius = lightingParams.radius,
+            cx = lightingParams.currentLightPosLeft,
+            cy = lightingParams.currentLightPosTop,
+            ctx = canvas.getContext("2d"),
+            cw = canvas.width,
+            ch = canvas.height,
+            radialGradient = ctx.createRadialGradient(cx, cy, 1, cx, cy, radius);
+
+        ctx.save();
+        ctx.clearRect(0, 0, cw, ch);
+        radialGradient.addColorStop(0, 'rgba(0,0,0,1)');
+        radialGradient.addColorStop(.65, 'rgba(0,0,0,1)');
+        radialGradient.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI*2);
+        ctx.fillStyle = radialGradient;
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-out';
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.restore();
+
+        if (lightingParams.animID) {
+            let $charPos = $('#' + lightingParams.currentPos + ' .content'),
+                currentLightPos = $charPos.offset();
+
+            lightingParams.currentLightPosLeft = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).left;
+            lightingParams.currentLightPosTop = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).top;
+            if (lightingParams.newLightPosLeft === lightingParams.currentLightPosLeft && lightingParams.newLightPosTop === lightingParams.currentLightPosTop)
+                cancelAnimationFrame(lightingParams.animID);
+        }
+    }
+
+    _calcCurrentPosition(currentLightPos, gridPos, radius) {
+        let position = {};
+
+        position.left = Math.round(currentLightPos.left - gridPos.left + (radius/6));
+        position.top = Math.round(currentLightPos.top - gridPos.top - (radius/3));
+        return position;
     }
 
     /**
@@ -138,8 +298,8 @@ class Grid {
         let $target = $('#' + position),
             $targetContent = $target.children('.content'),
             $destinationContent = $('#' + destination).children('.content'),
-            destinationPosValues = this.helpers.getRowCol(destination),
-            currentPosValues = this.helpers.getRowCol(position),
+            destinationPosValues = Game.helpers.getRowCol(destination),
+            currentPosValues = Game.helpers.getRowCol(position),
             moveDirection = {
                 vertMov : destinationPosValues.row - currentPosValues.row,
                 horizMov : destinationPosValues.col - currentPosValues.col

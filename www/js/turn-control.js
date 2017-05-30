@@ -18,8 +18,8 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, playerActions, monsterActions, monsters, events) {
-        this.grid = grid;
+    constructor(dungeon, ui, players, playerActions, monsterActions, monsters, events) {
+        this.grid = dungeon.levels[0];
         this.ui = ui;
         this.players = players;
         this.playerActions = playerActions;
@@ -32,8 +32,6 @@ class TurnController {
     }
 
     initialize() {
-        this.grid.drawGrid();
-
         // for testing
         if ($('#testing').length === 0) {
             $('#app').prepend('<button id="testing"></button>');
@@ -50,31 +48,31 @@ class TurnController {
 
     startGame() {
         let startingMessages = [
-                {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body left-content subheader creepy-text", "text" : "gameIntro", "hidden" : false},
-                {"class" : "modal-body left-content", "text" : "instructions", "hidden" : false},
-                {"class" : "modal-body left-content", "text" : "online", "hidden" : false},
-                {"class" : "modal-tips", "text" : "tips", "hidden" : true}
+                {'class' : 'modal-header', 'text' : 'dialogHeader'},
+                {'class' : 'modal-body left-content subheader creepy-text', 'text' : 'gameIntro', 'hidden' : false},
+                {'class' : 'modal-body left-content', 'text' : 'instructions', 'hidden' : false},
+                {'class' : 'modal-body left-content', 'text' : 'online', 'hidden' : false},
+                {'class' : 'modal-tips', 'text' : 'tips', 'hidden' : true}
             ],
             buttons = [
                 {
-                    "label" : "Tips",
-                    "id" : "modal-button-tips",
-                    "action" : this.ui.slideWindow,
-                    "params" : {"container" : ".modal-body-container", "button" : "#modal-button-tips"},
-                    "hidden" : false
+                    'label' : 'Tips',
+                    'id' : 'modal-button-tips',
+                    'action' : this.ui.slideWindow,
+                    'params' : {'container' : '.modal-body-container', 'button' : '#modal-button-tips'},
+                    'hidden' : false
                 },
                 {
-                    "label" : "Start!",
-                    "id" : "modal-button-start",
-                    "action" : this.ui.updateUIAtStart,
-                    "params" : {"callback" : this.ui.runTurnCycle.bind(this)},
-                    "hidden" : false
+                    'label' : 'Start!',
+                    'id' : 'modal-button-start',
+                    'action' : this.ui.updateUIAtStart,
+                    'params' : {'player' : this.players.player1, 'callback' : this.ui.runTurnCycle.bind(this)},
+                    'hidden' : false
                 },
             ];
 
-        this.ui.updateStatusValue({id: ".kills", value: 0});
-        this.ui.updateStatusValue({id: ".pc-health", value: this.players.player1.health});
+        this.ui.updateStatusValue({id: '.kills', value: 0});
+        this.ui.updateStatusValue({id: '.pc-health', value: this.players.player1.health});
         this.ui.modalOpen(startingMessages, buttons);
     }
 
@@ -112,13 +110,13 @@ class TurnController {
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
             } else {
-                this._endGame("gameOverWin");
+                this._endGame('gameOverWin');
             }
         // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
                 this._tearDownListeners();
-                this._endGame("gameOverDead");
+                this._endGame('gameOverDead');
             } else {
                 this.setIsPlayerTurn(true);
                 this.runTurnCycle();
@@ -145,9 +143,10 @@ class TurnController {
      *
      * Sets up player click and key handlers for monster turn using events class (in order to send status message)
      *
-     * parameters:
-     * -target (class ".tile")
-     * -targetActions: keys are tile classes, values are actions to take
+     * parameters sent to event handler:
+     * -tileListenerTarget (class '.tile')
+     * -targetAction: callback that displays the message
+     * -params: values are keys to react to (display message) if user types them
      ****************************/
     _setupMonsterTurnInteractionHandlers() {
         let turnCycle = this,
@@ -170,33 +169,38 @@ class TurnController {
      *
      * Sets up click and key handlers for player turn using events class
      *
-     * parameters:
-     * -target (class ".tile")
+     * parameters to send to event handler:
+     * -tileListenerTarget (class ".tile")
      * -targetActions: keys are tile classes, values are actions to take
      * -params: parameters to send to each target action
+     * -this.players.player1.pos: player's current position
      ****************************/
     _setupPlayerTurnInteractionHandlers() {
         let targetActions = {
-                "walkable": this.playerActions.movePlayer.bind(this.playerActions),
-                "impassable": this.grid.animateTile.bind(this),
-                "monster": this.playerActions.playerAttack.bind(this.playerActions)
+                'walkable': this.playerActions.movePlayer.bind(this.playerActions),
+                'impassable': this.grid.animateTile.bind(this),
+                'monster': this.playerActions.playerAttack.bind(this.playerActions),
+                'item': this.playerActions.pickUpItem.bind(this.playerActions)
             },
             params = {
-                "walkable": {
-                    "player": "player1",
-                    "callback": this.endTurn.bind(this)
+                'walkable': {
+                    'player': 'player1',
+                    'callback': this.endTurn.bind(this)
                 },
-                "impassable": {
-                    "position": this.players.player1.pos,
-                    "type": "impassable"
+                'impassable': {
+                    'position': this.players.player1.pos,
+                    'type': 'impassable'
                 },
-                "monster": {
-                    "player": "player1",
-                    "callback" : this.endTurn.bind(this)
+                'monster': {
+                    'player': 'player1',
+                    'callback' : this.endTurn.bind(this)
+                },
+                'item': {
+                    'player': 'player1'
                 }
             };
             this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
-            this.events.setUpArrowKeysListener(targetActions, params, this.players.player1.pos);
+            this.events.setUpArrowKeysListener(this.players.player1.pos, targetActions, params);
     }
 
     _tearDownListeners() {
@@ -212,18 +216,19 @@ class TurnController {
                 Game.initialize();
             },
             scoreValues = {
-                "kills" : this.players.player1.kills,
-                "health" : this.players.player1.health,
-                "elderKilled" : this.players.player1.elderKilled,
-                "gameWon" : message === "gameOverWin"
+                'kills' : this.players.player1.kills,
+                'health' : this.players.player1.health,
+                'elderSign' : this.players.player1.quests.completedQuests.includes('elderSign'),
+                'elderKilled' : this.players.player1.quests.completedQuests.includes('killElder'),
+                'gameWon' : message === 'gameOverWin'
             },
             endingMessages = [
-                {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body left-content", "text" : message, "hidden" : false},
-                {"class" : "modal-body left-content", "text" : "score", "scoreValues" : scoreValues, "hidden" : false},
+                {'class' : 'modal-header', 'text' : 'dialogHeader'},
+                {'class' : 'modal-body left-content', 'text' : message, 'hidden' : false},
+                {'class' : 'modal-body left-content', 'text' : 'score', 'scoreValues' : scoreValues, 'hidden' : false},
             ],
             buttons = [
-                {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
+                {'label' : 'Restart', 'action' : this.ui.modalClose, 'params' : {'callback' : restartCallback}, 'hidden' : false}
             ];
 
         this.ui.modalOpen(endingMessages, buttons);

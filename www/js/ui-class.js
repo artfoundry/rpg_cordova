@@ -3,23 +3,23 @@
  */
 
 class UI {
-    constructor(helpers, audio, events) {
-        this.helpers = helpers;
+    constructor(audio, events) {
         this.audio = audio;
         this.events = events;
-        this.runTurnCycle = function() {};
+        this.runTurnCycle = function(){};
         this.dialogs = {
             "dialogHeader"  : "Here Be Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
-            "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\nClicking on the Options button in the upper right will allow you to change the difficulty level and turn the sound and music on/off.",
+            "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\n",
             "online"        : "Play online (selecting this will post your score to the leaderboards and disable difficulty level switching mid-game)",
             "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health, number of monsters killed, whether you kill the Elder, and whether you win the game.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "How're your monster slaying skills?",
-            "wait"          : "Wait...something is moving in the darkness..."
+            "wait"          : "Wait...something is moving in the darkness...",
+            "fear"          : "Just the sight of the Elder horrifies you, preventing you from even thinking of attacking it!"
         };
-        this.defaultPanelOptions = [
+        this.defaultDynamicPanelOptions = [
             {
                 'container' : '.panel-header',
                 'content' : '<span class="dynamic creepy-text">Options</span>'
@@ -50,10 +50,10 @@ class UI {
             },
             {
                 'container' : '.panel-footer',
-                'content' : '<button class="panel-button dynamic">Close</button>',
+                'content' : '<span class="button-container dynamic"><button class="panel-button">Close</button></span>',
                 'buttonContainer' : '.panel-button',
                 'disabled' : false,
-                'callback' : this.panelClose.bind(this),
+                'callback' : this.dynamicPanelClose.bind(this),
                 'runCallbackNow' : false
             }
         ];
@@ -71,12 +71,45 @@ class UI {
     }
 
     updateUIAtStart(params) {
-        let panelCallbacks = {
-            'open' : this.panelOpen.bind(this),
-            'close' : this.panelClose.bind(this)
-        };
+        let dynamicPanelCallbacks = {
+                'open' : this.dynamicPanelOpen.bind(this),
+                'close' : this.dynamicPanelClose.bind(this)
+            },
+            dynamicPanelParams = {
+                'open' : this.defaultDynamicPanelOptions
+            },
+            staticPanelCallbacks = {
+                'open' : this.staticPanelToggle.bind(this),
+                'close' : this.staticPanelToggle.bind(this)
+            },
+            invPanelParams = {
+                'open' : {
+                    'button' : '#pc-button-inv',
+                    'target' : '#inventory',
+                    'content' : params.player.inventory,
+                    'callback' : this.updateInventoryInfo.bind(this)
+                },
+                'close' : {
+                    'button' : '#pc-button-inv',
+                    'target' : '#inventory'
+                }
+            },
+            questsPanelParams = {
+                'open' : {
+                    'button' : '#pc-button-quests',
+                    'target' : '#quests',
+                    'content' : params.player.quests,
+                    'callback' : this.updateQuestPanelInfo.bind(this)
+                },
+                'close' : {
+                    'button' : '#pc-button-quests',
+                    'target' : '#quests'
+                }
+            };
 
-        this.setUpPanelTrigger('#button-options', panelCallbacks, this.defaultPanelOptions);
+        this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
+        this.setUpPanelTrigger('#pc-button-inv', staticPanelCallbacks, invPanelParams);
+        this.setUpPanelTrigger('#pc-button-quests', staticPanelCallbacks, questsPanelParams);
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
@@ -87,18 +120,17 @@ class UI {
         this.modalClose(params);
     }
 
-    setUpPanelTrigger(target, callbacks, options) {
+    setUpPanelTrigger(target, callbacks, params) {
         let targetActions = {
-                'openPanel' : callbacks.open,
-                'closePanel' : callbacks.close
+                'open-panel' : callbacks.open,
+                'close-panel' : callbacks.close
             },
-            actionParam = {
-                'openPanel' : {
-                    'options' : options
-                }
+            actionParams = {
+                'open-panel' : params.open,
+                'close-panel' : params.close
             };
 
-        this.events.setUpClickListener(target, targetActions, actionParam);
+        this.events.setUpClickListener(target, targetActions, actionParams);
     }
 
     /**
@@ -117,7 +149,9 @@ class UI {
                 'close' : this.changeOnlineStatus.bind(this)
             },
             // when opening the options panel from the modal, it should only contain the header, diff level, and button
-            panelOptions = this.defaultPanelOptions.slice(0, 2).concat(this.defaultPanelOptions.slice(4)),
+            panelOptions = {
+                'open': this.defaultDynamicPanelOptions.slice(0, 2).concat(this.defaultDynamicPanelOptions.slice(4))
+            },
             $lastSection;
 
         if (scrollX > 0 || scrollY > 0)
@@ -135,7 +169,7 @@ class UI {
                 $lastSection.addClass(messages[i].class).append('<span>' + this.dialogs[messages[i].text] + '</span>');
 
                 if (messages[i].text === 'online') {
-                    $lastSection.prepend('<span id="modal-online-option" class="panel-option openPanel" data-options-difficulty="online">Online</span>');
+                    $lastSection.prepend('<span id="modal-online-option" class="panel-option open-panel" data-options-difficulty="online">Online</span>');
                     this.setUpPanelTrigger('#modal-online-option', panelCallbacks, panelOptions);
                 }
 
@@ -155,7 +189,7 @@ class UI {
                 },
                 $button;
 
-            $('.modal-footer').append('<button id="' + buttons[i].id + '" class="modal-button dynamic"></button>');
+            $('.modal-footer').append('<span class="button-container dynamic"><button id="' + buttons[i].id + '" class="modal-button"></button></span>');
             $button = $('#' + buttons[i].id);
             $button.text(buttons[i].label);
             this.events.setUpClickListener('#' + buttons[i].id, action, params);
@@ -167,7 +201,7 @@ class UI {
     modalClose(params) {
         this.events.removeClickListener('.modal-button');
         if (this.gameIsOnline)
-            this.defaultPanelOptions[1].disabled = true;
+            this.defaultDynamicPanelOptions[1].disabled = true;
         // remove dynamically added content
         $('.modal .dynamic').remove();
         $('.modal').hide();
@@ -178,17 +212,17 @@ class UI {
     changeOnlineStatus(params) {
         let $onlineButton = $('#modal-online-option');
 
-        if (params.options) {
+        if (params) {
             if (this.gameIsOnline) {
                 $onlineButton.removeClass('option-highlight');
                 this.gameIsOnline = false;
             } else {
                 this.gameIsOnline = true;
                 $onlineButton.addClass('option-highlight');
-                this.panelOpen(params);
+                this.dynamicPanelOpen(params);
             }
         } else {
-            this.panelClose();
+            this.dynamicPanelClose();
         }
     }
 
@@ -198,6 +232,7 @@ class UI {
         el.children('span').addClass('subheader creepy-text');
         el.append('<div><span class="score-headers">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
         el.append('<div><span class="score-headers">Remaining health: </span><span class="score score-text">' + scores.health + '</span></div>');
+        el.append('<div><span class="score-headers">Acquired the Elder Sign: </span><span class="score score-text">' + scores.elderSign + '</span></div>');
         el.append('<div><span class="score-headers">Slaying the Elder: </span><span class="score score-text">' + scores.elder + '</span></div>');
         el.append('<div><span class="score-headers">Winning the game: </span><span class="score score-text">' + scores.win + '</span></div>');
         el.append('<div><span class="score-headers">Final score: </span><span class="score score-text">' + scores.total + '</span></div>');
@@ -271,20 +306,96 @@ class UI {
         $('.status-text').text('');
     }
 
+    highlightButton(button) {
+        $(button)
+            .addClass('button-highlight', 500)
+            .removeClass('button-highlight', 500)
+            .addClass('button-highlight', 500)
+            .removeClass('button-highlight', 500);
+    }
+
+    showFearEffect(intensity) {
+        $('#fear-effect').show();
+        $('#fear-effect')
+            .animate({ opacity: intensity }, 500)
+            .animate({ opacity: 0 }, 500, function() {
+                $('#fear-effect').hide();
+            })
+    }
+
+    staticPanelToggle(params) {
+        let $button = $(params.button),
+            $target = $(params.target);
+
+        if (params.content) {
+            $button.addClass('close-panel').removeClass('open-panel');
+            params.callback(params.content);
+        } else {
+            $button.addClass('open-panel').removeClass('close-panel');
+        }
+        this._animatePanelToggle($target);
+    }
+
+    updateQuestPanelInfo(questInfo) {
+        let $targetBodyContainer = $('#quests .body-container'),
+            questName = questInfo.currentQuest ? QUESTS[questInfo.currentQuest].questName : null,
+            questText = questInfo.currentQuest ? QUESTS[questInfo.currentQuest].questText : null,
+            questList = questInfo.completedQuests,
+            questID = '';
+
+        $targetBodyContainer.html('');
+        if (questName) {
+            $targetBodyContainer
+                .append('<div class="quest-name">' + questName + '</div>')
+                .append('<div class="quest-description">' + questText + '</div>');
+        }
+        if (questList.length > 0) {
+            $targetBodyContainer.append('<h4 class="quest-completed-header">Completed quests</h4>');
+            for (let name=0; name < questList.length; name++) {
+                questID = questList[name];
+                $targetBodyContainer.append('<div class="quest-name">&#8730; ' + QUESTS[questID].questName + '</div>');
+            }
+        }
+    }
+
+    updateInventoryInfo(inventory) {
+        let $targetBodyContainer = $('#inventory .body-container'),
+            invItemName = '',
+            invItemList = [];
+
+        $targetBodyContainer.html('');
+        for (let category in inventory) {
+            if (inventory.hasOwnProperty(category)) {
+                invItemList = inventory[category];
+                if ($('#inventory-' + category).length === 0)
+                    $targetBodyContainer.append('<h4 id="inventory-' + category + '" class="inventory-items-header">' + category + '</h4>');
+                if (invItemList.length > 0) {
+                    for (let i=0; i < invItemList.length; i++) {
+                        invItemName = invItemList[i];
+                        $targetBodyContainer
+                            .append('<div class="inventory-item-' + invItemName + '"></div>')
+                            .append('<div class="inventory-item-name">' + ITEMS[invItemName].name + '</div>')
+                            .append('<div class="inventory-item-description">' + ITEMS[invItemName].description + '</div>');
+                    }
+                }
+            }
+        }
+    }
+
     /**
-     * function panelOpen
-     * Sets up and displays a panel
+     * function dynamicPanelOpen
+     * Sets up and displays a dynamic panel (one in which ALL content is loaded dynamically
      *
      * @param params: object containing at least an options array (of objects)
      */
-    panelOpen(params) {
-        this.helpers.setKeysDisabled();
+    dynamicPanelOpen(params) {
+        Game.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
-        $('#button-options').addClass('closePanel').removeClass('openPanel');
+        $('#button-options').addClass('close-panel').removeClass('open-panel');
 
-        for (let option = 0; option < params.options.length; option++) {
-            let currentOption = params.options[option],
+        for (let option = 0; option < params.length; option++) {
+            let currentOption = params[option],
                 wrapperID = currentOption.id ? currentOption.id : null,
                 buttonContainer = currentOption.buttonContainer ? currentOption.buttonContainer : null,
                 listenerTarget = wrapperID ? wrapperID : buttonContainer;
@@ -308,11 +419,11 @@ class UI {
         }
     }
 
-    panelClose() {
+    dynamicPanelClose() {
         $('#grid-cover').hide();
         $('.panel').hide();
-        $('#button-options').addClass('openPanel').removeClass('closePanel');
-        this.helpers.setKeysEnabled();
+        $('#button-options').addClass('open-panel').removeClass('close-panel');
+        Game.helpers.setKeysEnabled();
         // remove dynamically added content
         $('.panel .dynamic').remove();
     }
@@ -352,12 +463,14 @@ class UI {
     calcScore(scoreValues) {
         let kills = scoreValues.kills * 5,
             health = scoreValues.health <= 0 ? 0 : scoreValues.health * 10,
+            elderSign = scoreValues.elderSign ? 20 : 0,
             elderPoints = scoreValues.elderKilled ? 25 : 0,
             winPoints = scoreValues.gameWon ? 50 : 0;
 
         return {
             'kills' : kills,
             'health' : health,
+            'elderSign' : elderSign,
             'elder' : elderPoints,
             'win' : winPoints,
             'total' : kills + health + elderPoints + winPoints
@@ -384,6 +497,9 @@ class UI {
             $element.text(params.value);
     }
 
+    _animatePanelToggle($panel) {
+        $panel.hasClass('hiding') ? $panel.show().removeClass('hiding', 500) : $panel.addClass('hiding', 500, function() { $panel.hide(); });
+    }
 
     /**
      * function scrollWindow

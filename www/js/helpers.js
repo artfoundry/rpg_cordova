@@ -1,13 +1,13 @@
 /**
  * Created by dsmarkowitz on 12/19/16.
  *
- * Helper functions used by player and turn-control classes.
+ * Helper functions used by most classes.
  */
 
 
 class Helpers {
-    constructor(gridOptions) {
-        this.grid = gridOptions;
+    constructor() {
+        this.gridOptions = StartingOptions.gridOptions;
     }
 
     /**
@@ -29,22 +29,22 @@ class Helpers {
 
         for (let r = firstRow; r <= lastRow; r++) {
             // if on the first or last row, and that row is inside the grid...
-            if ((r === firstRow && firstRow >= 0) || (r === lastRow && lastRow <= (this.grid.height + 1))){
+            if ((r === firstRow && firstRow >= 0) || (r === lastRow && lastRow <= (this.gridOptions.height + 1))){
                 // ...then add all tiles for that row (as long as the tile is inside the grid as well
                 for (let c = firstCol; c <= lastCol; c++) {
-                    if (c >= 0 && c <= (this.grid.width + 1)) {
+                    if (c >= 0 && c <= (this.gridOptions.width + 1)) {
                         tileToAdd = 'row' + r + 'col' + c;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
                 }
             } else {
                 // add the left and right tiles for the middle rows as long as they're inside the grid
-                if (r >= 0 && r <= (this.grid.height + 1)) {
+                if (r >= 0 && r <= (this.gridOptions.height + 1)) {
                     if (firstCol >= 0) {
                         tileToAdd = 'row' + r + 'col' + firstCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
-                    if (lastCol <= (this.grid.width + 1)) {
+                    if (lastCol <= (this.gridOptions.width + 1)) {
                         tileToAdd = 'row' + r + 'col' + lastCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
@@ -61,6 +61,61 @@ class Helpers {
             row : +pos.slice(3, colIndex),
             col : +pos.slice(colIndex + 3)
         }
+    }
+
+    randomizeLoc(option) {
+        let row = 0,
+            col = 0,
+            values = {
+                'rowFactor' : 0,
+                'rowAdd' : 0,
+                'colFactor' : 0,
+                'colAdd' : 0
+            };
+
+        switch (option) {
+            case 'right':
+                values.rowFactor = 1;
+                values.rowAdd = 0;
+                values.colFactor = .5;
+                values.colAdd = .5;
+                break;
+            case 'left':
+                values.rowFactor = 1;
+                values.rowAdd = 0;
+                values.colFactor = 0;
+                values.colAdd = .5;
+                break;
+            case 'top':
+                values.rowFactor = 0;
+                values.rowAdd = .5;
+                values.colFactor = 1;
+                values.colAdd = 0;
+                break;
+            case 'bottom':
+                values.rowFactor = .5;
+                values.rowAdd = .5;
+                values.colFactor = 1;
+                values.colAdd = 0;
+                break;
+            case 'center':
+                values.rowFactor = .5;
+                values.rowAdd = .3;
+                values.colFactor = .5;
+                values.colAdd = .3;
+                break;
+            default:
+                values.rowFactor = 1;
+                values.rowAdd = 0;
+                values.colFactor = 1;
+                values.colAdd = 0;
+                break;
+        }
+        while (!$('#row' + row + 'col' + col).hasClass('walkable')) {
+            row = Math.ceil((Math.random() * (this.gridOptions.height * values.rowFactor)) + (this.gridOptions.height * values.rowAdd));
+            col = Math.ceil((Math.random() * (this.gridOptions.width * values.colFactor)) + (this.gridOptions.width * values.colAdd));
+        }
+        return 'row' + row + 'col' + col;
     }
 
     killObject(objectList, objectKey) {
@@ -127,6 +182,7 @@ class Helpers {
         return $('body').hasClass('keys-enabled');
     }
 
+    // Currently not in use - was more annoying than helpful
     isOffScreen(element) {
         let height = element.outerHeight(),
             width = element.outerWidth(),

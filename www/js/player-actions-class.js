@@ -3,12 +3,11 @@
  */
 
 class PlayerActions {
-    constructor(grid, ui, players, monsters, helpers, audio) {
-        this.grid = grid;
+    constructor(dungeon, ui, players, monsters, audio) {
+        this.grid = dungeon.levels[0];
         this.ui = ui;
         this.players = players;
         this.monsters = monsters;
-        this.helpers = helpers;
         this.audio = audio;
     }
 
@@ -17,7 +16,7 @@ class PlayerActions {
      * Moves player character to newTile
      * Parameters:
      * - params: Object sent by TurnController containing player object and callback under "walkable" key
-     * - newTile: String of tile's id in the format "row#col#"
+     * - newTile: jQuery object of tile to which player is moving
      */
     movePlayer(params, newTile) {
         let player = this.players[params.player],
@@ -40,33 +39,58 @@ class PlayerActions {
         }
     }
 
+    pickUpItem(params, targetTile) {
+        let player = this.players[params.player],
+            $targetTile = $(targetTile),
+            itemType = $targetTile.data('itemType'),
+            itemName = $targetTile.data('itemName'),
+            questName = $targetTile.data('questName');
+
+        player.inventory.Items.push(itemName);
+        this.ui.updateInventoryInfo(player.inventory);
+
+        if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
+            this.handleQuest(itemName);
+        this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
+        this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
+    }
+
     /**
      * function playerAttack
      * For registering an attack by a monster on a player or vice versa
      * @param targetTile - jquery element target of attack
-     * @param params - object in which targets key contains list of game characters, either players or monsters
+     * @param params - object containing player and callback
      * @private
      */
     playerAttack(params, targetTile) {
         let playerActions = this,
             monsterNum,
-            nearbyMonsterList,
-            targetLoc,
             targetMonster,
             currentPlayer = playerActions.players[params.player],
             callback = params.callback,
             animateAttackParams,
-            animateDeathParams;
+            animateDeathParams,
+            animateFearParams;
 
         for (monsterNum in this.monsters) {
-            if (Object.prototype.hasOwnProperty.call(this.monsters, monsterNum)) {
+            if (this.monsters.hasOwnProperty(monsterNum)) {
                 targetMonster = this.monsters[monsterNum];
                 if (targetMonster.pos === targetTile.id) {
-                    targetLoc = $('#' + targetMonster.pos)[0];
-                    // check if there are actually monsters nearby
-                    nearbyMonsterList = this.helpers.checkForNearbyCharacters(currentPlayer, 'monster', 1);
-                    // if attack target matches monster in list of nearby monsters, then we have our target
-                    if (nearbyMonsterList.indexOf(targetLoc) !== -1) {
+                    if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elder-sign')) {
+                        this.ui.displayStatus('fear');
+                        setTimeout(function() {
+                            playerActions.ui.hideStatus();
+                        }, 3000);
+
+                        this.ui.showFearEffect(.5);
+
+                        animateFearParams = {
+                            'position' : currentPlayer.pos,
+                            'type' : 'impassable'
+                        };
+                        this.grid.animateTile(animateFearParams);
+                        break;
+                    } else {
                         targetMonster.health -= 1;
                         animateAttackParams = {
                             "position" : targetMonster.pos,
@@ -88,9 +112,11 @@ class PlayerActions {
                         if (targetMonster.health < 1) {
                             if (targetMonster.subtype === 'elder') {
                                 playerActions.audio.playSoundEffect(['death-elder']);
-                                currentPlayer.elderKilled = true;
                             }
-                            this.helpers.killObject(this.monsters, monsterNum);
+                            if (targetMonster.questGoal && this._checkCurrentQuest(currentPlayer, targetMonster.questName, targetMonster.name)) {
+                                playerActions.handleQuest(targetMonster.name);
+                            }
+                            Game.helpers.killObject(this.monsters, monsterNum);
                             currentPlayer.updateKills();
                             animateAttackParams.callback = function() {
                                 playerActions.grid.animateTile(animateDeathParams);
@@ -103,6 +129,41 @@ class PlayerActions {
                     }
                 }
             }
+        }
+    }
+
+    _checkCurrentQuest(player, questName, targetToCheck) {
+        let result = false;
+
+        if (player.quests.currentQuest === questName && QUESTS[questName].goals.target === targetToCheck)
+            result = true;
+        return result;
+    }
+
+    /**
+     * function handleQuest
+     * Called when an item is acquired or monster killed or some other condition met that matches a current quest goal,
+     * and then determines what goal has been met and if quest is complete.
+     * Called by: player-actions-class.pickupItem, player-actions-class.playerAttack
+     * @param questGoal : string
+     */
+
+    handleQuest(questGoal) {
+        let player = this.players.player1,
+            currentQuest = player.quests.currentQuest,
+            updatedQuestInfo = {};
+
+        if ((QUESTS[currentQuest].goals.action === 'Acquire' && QUESTS[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
+            (QUESTS[currentQuest].goals.action === 'Kill' && QUESTS[currentQuest].goals.target === questGoal))
+        {
+            player.quests.completedQuests.push(currentQuest);
+            player.quests.currentQuest = QUESTS[currentQuest].nextQuest || null;
+            updatedQuestInfo = {
+                'currentQuest' : player.quests.currentQuest,
+                'completedQuests' : player.quests.completedQuests
+            };
+            this.ui.updateQuestPanelInfo(updatedQuestInfo);
+            this.ui.highlightButton('#pc-button-quests');
         }
     }
 
