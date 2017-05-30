@@ -12,7 +12,7 @@ class UI {
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
             "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\n",
             "online"        : "Play online (selecting this will post your score to the leaderboards and disable difficulty level switching mid-game)",
-            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health, number of monsters killed, whether you kill the Elder, and whether you win the game.",
+            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health, number of monsters you kill, whether you find the Elder Signb, whether you kill the Elder, and whether you win the game.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "How're your monster slaying skills?",
@@ -164,7 +164,7 @@ class UI {
             if (messages[i].class === "modal-header")
                 $('.modal-header').text(this.dialogs[messages[i].text]);
             else {
-                $('.modal-body-container').append(section);
+                $('.modal .body-container').append(section);
                 $lastSection = $('.modal-section:last-child');
                 $lastSection.addClass(messages[i].class).append('<span>' + this.dialogs[messages[i].text] + '</span>');
 
@@ -336,6 +336,10 @@ class UI {
         this._animatePanelToggle($target);
     }
 
+    _animatePanelToggle($panel) {
+        $panel.hasClass('hiding') ? $panel.show().removeClass('hiding', 500) : $panel.addClass('hiding', 500, function() { $panel.hide(); });
+    }
+
     updateQuestPanelInfo(questInfo) {
         let $targetBodyContainer = $('#quests .body-container'),
             questName = questInfo.currentQuest ? QUESTS[questInfo.currentQuest].questName : null,
@@ -495,10 +499,6 @@ class UI {
         }
         else
             $element.text(params.value);
-    }
-
-    _animatePanelToggle($panel) {
-        $panel.hasClass('hiding') ? $panel.show().removeClass('hiding', 500) : $panel.addClass('hiding', 500, function() { $panel.hide(); });
     }
 
     /**

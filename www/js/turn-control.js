@@ -59,7 +59,7 @@ class TurnController {
                     'label' : 'Tips',
                     'id' : 'modal-button-tips',
                     'action' : this.ui.slideWindow,
-                    'params' : {'container' : '.modal-body-container', 'button' : '#modal-button-tips'},
+                    'params' : {'container' : '.modal .body-container', 'button' : '#modal-button-tips'},
                     'hidden' : false
                 },
                 {
