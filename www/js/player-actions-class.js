@@ -15,27 +15,20 @@ class PlayerActions {
      * function movePlayer
      * Moves player character to newTile
      * Parameters:
-     * - params: Object sent by TurnController containing player object and callback under "walkable" key
-     * - newTile: jQuery object of tile to which player is moving
+     * - params: Object sent by TurnController containing player object and callback
+     * - newTile: DOM element of tile to which player is moving
      */
     movePlayer(params, newTile) {
         let player = this.players[params.player],
             currentPos = player.pos,
-            currentRow = player.row,
-            currentCol = player.col,
             newTilePos = newTile.id,
             callback = params.callback;
 
-        if ((newTilePos === (PlayerActions._getRightTileId(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._getLeftTileId(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._getBottomTileId(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._getTopTileId(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._getTopRightTileId(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._getTopLeftTileId(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._getBottomRightTileId(currentRow, currentCol))) ||
-            (newTilePos === (PlayerActions._getBottomLeftTileId(currentRow, currentCol)))
-        ) {
-            player.setPlayer(currentPos, newTilePos, callback);
+        if ($(newTile).hasClass('pc-adjacent')) {
+            if ($(newTile).hasClass('impassable'))
+                this.grid.animateTile({'position' : currentPos, 'type' : 'impassable'});
+            else
+                player.setPlayer(currentPos, newTilePos, callback);
         }
     }
 
@@ -46,13 +39,15 @@ class PlayerActions {
             itemName = $targetTile.data('itemName'),
             questName = $targetTile.data('questName');
 
-        player.inventory.Items.push(itemName);
-        this.ui.updateInventoryInfo(player.inventory);
+        if ($targetTile.hasClass('pc-adjacent')) {
+            player.inventory.Items.push(itemName);
+            this.ui.updateInventoryInfo(player.inventory);
 
-        if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
-            this.handleQuest(itemName);
-        this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
-        this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
+            if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
+                this.handleQuest(itemName);
+            this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
+            this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
+        }
     }
 
     /**
@@ -72,60 +67,62 @@ class PlayerActions {
             animateDeathParams,
             animateFearParams;
 
-        for (monsterNum in this.monsters) {
-            if (this.monsters.hasOwnProperty(monsterNum)) {
-                targetMonster = this.monsters[monsterNum];
-                if (targetMonster.pos === targetTile.id) {
-                    if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elder-sign')) {
-                        this.ui.displayStatus('fear');
-                        setTimeout(function() {
-                            playerActions.ui.hideStatus();
-                        }, 3000);
+        if ($(targetTile).hasClass('pc-adjacent')) {
+            for (monsterNum in this.monsters) {
+                if (this.monsters.hasOwnProperty(monsterNum)) {
+                    targetMonster = this.monsters[monsterNum];
+                    if (targetMonster.pos === targetTile.id) {
+                        if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elder-sign')) {
+                            this.ui.displayStatus('fear');
+                            setTimeout(function() {
+                                playerActions.ui.hideStatus();
+                            }, 3000);
 
-                        this.ui.showFearEffect(.5);
+                            this.ui.showFearEffect(.5);
 
-                        animateFearParams = {
-                            'position' : currentPlayer.pos,
-                            'type' : 'impassable'
-                        };
-                        this.grid.animateTile(animateFearParams);
-                        break;
-                    } else {
-                        targetMonster.health -= 1;
-                        animateAttackParams = {
-                            "position" : targetMonster.pos,
-                            "type" : "attack",
-                            "attacker" : currentPlayer.type
-                        };
-                        animateDeathParams = {
-                            "position" : targetMonster.pos,
-                            "type" : "image-swap",
-                            "delay" : "death",
-                            "addClasses" : "content-trans",
-                            "removeClasses" : "content-" + targetMonster.subtype,
-                            "callback" : function() {
-                                playerActions.ui.updateStatusValue({id: ".kills", value: currentPlayer.getKills()});
-                                playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type, targetMonster.subtype);
-                                callback();
-                            }
-                        };
-                        if (targetMonster.health < 1) {
-                            if (targetMonster.subtype === 'elder') {
-                                playerActions.audio.playSoundEffect(['death-elder']);
-                            }
-                            if (targetMonster.questGoal && this._checkCurrentQuest(currentPlayer, targetMonster.questName, targetMonster.name)) {
-                                playerActions.handleQuest(targetMonster.name);
-                            }
-                            Game.helpers.killObject(this.monsters, monsterNum);
-                            currentPlayer.updateKills();
-                            animateAttackParams.callback = function() {
-                                playerActions.grid.animateTile(animateDeathParams);
+                            animateFearParams = {
+                                'position' : currentPlayer.pos,
+                                'type' : 'impassable'
                             };
+                            this.grid.animateTile(animateFearParams);
+                            break;
                         } else {
-                            animateAttackParams.callback = callback;
+                            targetMonster.health -= 1;
+                            animateAttackParams = {
+                                "position" : targetMonster.pos,
+                                "type" : "attack",
+                                "attacker" : currentPlayer.type
+                            };
+                            animateDeathParams = {
+                                "position" : targetMonster.pos,
+                                "type" : "image-swap",
+                                "delay" : "death",
+                                "addClasses" : "content-trans",
+                                "removeClasses" : "content-" + targetMonster.subtype,
+                                "callback" : function() {
+                                    playerActions.ui.updateStatusValue({id: ".kills", value: currentPlayer.getKills()});
+                                    playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type, targetMonster.subtype);
+                                    callback();
+                                }
+                            };
+                            if (targetMonster.health < 1) {
+                                if (targetMonster.subtype === 'elder') {
+                                    playerActions.audio.playSoundEffect(['death-elder']);
+                                }
+                                if (targetMonster.questGoal && this._checkCurrentQuest(currentPlayer, targetMonster.questName, targetMonster.name)) {
+                                    playerActions.handleQuest(targetMonster.name);
+                                }
+                                Game.helpers.killObject(this.monsters, monsterNum);
+                                currentPlayer.updateKills();
+                                animateAttackParams.callback = function() {
+                                    playerActions.grid.animateTile(animateDeathParams);
+                                };
+                            } else {
+                                animateAttackParams.callback = callback;
+                            }
+                            this.grid.animateTile(animateAttackParams);
+                            break;
                         }
-                        this.grid.animateTile(animateAttackParams);
-                        break;
                     }
                 }
             }
@@ -166,13 +163,4 @@ class PlayerActions {
             this.ui.highlightButton('#pc-button-quests');
         }
     }
-
-    static _getTopTileId(row, col) { return 'row' + (row - 1) + 'col' + col; }
-    static _getBottomTileId(row, col) { return 'row' + (row + 1) + 'col' + col; }
-    static _getLeftTileId(row, col) { return 'row' + row + 'col' + (col - 1); }
-    static _getRightTileId(row, col) { return 'row' + row + 'col' + (col + 1); }
-    static _getTopLeftTileId(row, col) { return 'row' + (row - 1) + 'col' + (col - 1); }
-    static _getTopRightTileId(row, col) { return 'row' + (row - 1) + 'col' + (col + 1); }
-    static _getBottomLeftTileId(row, col) { return 'row' + (row + 1) + 'col' + (col - 1); }
-    static _getBottomRightTileId(row, col) { return 'row' + (row + 1) + 'col' + (col + 1); }
 }

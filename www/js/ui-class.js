@@ -133,6 +133,10 @@ class UI {
         this.events.setUpClickListener(target, targetActions, actionParams);
     }
 
+    /*********************
+     *  Modal functions
+     *********************/
+
     /**
      * function modalOpen
      * Unhides the main modal, displays messages in it, and unhides listed buttons.
@@ -296,16 +300,6 @@ class UI {
         $button.data('temp', tempText);
     }
 
-    displayStatus(message) {
-        $('.status-message').addClass('status-message-open', 200);
-        $('.status-text').text(this.dialogs[message]);
-    }
-
-    hideStatus() {
-        $('.status-message').removeClass('status-message-open', 200);
-        $('.status-text').text('');
-    }
-
     highlightButton(button) {
         $(button)
             .addClass('button-highlight', 500)
@@ -314,13 +308,24 @@ class UI {
             .removeClass('button-highlight', 500);
     }
 
-    showFearEffect(intensity) {
-        $('#fear-effect').show();
-        $('#fear-effect')
-            .animate({ opacity: intensity }, 500)
-            .animate({ opacity: 0 }, 500, function() {
-                $('#fear-effect').hide();
-            })
+    /********************
+     *  Panel functions
+     ********************/
+
+    simplePanelToggle(params) {
+        let $panel = $(params.target);
+
+        $panel.hasClass(params.class) ? $panel.removeClass(params.class, 200) : $panel.addClass(params.class, 200);
+    }
+
+    displayStatus(message) {
+        $('.status-message').addClass('status-message-open', 200);
+        $('.status-text').text(this.dialogs[message]);
+    }
+
+    hideStatus() {
+        $('.status-message').removeClass('status-message-open', 200);
+        $('.status-text').text('');
     }
 
     staticPanelToggle(params) {
@@ -464,6 +469,25 @@ class UI {
         }
     }
 
+    /***********************
+     *  Misc functions
+     ***********************/
+
+    showFearEffect(intensity) {
+        $('#fear-effect')
+            .show()
+            .animate({ opacity: intensity }, 500)
+            .animate({ opacity: 0 }, 500, function() {
+                $('#fear-effect').hide();
+            })
+    }
+
+    /**
+     * function calcScore
+     * Calculates final scores
+     * @param scoreValues: {{kills: number, health: number, elderSign: boolean, elderKilled: boolean, gameWon: boolean}}
+     * @returns {{kills: number, health: number, elderSign: number, elder: number, win: number, total: number}}
+     */
     calcScore(scoreValues) {
         let kills = scoreValues.kills * 5,
             health = scoreValues.health <= 0 ? 0 : scoreValues.health * 10,

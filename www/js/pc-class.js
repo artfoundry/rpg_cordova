@@ -70,6 +70,8 @@ class PlayerCharacter {
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
         }
 
+        this.grid.labelPCAdjacentTiles(newPosId);
+
         player.row = Game.helpers.getRowCol(newPosId).row;
         player.col = Game.helpers.getRowCol(newPosId).col;
     }
