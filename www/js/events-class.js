@@ -21,10 +21,7 @@ class Events {
         $(target).click((e) => {
             let $target = $(e.target),
                 selectedOpt = Object.keys($target.data())[0],
-                actionParam;
-
-            if (selectedOpt)
-                actionParam = $target.data()[selectedOpt];
+                actionParam = selectedOpt ? $target.data()[selectedOpt] : params;
 
             targetAction(actionParam);
         });

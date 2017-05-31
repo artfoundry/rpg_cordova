@@ -12,7 +12,7 @@ class UI {
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
             "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\n",
             "online"        : "Play online (selecting this will post your score to the leaderboards and disable difficulty level switching mid-game)",
-            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health, number of monsters killed, whether you kill the Elder, and whether you win the game.",
+            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health, number of monsters you kill, whether you find the Elder Signb, whether you kill the Elder, and whether you win the game.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "How're your monster slaying skills?",
@@ -30,7 +30,7 @@ class UI {
                 'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.setGameDifficulty.bind(this),
-                'runCallbackNow' : true
+                'runCallbackOnOpen' : true
             },
             {
                 'container' : '.panel-body-container',
@@ -38,7 +38,7 @@ class UI {
                 'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateSoundSetting.bind(this),
-                'runCallbackNow' : true
+                'runCallbackOnOpen' : true
             },
             {
                 'container' : '.panel-body-container',
@@ -46,7 +46,7 @@ class UI {
                 'buttonContainer' : '.panel-options',
                 'disabled' : false,
                 'callback' : this.updateMusicSetting.bind(this),
-                'runCallbackNow' : true
+                'runCallbackOnOpen' : true
             },
             {
                 'container' : '.panel-footer',
@@ -54,7 +54,7 @@ class UI {
                 'buttonContainer' : '.panel-button',
                 'disabled' : false,
                 'callback' : this.dynamicPanelClose.bind(this),
-                'runCallbackNow' : false
+                'runCallbackOnOpen' : false
             }
         ];
         this.$panelPartials = $('<div></div>');
@@ -133,6 +133,10 @@ class UI {
         this.events.setUpClickListener(target, targetActions, actionParams);
     }
 
+    /*********************
+     *  Modal functions
+     *********************/
+
     /**
      * function modalOpen
      * Unhides the main modal, displays messages in it, and unhides listed buttons.
@@ -164,7 +168,7 @@ class UI {
             if (messages[i].class === "modal-header")
                 $('.modal-header').text(this.dialogs[messages[i].text]);
             else {
-                $('.modal-body-container').append(section);
+                $('.modal .body-container').append(section);
                 $lastSection = $('.modal-section:last-child');
                 $lastSection.addClass(messages[i].class).append('<span>' + this.dialogs[messages[i].text] + '</span>');
 
@@ -296,16 +300,6 @@ class UI {
         $button.data('temp', tempText);
     }
 
-    displayStatus(message) {
-        $('.status-message').addClass('status-message-open', 200);
-        $('.status-text').text(this.dialogs[message]);
-    }
-
-    hideStatus() {
-        $('.status-message').removeClass('status-message-open', 200);
-        $('.status-text').text('');
-    }
-
     highlightButton(button) {
         $(button)
             .addClass('button-highlight', 500)
@@ -314,13 +308,24 @@ class UI {
             .removeClass('button-highlight', 500);
     }
 
-    showFearEffect(intensity) {
-        $('#fear-effect').show();
-        $('#fear-effect')
-            .animate({ opacity: intensity }, 500)
-            .animate({ opacity: 0 }, 500, function() {
-                $('#fear-effect').hide();
-            })
+    /********************
+     *  Panel functions
+     ********************/
+
+    simplePanelToggle(params) {
+        let $panel = $(params.target);
+
+        $panel.hasClass(params.class) ? $panel.removeClass(params.class, 200) : $panel.addClass(params.class, 200);
+    }
+
+    displayStatus(message) {
+        $('.status-message').addClass('status-message-open', 200);
+        $('.status-text').text(this.dialogs[message]);
+    }
+
+    hideStatus() {
+        $('.status-message').removeClass('status-message-open', 200);
+        $('.status-text').text('');
     }
 
     staticPanelToggle(params) {
@@ -334,6 +339,10 @@ class UI {
             $button.addClass('open-panel').removeClass('close-panel');
         }
         this._animatePanelToggle($target);
+    }
+
+    _animatePanelToggle($panel) {
+        $panel.hasClass('hiding') ? $panel.show().removeClass('hiding', 500) : $panel.addClass('hiding', 500, function() { $panel.hide(); });
     }
 
     updateQuestPanelInfo(questInfo) {
@@ -410,7 +419,7 @@ class UI {
             if (buttonContainer && currentOption.disabled === false)
                 this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback);
 
-            if (currentOption.callback && currentOption.runCallbackNow) {
+            if (currentOption.callback && currentOption.runCallbackOnOpen) {
                 currentOption.callback();
             }
 
@@ -460,6 +469,25 @@ class UI {
         }
     }
 
+    /***********************
+     *  Misc functions
+     ***********************/
+
+    showFearEffect(intensity) {
+        $('#fear-effect')
+            .show()
+            .animate({ opacity: intensity }, 500)
+            .animate({ opacity: 0 }, 500, function() {
+                $('#fear-effect').hide();
+            })
+    }
+
+    /**
+     * function calcScore
+     * Calculates final scores
+     * @param scoreValues: {{kills: number, health: number, elderSign: boolean, elderKilled: boolean, gameWon: boolean}}
+     * @returns {{kills: number, health: number, elderSign: number, elder: number, win: number, total: number}}
+     */
     calcScore(scoreValues) {
         let kills = scoreValues.kills * 5,
             health = scoreValues.health <= 0 ? 0 : scoreValues.health * 10,
@@ -495,10 +523,6 @@ class UI {
         }
         else
             $element.text(params.value);
-    }
-
-    _animatePanelToggle($panel) {
-        $panel.hasClass('hiding') ? $panel.show().removeClass('hiding', 500) : $panel.addClass('hiding', 500, function() { $panel.hide(); });
     }
 
     /**

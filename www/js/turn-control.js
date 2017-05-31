@@ -59,7 +59,7 @@ class TurnController {
                     'label' : 'Tips',
                     'id' : 'modal-button-tips',
                     'action' : this.ui.slideWindow,
-                    'params' : {'container' : '.modal-body-container', 'button' : '#modal-button-tips'},
+                    'params' : {'container' : '.modal .body-container', 'button' : '#modal-button-tips'},
                     'hidden' : false
                 },
                 {
@@ -178,7 +178,7 @@ class TurnController {
     _setupPlayerTurnInteractionHandlers() {
         let targetActions = {
                 'walkable': this.playerActions.movePlayer.bind(this.playerActions),
-                'impassable': this.grid.animateTile.bind(this),
+                'impassable': this.playerActions.movePlayer.bind(this.playerActions),
                 'monster': this.playerActions.playerAttack.bind(this.playerActions),
                 'item': this.playerActions.pickUpItem.bind(this.playerActions)
             },
@@ -188,8 +188,7 @@ class TurnController {
                     'callback': this.endTurn.bind(this)
                 },
                 'impassable': {
-                    'position': this.players.player1.pos,
-                    'type': 'impassable'
+                    'player': 'player1'
                 },
                 'monster': {
                     'player': 'player1',

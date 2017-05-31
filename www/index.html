@@ -34,22 +34,24 @@
                         <button id="pc-button-quests" class="statusbar-button statusbar-button-rightcap open-panel">Tasks</button>
                     </span>
                     <span class="title">Monsters!</span>
-                    <span class="stats">
-                        <span class="pc-health">Health: <span class="status-value"></span></span>
-                        <span class="kills">Kills: <span class="status-value"></span></span>
-                        <span class="button-container">
-                            <button id="button-options" class="statusbar-button open-panel">Options</button>
-                        </span>
+                    <span id="options-button-container" class="button-container">
+                        <button id="button-options" class="statusbar-button open-panel">Options</button>
                     </span>
                 </div>
-                <div class="status-message"><span class="status-text"></span></div>
+            </div>
+            <div class="status-message"><span class="status-text"></span></div>
+            <div id="stats-bar">
+                <span class="stats">
+                    <span class="pc-health">Health: <span class="status-value"></span></span>
+                    <span class="kills">Kills: <span class="status-value"></span></span>
+                </span>
             </div>
             <div class="right-side-bar"></div>
 
             <div class="modal">
                 <div class="modal-container">
                     <header class="modal-header"></header>
-                    <div class="modal-body-container"></div>
+                    <div class="body-container"></div>
                     <footer class="modal-footer"></footer>
                 </div>
             </div>

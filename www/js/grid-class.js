@@ -128,8 +128,15 @@ class Grid {
         }
     }
 
+    labelPCAdjacentTiles(position) {
+        let $adjacentTiles = Game.helpers.findSurroundingTiles(position, 1);
+
+        $('.tile').removeClass('pc-adjacent');
+        $adjacentTiles.addClass('pc-adjacent');
+    }
+
     clearGrid() {
-        $('.grid').children().remove();
+        $('.tile').remove();
     }
 
     changeTileSetting(position, name, type, subtype, questName = null) {
