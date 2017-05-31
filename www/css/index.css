@@ -138,6 +138,10 @@ button:active {
     font-size: 1.4em;
 }
 
+#options-button-container {
+    float: right;
+}
+
 .status-message {
     position: absolute;
     top: 40px;
@@ -213,8 +217,7 @@ button:active {
     right: 3%;
     z-index: 4;
     height: 30px;
-    min-width: 300px;
-    padding: 20px 10px 10px;
+    padding: 20px 20px 5px;
     opacity: .7;
     background: rgb(96, 173, 188);
     border: 1px darkslateblue solid;
@@ -222,14 +225,6 @@ button:active {
     box-shadow: 0 2px 2px black;
     color: black;
     font-size: 1em;
-}
-
-.stats {
-    position: absolute;
-    right: 0;
-    min-width: 300px;
-    white-space: normal;
-    text-align: right;
 }
 
 .stats .pc-health {
