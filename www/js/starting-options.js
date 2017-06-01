@@ -7,7 +7,7 @@ let StartingOptions = {
         "width" : 10,
         "height" : 10,
         "tileSize" : 64,
-        "randomization" : 0.6, // determines what type of tile is chosen
+        "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
         "items" : {
             "elder-sign" : {
                 "itemType" : "questItems",
