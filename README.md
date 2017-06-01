@@ -26,7 +26,7 @@ and attacks player if next to it. All monsters move after player moves. Game end
 
 Addition of inventory and quests/tasks. An Elder Sign artifact is placed randomly in the room, and the player must acquire it before being able to damage the Elder Thing. Acquiring the artifact adds to the score and killing the Elder further adds to the score. Addition of randomly generated walls. Addition of leaderboards and difficulty levels.
 
-*Completed aside from Elder Sign asset*
+*Completed*
 
 **Phase 3: More advanced game**
 
