@@ -139,7 +139,8 @@ button:active {
 }
 
 #options-button-container {
-    float: right;
+    position: absolute;
+    right: 0;
 }
 
 .status-message {
