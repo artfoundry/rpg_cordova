@@ -54,41 +54,26 @@ class Grid {
             row = +tileId.slice(3, colIndex),
             col = +tileId.slice(colIndex + 3),
             surroundingTiles = {
-                $tileAboveLeft: $(markup).find('#row' + (row - 1) + 'col' + (col - 1)),
-                $tileAbove: $(markup).find('#row' + (row - 1) + 'col' + col),
-                $tileAboveRight: $(markup).find('#row' + (row - 1) + 'col' + (col + 1)),
-                $tileRight: $(markup).find('#row' + row + 'col' + (col + 1)),
-                $tileBelowRight: $(markup).find('#row' + (row + 1) + 'col' + (col + 1)),
-                $tileBelow: $(markup).find('#row' + (row + 1) + 'col' + col),
-                $tileBelowLeft: $(markup).find('#row' + (row + 1) + 'col' + (col - 1)),
-                $tileLeft: $(markup).find('#row' + row + 'col' + (col - 1))
+                $tileAboveLeft : $(markup).find('#row' + (row - 1) + 'col' + (col - 1)),
+                $tileAbove : $(markup).find('#row' + (row - 1) + 'col' + col),
+                $tileAboveRight : $(markup).find('#row' + (row - 1) + 'col' + (col + 1)),
+                $tileLeft : $(markup).find('#row' + row + 'col' + (col - 1))
             },
+            previousWallCount = this.countPreviousWalls(surroundingTiles),
             tileType = '';
 
-        if (this.countPreviousWalls(surroundingTiles) > 2) {
+        // if topleft is not a wall but left and top are
+        if (!surroundingTiles.$tileAboveLeft.hasClass('tile-wall') && surroundingTiles.$tileLeft.hasClass('tile-wall') && surroundingTiles.$tileAbove.hasClass('tile-wall')) {
+            tileType = 'wall';
+        // or if top isn't a wall but either topleft is and left is not or both topright and left are
+        } else if (!surroundingTiles.$tileAbove.hasClass('tile-wall') &&
+            ((surroundingTiles.$tileAboveLeft.hasClass('tile-wall') && !surroundingTiles.$tileLeft.hasClass('tile-wall')) ||
+            (surroundingTiles.$tileAboveRight.hasClass('tile-wall') && surroundingTiles.$tileLeft.hasClass('tile-wall')))
+        ) {
             tileType = 'ground';
-        // if top and either left or right are walls...
-        } else if (surroundingTiles.$tileAbove.hasClass('tile-wall') && (surroundingTiles.$tileLeft.hasClass('tile-wall') || surroundingTiles.$tileRight.hasClass('tile-wall'))) {
-            // ...and bottom and right are walls OR left is a wall but top left is not a wall OR right is a wall but top right is not a wall...
-            // (basically don't leave catty-corner walls)
-            if ((surroundingTiles.$tileRight && surroundingTiles.$tileRight.hasClass('tile-wall') &&
-                surroundingTiles.$tileBelow && surroundingTiles.$tileBelow.hasClass('tile-wall')) ||
-                (surroundingTiles.$tileLeft.hasClass('tile-wall') && !surroundingTiles.$tileAboveLeft.hasClass('tile-wall')) ||
-                (surroundingTiles.$tileRight.hasClass('tile-wall') && !surroundingTiles.$tileAboveRight.hasClass('tile-wall')))
-            {
-                tileType = 'wall';
-            } else {
-                tileType = 'ground';
-            }
-        // otherwise if top, left, and right aren't walls AND top left or top right is a wall
-        } else if (
-            !surroundingTiles.$tileAbove.hasClass('tile-wall') &&
-            !surroundingTiles.$tileLeft.hasClass('tile-wall') &&
-            !surroundingTiles.$tileRight.hasClass('tile-wall') &&
-            (surroundingTiles.$tileAboveLeft.hasClass('tile-wall') || surroundingTiles.$tileAboveRight.hasClass('tile-wall')))
-        {
+        // if too many walls around
+        } else if (previousWallCount >= 3 || (previousWallCount >= 1 && row === 10)) {
             tileType = 'ground';
-
         // otherwise randomize it
         } else {
             tileType = Math.random() >= this.gridRandomFactor ? 'wall' : 'ground';
@@ -100,13 +85,13 @@ class Grid {
      * function countPreviousWalls
      * Looks at the three tiles above and the tile to the left to see if they're walls.
      * Used to determine if the current tile should be ground or wall when randomizing tiles.
-     * @param surroundingTiles:
+     * @param surroundingTiles: object of jquery elements
      */
     countPreviousWalls(surroundingTiles) {
         let wallCount = 0;
 
-        for (let i in surroundingTiles) {
-            if (surroundingTiles.hasOwnProperty(i) && surroundingTiles[i].hasClass('tile-wall'))
+        for (let el in surroundingTiles) {
+            if (surroundingTiles.hasOwnProperty(el) && surroundingTiles[el].hasClass('tile-wall'))
                 wallCount += 1;
         }
         return wallCount;
