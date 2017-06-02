@@ -16,7 +16,7 @@ const QUESTS = {
     },
     'killElder' : {
         'questName'     : "Kill the Elder",
-        'questText'     : "You have found an Elder lurking in the depths! You can feel your sanity ebbing, but the monstrosity must be destroyed at all costs to prevent it from creating more hideous Shoggoths and putting an end to mankind!",
+        'questText'     : "An Elder is lurking in the depths! You can feel your sanity ebbing, but the monstrosity must be destroyed at all costs to prevent it from creating more hideous Shoggoths and putting an end to mankind!",
         'tips'          : "The Elder has more health than the Shoggoths but doesn't attack. It only spawns a Shoggoth every time it moves.",
         'prereq'        : 'elderSign',
         'goals'         : {
