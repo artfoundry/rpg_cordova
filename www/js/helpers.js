@@ -129,19 +129,19 @@ class Helpers {
      * @param character: object of the character around which the search is done
      * @param charSearchType: string of the class name (no '.') of the character type to search for
      * @param distance: distance in tiles from the character to search
-     * @returns {*}: jquery object array of matching tiles, or null if no matches
+     * @returns {*}: array of matching tiles, or null if no matches
      */
     checkForNearbyCharacters(character, charSearchType, distance) {
         let characterLoc = character.pos,
-            $nearbyCharLoc = null,
+            nearbyCharLoc = null,
             $surroundingTiles = this.findSurroundingTiles(characterLoc, distance);
 
         if ($surroundingTiles.hasClass(charSearchType)) {
-            $nearbyCharLoc = $.grep($surroundingTiles, function(tile){
+            nearbyCharLoc = $.grep($surroundingTiles, function(tile){
                 return $(tile).hasClass(charSearchType);
             });
         }
-        return $nearbyCharLoc;
+        return nearbyCharLoc;
     }
 
     checkPlayerDestination(keyCode, playerPos) {

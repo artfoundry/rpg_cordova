@@ -16,6 +16,7 @@ class MonsterActions {
         let currentMonster,
             minionAttacked,
             nearbyPlayerTiles = [],
+            updatedNearbyPlayers = [],
             monsterActions = this,
             elderSpawnCallback = function() {
                 if ($('#' + this.oldPos).hasClass('walkable')) {
@@ -49,6 +50,18 @@ class MonsterActions {
                     } else {
                         currentMonster.searchForPrey(2);
                     }
+                }
+                updatedNearbyPlayers = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
+                if (updatedNearbyPlayers) {
+                    for (let playerTile in updatedNearbyPlayers) {
+                        if (updatedNearbyPlayers.hasOwnProperty(playerTile)) {
+                            for (let player in this.players) {
+                                if (this.players.hasOwnProperty(player) && $(updatedNearbyPlayers[playerTile]).hasClass(this.players[player].name))
+                                    this.players[player].sanity -= 1;
+                            }
+                        }
+                    }
+                    this.ui.updateStatusValue({'id' : '.pc-sanity', 'value' : this.players.player1.sanity});
                 }
             }
         }
