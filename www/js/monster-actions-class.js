@@ -17,9 +17,11 @@ class MonsterActions {
             minionAttacked,
             nearbyPlayerTiles = [],
             monsterActions = this,
+            newMinion,
             elderSpawnCallback = function() {
                 if ($('#' + this.oldPos).hasClass('walkable')) {
-                    monsterActions.addNewMinion(this);
+                    newMinion = monsterActions.addNewMinion(this);
+                    monsterActions._affectPlayerSanity(newMinion, setIsGameOver);
                 }
             };
 
@@ -50,7 +52,7 @@ class MonsterActions {
                         currentMonster.searchForPrey(2);
                     }
                 }
-                this._affectPlayerSanity(currentMonster);
+                this._affectPlayerSanity(currentMonster, setIsGameOver);
             }
         }
     }
@@ -64,21 +66,32 @@ class MonsterActions {
         this.monsters[newMinionNum] = newMinion;
         this.monsters[newMinionNum].name = newMinion.name + this.monsterCount;
         this.monsters[newMinionNum].initialize();
+        return this.monsters[newMinionNum];
     }
 
-    _affectPlayerSanity(currentMonster) {
-        let nearbyPlayers = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
+    _affectPlayerSanity(currentMonster, setIsGameOver) {
+        let nearbyPlayers = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1),
+            fearValue = 0,
+            sanityPercentage = 0;
 
         if (nearbyPlayers) {
             for (let playerTile in nearbyPlayers) {
                 if (nearbyPlayers.hasOwnProperty(playerTile)) {
                     for (let player in this.players) {
-                        if (this.players.hasOwnProperty(player) && $(nearbyPlayers[playerTile]).hasClass(this.players[player].name))
+                        if (this.players.hasOwnProperty(player) && $(nearbyPlayers[playerTile]).hasClass(this.players[player].name)) {
                             this.players[player].sanity -= 1;
+                            fearValue = (this.players[player].maxSanity - this.players[player].sanity) / this.players[player].maxSanity;
+                            this.ui.showFearEffect(fearValue);
+                            if (this.players[player].sanity === 0) {
+                                this.audio.playSoundEffect(['human-insane']);
+                                setIsGameOver();
+                            }
+                        }
                     }
                 }
             }
-            this.ui.updateStatusValue({'id' : '.pc-sanity', 'value' : this.players.player1.sanity});
+            sanityPercentage = Math.round((this.players.player1.sanity / this.players.player1.maxSanity) * 100);
+            this.ui.updateStatusValue({'id' : '.pc-sanity', 'value' : sanityPercentage});
         }
     }
 

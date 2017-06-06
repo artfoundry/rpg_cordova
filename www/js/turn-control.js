@@ -73,6 +73,7 @@ class TurnController {
 
         this.ui.updateStatusValue({id: '.kills', value: 0});
         this.ui.updateStatusValue({id: '.pc-health', value: this.players.player1.health});
+        this.ui.updateStatusValue({id: '.pc-sanity', value: Math.round((this.players.player1.sanity / this.players.player1.maxSanity) * 100)});
         this.ui.modalOpen(startingMessages, buttons);
     }
 
@@ -116,7 +117,10 @@ class TurnController {
         } else {
             if (this.getIsGameOver() === true) {
                 this._tearDownListeners();
-                this._endGame('gameOverDead');
+                if (this.players.player1.health <= 0)
+                    this._endGame('gameOverDead');
+                else if (this.players.player1.sanity <= 0)
+                    this._endGame('gameOverInsane');
             } else {
                 this.setIsPlayerTurn(true);
                 this.runTurnCycle();
@@ -217,6 +221,7 @@ class TurnController {
             scoreValues = {
                 'kills' : this.players.player1.kills,
                 'health' : this.players.player1.health,
+                'sanity' : this.players.player1.sanity,
                 'elderSign' : this.players.player1.quests.completedQuests.includes('elderSign'),
                 'elderKilled' : this.players.player1.quests.completedQuests.includes('killElder'),
                 'gameWon' : message === 'gameOverWin'

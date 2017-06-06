@@ -24,7 +24,7 @@ let StartingOptions = {
             "startPos" : "row1col1",
             "startingQuest" : "elderSign",
             "health" : 3,
-            "sanity" : 10
+            "sanity" : 20
         }
     },
     "monsterOptions" : {

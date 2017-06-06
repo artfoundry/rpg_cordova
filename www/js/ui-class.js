@@ -10,10 +10,11 @@ class UI {
         this.dialogs = {
             "dialogHeader"  : "Here Be Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact, but little did you know that ancient evil and chaotic denizens wander here.",
-            "instructions"  : "You must kill every last frightful being to survive and leave with your life. If you are attacked three times, you will die.\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\n",
+            "instructions"  : "You must kill every last frightful being to survive and leave with your life and your sanity. Each time you get near a creature, you lose a bit of your sanity, and each time you're attacked, you lose some health.  If you are attacked three times, you will die.  If you lose your sanity, you will die (essentially, as you will become a gibbering mess and easy prey).\n\nTo move, either click any space directly around your character or use the numeric keypad.  Clicking on a monster or moving toward a monster next to you with the keyboard will attack the monster. Good luck!\n\n",
             "online"        : "Play online (selecting this will post your score to the leaderboards and disable difficulty level switching mid-game)",
-            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths.  The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.\n\nYour final score is calculated from the amount of remaining health, number of monsters you kill, whether you find the Elder Signb, whether you kill the Elder, and whether you win the game.",
+            "tips"          : "There are two types of monsters: an Elder, and the Shoggoths. The Elder creates a Shoggoth every turn and must be attacked three times to kill it.  While the Elder cannot attack, the Shoggoths can.  Each Shoggoth will attack if you approach within one square of it, but can be killed with one hit.  Every turn you are next to any monster, you will lose some sanity for each monster you're next to.\n\nYour final score is calculated from the amount of remaining health, remaining sanity, number of monsters you kill, whether you find the Elder Signb, whether you kill the Elder, and whether you win the game.",
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
+            "gameOverInsane": "Your sanity and grasp on reality have succumbed to the immense dread brought on by your terrifying encounters. You sink to the ground, unable to move, lost in endless horror.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "How're your monster slaying skills?",
             "wait"          : "Wait...something is moving in the darkness...",
@@ -236,6 +237,7 @@ class UI {
         el.children('span').addClass('subheader creepy-text');
         el.append('<div><span class="score-headers">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
         el.append('<div><span class="score-headers">Remaining health: </span><span class="score score-text">' + scores.health + '</span></div>');
+        el.append('<div><span class="score-headers">Remaining sanity: </span><span class="score score-text">' + scores.sanity + '</span></div>');
         el.append('<div><span class="score-headers">Acquired the Elder Sign: </span><span class="score score-text">' + scores.elderSign + '</span></div>');
         el.append('<div><span class="score-headers">Slaying the Elder: </span><span class="score score-text">' + scores.elder + '</span></div>');
         el.append('<div><span class="score-headers">Winning the game: </span><span class="score score-text">' + scores.win + '</span></div>');
@@ -311,12 +313,6 @@ class UI {
     /********************
      *  Panel functions
      ********************/
-
-    simplePanelToggle(params) {
-        let $panel = $(params.target);
-
-        $panel.hasClass(params.class) ? $panel.removeClass(params.class, 200) : $panel.addClass(params.class, 200);
-    }
 
     displayStatus(message) {
         $('.status-message').addClass('status-message-open', 200);
@@ -473,13 +469,15 @@ class UI {
      *  Misc functions
      ***********************/
 
-    showFearEffect(intensity) {
-        $('#fear-effect')
-            .show()
-            .animate({ opacity: intensity }, 500)
-            .animate({ opacity: 0 }, 500, function() {
+    showFearEffect(intensity, removeEffect = true) {
+        let $fearEffect = $('#fear-effect');
+
+        $fearEffect.show().animate({ opacity: intensity }, 500);
+        if (removeEffect) {
+            $fearEffect.animate({ opacity: 0 }, 500, function() {
                 $('#fear-effect').hide();
-            })
+            });
+        }
     }
 
     /**
@@ -491,6 +489,7 @@ class UI {
     calcScore(scoreValues) {
         let kills = scoreValues.kills * 5,
             health = scoreValues.health <= 0 ? 0 : scoreValues.health * 10,
+            sanity = (scoreValues.sanity <= 0 || scoreValues.health <= 0) ? 0 : scoreValues.sanity * 2,
             elderSign = scoreValues.elderSign ? 20 : 0,
             elderPoints = scoreValues.elderKilled ? 25 : 0,
             winPoints = scoreValues.gameWon ? 50 : 0;
@@ -498,10 +497,11 @@ class UI {
         return {
             'kills' : kills,
             'health' : health,
+            'sanity' : sanity,
             'elderSign' : elderSign,
             'elder' : elderPoints,
             'win' : winPoints,
-            'total' : kills + health + elderPoints + winPoints
+            'total' : kills + health + sanity + elderSign + elderPoints + winPoints
         };
     }
 
@@ -526,7 +526,7 @@ class UI {
                     $element.append(newBubble);
             }
         } else if (params.id.includes('.pc-sanity')) {
-            $('.pc-sanity .stats-bar-level').width(params.value * 10 + '%');
+            $('.pc-sanity .stats-bar-level').width(params.value + '%');
         }
         else
             $element.text(params.value);
