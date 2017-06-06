@@ -22,13 +22,22 @@ class PlayerActions {
         let player = this.players[params.player],
             currentPos = player.pos,
             newTilePos = newTile.id,
-            callback = params.callback;
+            callback = params.callback,
+            numNearbyMonsters = 0;
 
         if ($(newTile).hasClass('pc-adjacent')) {
             if ($(newTile).hasClass('impassable'))
                 this.grid.animateTile({'position' : currentPos, 'type' : 'impassable'});
-            else
+            else {
                 player.setPlayer(currentPos, newTilePos, callback);
+
+                // this needs to be duplicated for end of monsters turn
+                numNearbyMonsters = Game.helpers.checkForNearbyCharacters(player, 'monster', 1);
+                if (numNearbyMonsters) {
+                    player.sanity -= numNearbyMonsters.length;
+                    this.ui.updateStatusValue({'id' : '.pc-sanity', 'value' : player.sanity});
+                }
+            }
         }
     }
 

@@ -217,25 +217,45 @@ button:active {
     top: 85px;
     right: 3%;
     z-index: 4;
-    height: 30px;
     padding: 20px 20px 5px;
     opacity: .7;
     background: rgb(96, 173, 188);
     border: 1px darkslateblue solid;
     border-radius: 0 0 20px 20px;
     box-shadow: 0 2px 2px black;
+    text-align: left;
     color: black;
     font-size: 1em;
 }
 
-.stats .pc-health {
-    display: inline-block;
-    width: 120px;
+.stats div {
+    padding: 5px 0
 }
 
-.stats .kills {
-    width: 70px;
+/*.stats .pc-health {*/
+    /*width: 120px;*/
+/*}*/
+
+/*.stats .kills {*/
+    /*width: 70px;*/
+/*}*/
+
+.stats-bar {
     display: inline-block;
+    width: 60px;
+    height: 15px;
+    vertical-align: middle;
+    background-color: orangered;
+    border: 1px darkslateblue solid;
+    border-radius: 10px;
+}
+
+.stats-bar-level {
+    display: inline-block;
+    width: 100%;
+    height: 15px;
+    background-color: green;
+    border-radius: 10px;
 }
 
 .status-value {

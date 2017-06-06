@@ -505,6 +505,11 @@ class UI {
         };
     }
 
+    /**
+     * function updateStatusValue
+     * Updates a stats panel value
+     * @param params: object containing values for id (id of element to update) and value (value to update to)
+     */
     updateStatusValue(params) {
         let $element = $(params.id + ' .status-value'),
             bubbleElements,
@@ -520,6 +525,8 @@ class UI {
                 else
                     $element.append(newBubble);
             }
+        } else if (params.id.includes('.pc-sanity')) {
+            $('.pc-sanity .stats-bar-level').width(params.value * 10 + '%');
         }
         else
             $element.text(params.value);

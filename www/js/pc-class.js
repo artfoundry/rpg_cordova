@@ -14,6 +14,7 @@ class PlayerCharacter {
         this.type = playerOptions.type;
         this.subtype = playerOptions.subtype;
         this.health = playerOptions.health;
+        this.sanity = playerOptions.sanity;
         this.row = 0;
         this.col = 0;
         this.kills = 0;
