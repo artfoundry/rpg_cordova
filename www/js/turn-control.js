@@ -157,9 +157,6 @@ class TurnController {
             targetAction = function() {
                 if (turnCycle.getIsPlayerTurn() === false) {
                     turnCycle.ui.displayStatus('wait');
-                    setTimeout(function() {
-                        turnCycle.ui.hideStatus();
-                    }, 1000);
                 }
             },
             params = {

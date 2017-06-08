@@ -143,36 +143,6 @@ button:active {
     right: 0;
 }
 
-.status-message {
-    position: fixed;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-    width: 50%;
-    min-width: 420px;
-    height: 0;
-    max-height: 80px;
-    padding: 10px;
-    background: linear-gradient(to top, rgba(96,173,188,1) 0%,rgba(50,50,50,1) 100%);
-    border-bottom: 2px solid lightblue;
-    border-radius: 0 0 20px 20px;
-    box-shadow: 0 -10px 20px 20px black;
-}
-
-.status-message-open {
-    height: 100%;
-    padding: 80px 10px 10px;
-}
-
-.status-text {
-    text-align: center;
-    font-family: 'Creepster', serif;
-    color: orangered;
-    font-size: 1.5em;
-    text-shadow: 1px 1px 2px black;
-    white-space: normal;
-}
 
 .statusbar-button {
     width: 70px;
@@ -209,6 +179,37 @@ button:active {
 }
 
 /**
+ * Status message panel
+ */
+
+#status-messages {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    width: 50%;
+    height: 20px;
+    max-height: 80px;
+    padding: 10px;
+    opacity: .7;
+    background: rgb(96, 173, 188);
+    border: 1px darkslateblue solid;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 2px 2px black;
+    text-align: left;
+    color: black;
+    font-size: 1em;
+    overflow-y: hidden;
+    cursor: pointer;
+}
+
+#status-messages.status-messages-open {
+    height: 100%;
+    overflow-y: auto;
+}
+
+/**
  *  Stats Bar
  */
 
@@ -228,7 +229,7 @@ button:active {
     font-size: 1em;
 }
 
-.stats div {
+#stats-bar div {
     padding: 5px 0
 }
 

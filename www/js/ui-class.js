@@ -60,6 +60,7 @@ class UI {
         ];
         this.$panelPartials = $('<div></div>');
         this.gameIsOnline = false;
+        this.statusMessages = [];
     }
 
     initialize(turnController) {
@@ -111,6 +112,7 @@ class UI {
         this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
         this.setUpPanelTrigger('#pc-button-inv', staticPanelCallbacks, invPanelParams);
         this.setUpPanelTrigger('#pc-button-quests', staticPanelCallbacks, questsPanelParams);
+        $('#status-messages').click(this.toggleStatusPanel.bind(this));
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
@@ -315,13 +317,37 @@ class UI {
      ********************/
 
     displayStatus(message) {
-        $('.status-message').addClass('status-message-open', 200);
-        $('.status-text').text(this.dialogs[message]);
+        let $status = $('#status-messages'),
+            entry = '<div>' + this.dialogs[message] + '</div>';
+
+        this.statusMessages.push(entry);
+        if (this.statusMessages.length >= 10)
+            this.statusMessages.pop();
+        if ($status.hasClass('status-messages-open'))
+            $status.append(entry);
+        else {
+            $status.html(entry);
+            setTimeout(function() {
+                $status.children().fadeOut(300);
+            }, 1000);
+        }
     }
 
-    hideStatus() {
-        $('.status-message').removeClass('status-message-open', 200);
-        $('.status-text').text('');
+    toggleStatusPanel() {
+        let $status = $('#status-messages'),
+            lastMessage = this.statusMessages.length - 1;
+
+        $status.children().show();
+        if ($status.hasClass('status-messages-open')) {
+            $status.html(this.statusMessages[lastMessage]);
+            setTimeout(function() {
+                $status.children().fadeOut(300);
+            }, 1000);
+            $status.removeClass('status-messages-open');
+        } else {
+            $status.html(this.statusMessages);
+            $status.addClass('status-messages-open');
+        }
     }
 
     staticPanelToggle(params) {
