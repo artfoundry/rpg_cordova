@@ -213,7 +213,7 @@ button:active {
  *  Stats Bar
  */
 
-#stats-bar {
+#stats-panel {
     position: fixed;
     top: 85px;
     right: 3%;
@@ -229,7 +229,7 @@ button:active {
     font-size: 1em;
 }
 
-#stats-bar div {
+#stats-panel div {
     padding: 5px 0
 }
 
@@ -250,7 +250,7 @@ button:active {
     border-radius: 10px;
 }
 
-.status-value {
+.stats-value {
     margin: 0 4px;
 }
 
@@ -489,7 +489,7 @@ button:active {
 
 .score-headers {
     display: inline-block;
-    width: 150px;
+    width: 40%;
 }
 
 /**
@@ -600,7 +600,7 @@ button:active {
     min-height: 150px;
     max-height: 300px;
     opacity: 0.8;
-    left: 0;
+    left: -110%;
     border-radius: 0 15px 15px 0;
     border: 1px darkslateblue solid;
     background: rgb(96, 173, 188);
@@ -609,8 +609,8 @@ button:active {
     font-size: 1em;
 }
 
-#pc-panels .hiding {
-    left: -110%;
+#pc-panels .show-panel {
+    left: 0;
 }
 
 #pc-panels header {

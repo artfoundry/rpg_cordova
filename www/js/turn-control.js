@@ -32,15 +32,6 @@ class TurnController {
     }
 
     initialize() {
-        // for testing
-        if ($('#testing').length === 0) {
-            $('#app').prepend('<button id="testing"></button>');
-        }
-        $('#testing').click(function() {
-            $('#canvas-lighting').toggle();
-        });
-        // end test code
-
         this.players.player1.initialize();
         this.monsters.monster1.initialize();
         this.startGame();
