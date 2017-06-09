@@ -17,7 +17,7 @@ class UI {
             "gameOverInsane": "Your sanity and grasp on reality have succumbed to the immense dread brought on by your terrifying encounters. You sink to the ground, unable to move, lost in endless horror.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "How're your monster slaying skills?",
-            "wait"          : "Wait...something is moving in the darkness...",
+            "wait"          : "Wait... something is moving in the darkness...",
             "fear"          : "Just the sight of the Elder horrifies you, preventing you from even thinking of attacking it!"
         };
         this.defaultDynamicPanelOptions = [
@@ -112,7 +112,7 @@ class UI {
         this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
         this.setUpPanelTrigger('#pc-button-inv', staticPanelCallbacks, invPanelParams);
         this.setUpPanelTrigger('#pc-button-quests', staticPanelCallbacks, questsPanelParams);
-        $('#status-messages').click(this.toggleStatusPanel.bind(this));
+        $('#status-panel').click(this.toggleStatusPanel.bind(this));
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
@@ -334,19 +334,21 @@ class UI {
     }
 
     toggleStatusPanel() {
-        let $status = $('#status-messages'),
+        let $status = $('#status-panel'),
+            $messages = $('#status-messages'),
             lastMessage = this.statusMessages.length - 1;
 
         $status.children().show();
-        if ($status.hasClass('status-messages-open')) {
-            $status.html(this.statusMessages[lastMessage]);
+        if ($status.hasClass('status-panel-open')) {
+            $messages.html(this.statusMessages[lastMessage]);
             setTimeout(function() {
-                $status.children().fadeOut(300);
+                $messages.children().fadeOut(300);
             }, 1000);
+            this._animatePanelToggle($status, 'status-panel-open');
         } else {
-            $status.html(this.statusMessages);
+            $messages.html(this.statusMessages);
+            this._animatePanelToggle($status, 'status-panel-open');
         }
-        this._animatePanelToggle($status, 'status-messages-open');
     }
 
     toggleStaticPanel(params) {
@@ -362,8 +364,8 @@ class UI {
         this._animatePanelToggle($target, 'show-panel');
     }
 
-    _animatePanelToggle($panel, className) {
-        $panel.hasClass(className) ? $panel.removeClass(className, 500) : $panel.show().addClass(className, 500);
+    _animatePanelToggle($panel, className, callback) {
+        $panel.hasClass(className) ? $panel.removeClass(className, 500, callback) : $panel.addClass(className, 500, callback);
     }
 
     updateQuestPanelInfo(questInfo) {

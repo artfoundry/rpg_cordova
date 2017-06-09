@@ -182,55 +182,66 @@ button:active {
  * Status message panel
  */
 
-#status-messages {
+#status-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     position: fixed;
     top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-    width: 50%;
-    height: 20px;
-    max-height: 80px;
-    padding: 10px;
+    width: 94%;
+    height: 40px;
     opacity: .7;
+    z-index: 5;
+
     background: rgb(96, 173, 188);
     border: 1px darkslateblue solid;
     border-radius: 0 0 20px 20px;
     box-shadow: 0 2px 2px black;
+    cursor: pointer;
+}
+
+#status-panel.status-panel-open {
+    height: 100px;
+    overflow-y: auto;
+}
+
+#status-messages {
+    min-width: 150px;
+    padding: 10px;
     text-align: left;
     color: black;
     font-size: 1em;
     overflow-y: hidden;
-    cursor: pointer;
 }
 
-#status-messages.status-messages-open {
-    height: 100%;
-    overflow-y: auto;
+#status-messages div {
+    padding: 3px 0;
 }
 
-/**
- *  Stats Bar
- */
-
-#stats-panel {
-    position: fixed;
-    top: 85px;
-    right: 3%;
-    z-index: 4;
-    padding: 20px 20px 5px;
-    opacity: .7;
-    background: rgb(96, 173, 188);
-    border: 1px darkslateblue solid;
-    border-radius: 0 0 20px 20px;
-    box-shadow: 0 2px 2px black;
+#stats {
+    padding: 10px;
     text-align: left;
     color: black;
     font-size: 1em;
 }
 
-#stats-panel div {
-    padding: 5px 0
+.stat {
+    display: inline-block;
+    padding: 0 3px;
+}
+
+#status-panel.status-panel-open .stat {
+    display: block;
+    padding: 3px 0
+}
+
+.stat label {
+    display: none;
+    cursor: pointer;
+}
+
+#status-panel.status-panel-open .stat label {
+    display: inline-block;
 }
 
 .stats-bar {
@@ -252,6 +263,12 @@ button:active {
 
 .stats-value {
     margin: 0 4px;
+}
+
+.kills .stats-value {
+    font-family: 'Creepster', serif;
+    color: orangered;
+    text-shadow: 1px 1px 2px black;
 }
 
 .life-bubble {
@@ -586,17 +603,15 @@ button:active {
 
 #pc-panels {
     position: fixed;
-    top: 100px;
+    top: 135px;
     left: 3%;
     height: 0;
     z-index: 4;
 }
 
 #pc-panels > div {
-    display: none;
     position: relative;
-    min-width: 200px;
-    max-width: 350px;
+    width: 350px;
     min-height: 150px;
     max-height: 300px;
     opacity: 0.8;
