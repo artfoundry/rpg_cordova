@@ -202,16 +202,23 @@ button:active {
 
 #status-panel.status-panel-open {
     height: 100px;
-    overflow-y: auto;
 }
 
 #status-messages {
-    min-width: 150px;
+    display: flex ;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 75%;
     padding: 10px;
     text-align: left;
     color: black;
     font-size: 1em;
     overflow-y: hidden;
+}
+
+.status-panel-open #status-messages {
+    height: 90px;
+    overflow-y: auto;
 }
 
 #status-messages div {
@@ -223,11 +230,13 @@ button:active {
     text-align: left;
     color: black;
     font-size: 1em;
+    white-space: nowrap;
 }
 
 .stat {
     display: inline-block;
     padding: 0 3px;
+    white-space: nowrap;
 }
 
 #status-panel.status-panel-open .stat {
