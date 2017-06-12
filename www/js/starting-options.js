@@ -9,10 +9,11 @@ let StartingOptions = {
         "tileSize" : 64,
         "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
         "items" : {
-            "elder-sign" : {
+            "elderSign" : {
                 "itemType" : "questItems",
                 "questName" : "elderSign",
-                "location" : "bottom"
+                "location" : "bottom",
+                "image" : "elder-sign"
             }
         }
     },

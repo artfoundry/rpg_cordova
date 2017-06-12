@@ -15,6 +15,10 @@ class Grid {
         this.lightRadius = 2;
     }
 
+    /**
+     * function drawGrid
+     * @param items: object that comes from StartingOptions.gridOptions.items
+     */
     drawGrid(items) {
         let grid = this,
             $gridEl = $('.grid'),
@@ -108,7 +112,7 @@ class Grid {
                 let itemLoc = Game.helpers.randomizeLoc(items[item].location);
 
                 this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName);
-                this.changeTileImg(itemLoc, 'content-' + item, 'content-trans');
+                this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
             }
         }
     }

@@ -370,8 +370,8 @@ class UI {
 
     updateQuestPanelInfo(questInfo) {
         let $targetBodyContainer = $('#quests .body-container'),
-            questName = questInfo.currentQuest ? QUESTS[questInfo.currentQuest].questName : null,
-            questText = questInfo.currentQuest ? QUESTS[questInfo.currentQuest].questText : null,
+            questName = questInfo.currentQuest ? Game.quests[questInfo.currentQuest].questName : null,
+            questText = questInfo.currentQuest ? Game.quests[questInfo.currentQuest].questText : null,
             questList = questInfo.completedQuests,
             questID = '';
 
@@ -385,7 +385,7 @@ class UI {
             $targetBodyContainer.append('<h4 class="quest-completed-header">Completed quests</h4>');
             for (let name=0; name < questList.length; name++) {
                 questID = questList[name];
-                $targetBodyContainer.append('<div class="quest-name">&#8730; ' + QUESTS[questID].questName + '</div>');
+                $targetBodyContainer.append('<div class="quest-name">&#8730; ' + Game.quests[questID].questName + '</div>');
             }
         }
     }
@@ -405,9 +405,9 @@ class UI {
                     for (let i=0; i < invItemList.length; i++) {
                         invItemName = invItemList[i];
                         $targetBodyContainer
-                            .append('<div class="inventory-item-' + invItemName + '"></div>')
-                            .append('<div class="inventory-item-name">' + ITEMS[invItemName].name + '</div>')
-                            .append('<div class="inventory-item-description">' + ITEMS[invItemName].description + '</div>');
+                            .append('<div class="inventory-item-' + Game.items[invItemName].internalOnly.image + '"></div>')
+                            .append('<div class="inventory-item-name">' + Game.items[invItemName].name + '</div>')
+                            .append('<div class="inventory-item-description">' + Game.items[invItemName].description + '</div>');
                     }
                 }
             }

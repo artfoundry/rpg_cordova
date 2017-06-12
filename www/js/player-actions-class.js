@@ -32,21 +32,29 @@ class PlayerActions {
         }
     }
 
+    /**
+     * function pickUpItem
+     * @param params: object containing player object
+     * @param targetTile: string of tile ID
+     */
     pickUpItem(params, targetTile) {
         let player = this.players[params.player],
             $targetTile = $(targetTile),
             itemType = $targetTile.data('itemType'),
             itemName = $targetTile.data('itemName'),
+            itemImage = Game.items[itemName].internalOnly.image,
             questName = $targetTile.data('questName');
 
         if ($targetTile.hasClass('pc-adjacent')) {
+            if (Game.items[itemName].internalOnly.audioPickup)
+                this.audio.playSoundEffect([Game.items[itemName].internalOnly.audioPickup]);
             player.inventory.Items.push(itemName);
             this.ui.updateInventoryInfo(player.inventory);
 
             if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
                 this.handleQuest(itemName);
             this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
-            this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemName);
+            this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemImage);
         }
     }
 
@@ -132,7 +140,7 @@ class PlayerActions {
     _checkCurrentQuest(player, questName, targetToCheck) {
         let result = false;
 
-        if (player.quests.currentQuest === questName && QUESTS[questName].goals.target === targetToCheck)
+        if (player.quests.currentQuest === questName && Game.quests[questName].goals.target === targetToCheck)
             result = true;
         return result;
     }
@@ -150,11 +158,11 @@ class PlayerActions {
             currentQuest = player.quests.currentQuest,
             updatedQuestInfo = {};
 
-        if ((QUESTS[currentQuest].goals.action === 'Acquire' && QUESTS[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
-            (QUESTS[currentQuest].goals.action === 'Kill' && QUESTS[currentQuest].goals.target === questGoal))
+        if ((Game.quests[currentQuest].goals.action === 'Acquire' && Game.quests[currentQuest].goals.target === questGoal && player.inventory.Items.includes(questGoal)) ||
+            (Game.quests[currentQuest].goals.action === 'Kill' && Game.quests[currentQuest].goals.target === questGoal))
         {
             player.quests.completedQuests.push(currentQuest);
-            player.quests.currentQuest = QUESTS[currentQuest].nextQuest || null;
+            player.quests.currentQuest = Game.quests[currentQuest].nextQuest || null;
             updatedQuestInfo = {
                 'currentQuest' : player.quests.currentQuest,
                 'completedQuests' : player.quests.completedQuests

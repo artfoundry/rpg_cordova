@@ -10,6 +10,8 @@ let Game = {
     'gameSettings' : {},
     'fbServices' : {},
     'helpers' : new Helpers(),
+    'items' : ITEMS,
+    'quests' : QUESTS,
     'initialize' : function() {
         let playerOptions = StartingOptions.playerOptions;
         let monsterOptions = StartingOptions.monsterOptions;
