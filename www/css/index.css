@@ -143,36 +143,6 @@ button:active {
     right: 0;
 }
 
-.status-message {
-    position: fixed;
-    top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-    width: 50%;
-    min-width: 420px;
-    height: 0;
-    max-height: 80px;
-    padding: 10px;
-    background: linear-gradient(to top, rgba(96,173,188,1) 0%,rgba(50,50,50,1) 100%);
-    border-bottom: 2px solid lightblue;
-    border-radius: 0 0 20px 20px;
-    box-shadow: 0 -10px 20px 20px black;
-}
-
-.status-message-open {
-    height: 100%;
-    padding: 80px 10px 10px;
-}
-
-.status-text {
-    text-align: center;
-    font-family: 'Creepster', serif;
-    color: orangered;
-    font-size: 1.5em;
-    text-shadow: 1px 1px 2px black;
-    white-space: normal;
-}
 
 .statusbar-button {
     width: 70px;
@@ -209,27 +179,78 @@ button:active {
 }
 
 /**
- *  Stats Bar
+ * Status message panel
  */
 
-#stats-bar {
+#status-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     position: fixed;
-    top: 85px;
-    right: 3%;
-    z-index: 4;
-    padding: 20px 20px 5px;
+    top: 90px;
+    width: 94%;
+    height: 40px;
     opacity: .7;
+    z-index: 5;
+
     background: rgb(96, 173, 188);
     border: 1px darkslateblue solid;
     border-radius: 0 0 20px 20px;
     box-shadow: 0 2px 2px black;
+    cursor: pointer;
+}
+
+#status-panel.status-panel-open {
+    height: 100px;
+}
+
+#status-messages {
+    display: flex ;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 75%;
+    padding: 10px;
     text-align: left;
     color: black;
     font-size: 1em;
+    overflow-y: hidden;
 }
 
-.stats div {
-    padding: 5px 0
+.status-panel-open #status-messages {
+    height: 90px;
+    overflow-y: auto;
+}
+
+#status-messages div {
+    padding: 3px 0;
+}
+
+#stats {
+    padding: 10px;
+    text-align: left;
+    color: black;
+    font-size: 1em;
+    white-space: nowrap;
+}
+
+.stat {
+    display: inline-block;
+    padding: 0 3px;
+    white-space: nowrap;
+}
+
+#status-panel.status-panel-open .stat {
+    display: block;
+    padding: 3px 0
+}
+
+.stat label {
+    display: none;
+    cursor: pointer;
+}
+
+#status-panel.status-panel-open .stat label {
+    display: inline-block;
 }
 
 .stats-bar {
@@ -249,8 +270,14 @@ button:active {
     border-radius: 10px;
 }
 
-.status-value {
+.stats-value {
     margin: 0 4px;
+}
+
+.kills .stats-value {
+    font-family: 'Creepster', serif;
+    color: orangered;
+    text-shadow: 1px 1px 2px black;
 }
 
 .life-bubble {
@@ -488,7 +515,7 @@ button:active {
 
 .score-headers {
     display: inline-block;
-    width: 150px;
+    width: 40%;
 }
 
 /**
@@ -585,21 +612,19 @@ button:active {
 
 #pc-panels {
     position: fixed;
-    top: 100px;
+    top: 135px;
     left: 3%;
     height: 0;
     z-index: 4;
 }
 
 #pc-panels > div {
-    display: none;
     position: relative;
-    min-width: 200px;
-    max-width: 350px;
+    width: 350px;
     min-height: 150px;
     max-height: 300px;
     opacity: 0.8;
-    left: 0;
+    left: -110%;
     border-radius: 0 15px 15px 0;
     border: 1px darkslateblue solid;
     background: rgb(96, 173, 188);
@@ -608,8 +633,8 @@ button:active {
     font-size: 1em;
 }
 
-#pc-panels .hiding {
-    left: -110%;
+#pc-panels .show-panel {
+    left: 0;
 }
 
 #pc-panels header {

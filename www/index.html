@@ -39,23 +39,26 @@
                     </span>
                 </div>
             </div>
-            <div class="status-message"><span class="status-text"></span></div>
-            <div id="stats-bar">
-                <span class="stats">
-                    <div class="kills">Kills: <span class="status-value"></span></div>
-                    <div class="pc-health">Health: <span class="status-value"></span></div>
-                    <div class="pc-sanity">Sanity: <span class="status-value stats-bar"><span class="stats-bar-level"></span></span></div>
-                </span>
-            </div>
-            <div class="right-side-bar"></div>
 
-            <div class="modal">
-                <div class="modal-container">
-                    <header class="modal-header"></header>
-                    <div class="body-container"></div>
-                    <footer class="modal-footer"></footer>
+            <div id="status-panel">
+                <div id="status-messages" class="body-container"></div>
+                <div id="stats">
+                    <div class="stat kills">
+                        <label>Kills: </label>
+                        <span class="stats-value"></span>
+                    </div>
+                    <div class="stat pc-health">
+                        <label>Health: </label>
+                        <span class="stats-value"></span>
+                    </div>
+                    <div class="stat pc-sanity">
+                        <label>Sanity: </label>
+                        <span class="stats-value stats-bar"><span class="stats-bar-level"></span></span>
+                    </div>
                 </div>
             </div>
+
+            <div class="right-side-bar"></div>
 
             <div class="panel">
                 <div class="panel-container">
@@ -66,7 +69,7 @@
             </div>
 
             <div id="pc-panels">
-                <div id="quests" class="hiding">
+                <div id="quests">
                     <div class="quests-container">
                         <header>Tasks</header>
                         <div class="body-container"></div>
@@ -74,12 +77,20 @@
                     </div>
                 </div>
 
-                <div id="inventory" class="hiding">
+                <div id="inventory">
                     <div class="inv-container">
                         <header>Inventory</header>
                         <div class="body-container"></div>
                         <footer></footer>
                     </div>
+                </div>
+            </div>
+
+            <div class="modal">
+                <div class="modal-container">
+                    <header class="modal-header"></header>
+                    <div class="body-container"></div>
+                    <footer class="modal-footer"></footer>
                 </div>
             </div>
 

@@ -17,7 +17,7 @@ class UI {
             "gameOverInsane": "Your sanity and grasp on reality have succumbed to the immense dread brought on by your terrifying encounters. You sink to the ground, unable to move, lost in endless horror.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
             "score"         : "How're your monster slaying skills?",
-            "wait"          : "Wait...something is moving in the darkness...",
+            "wait"          : "Wait... something is moving in the darkness...",
             "fear"          : "Just the sight of the Elder horrifies you, preventing you from even thinking of attacking it!"
         };
         this.defaultDynamicPanelOptions = [
@@ -60,6 +60,7 @@ class UI {
         ];
         this.$panelPartials = $('<div></div>');
         this.gameIsOnline = false;
+        this.statusMessages = [];
     }
 
     initialize(turnController) {
@@ -80,8 +81,8 @@ class UI {
                 'open' : this.defaultDynamicPanelOptions
             },
             staticPanelCallbacks = {
-                'open' : this.staticPanelToggle.bind(this),
-                'close' : this.staticPanelToggle.bind(this)
+                'open' : this.toggleStaticPanel.bind(this),
+                'close' : this.toggleStaticPanel.bind(this)
             },
             invPanelParams = {
                 'open' : {
@@ -111,6 +112,7 @@ class UI {
         this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
         this.setUpPanelTrigger('#pc-button-inv', staticPanelCallbacks, invPanelParams);
         this.setUpPanelTrigger('#pc-button-quests', staticPanelCallbacks, questsPanelParams);
+        $('#status-panel').click(this.toggleStatusPanel.bind(this));
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
@@ -238,7 +240,7 @@ class UI {
         el.append('<div><span class="score-headers">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
         el.append('<div><span class="score-headers">Remaining health: </span><span class="score score-text">' + scores.health + '</span></div>');
         el.append('<div><span class="score-headers">Remaining sanity: </span><span class="score score-text">' + scores.sanity + '</span></div>');
-        el.append('<div><span class="score-headers">Acquired the Elder Sign: </span><span class="score score-text">' + scores.elderSign + '</span></div>');
+        el.append('<div><span class="score-headers">Acquiring the Elder Sign: </span><span class="score score-text">' + scores.elderSign + '</span></div>');
         el.append('<div><span class="score-headers">Slaying the Elder: </span><span class="score score-text">' + scores.elder + '</span></div>');
         el.append('<div><span class="score-headers">Winning the game: </span><span class="score score-text">' + scores.win + '</span></div>');
         el.append('<div><span class="score-headers">Final score: </span><span class="score score-text">' + scores.total + '</span></div>');
@@ -315,16 +317,41 @@ class UI {
      ********************/
 
     displayStatus(message) {
-        $('.status-message').addClass('status-message-open', 200);
-        $('.status-text').text(this.dialogs[message]);
+        let $status = $('#status-messages'),
+            entry = '<div>' + this.dialogs[message] + '</div>';
+
+        this.statusMessages.push(entry);
+        if (this.statusMessages.length >= 10)
+            this.statusMessages.pop();
+        if ($status.hasClass('status-messages-open'))
+            $status.append(entry);
+        else {
+            $status.html(entry);
+            setTimeout(function() {
+                $status.children().fadeOut(300);
+            }, 1000);
+        }
     }
 
-    hideStatus() {
-        $('.status-message').removeClass('status-message-open', 200);
-        $('.status-text').text('');
+    toggleStatusPanel() {
+        let $status = $('#status-panel'),
+            $messages = $('#status-messages'),
+            lastMessage = this.statusMessages.length - 1;
+
+        $status.children().show();
+        if ($status.hasClass('status-panel-open')) {
+            $messages.html(this.statusMessages[lastMessage]);
+            setTimeout(function() {
+                $messages.children().fadeOut(300);
+            }, 1000);
+            this._animatePanelToggle($status, 'status-panel-open');
+        } else {
+            $messages.html(this.statusMessages);
+            this._animatePanelToggle($status, 'status-panel-open');
+        }
     }
 
-    staticPanelToggle(params) {
+    toggleStaticPanel(params) {
         let $button = $(params.button),
             $target = $(params.target);
 
@@ -334,11 +361,11 @@ class UI {
         } else {
             $button.addClass('open-panel').removeClass('close-panel');
         }
-        this._animatePanelToggle($target);
+        this._animatePanelToggle($target, 'show-panel');
     }
 
-    _animatePanelToggle($panel) {
-        $panel.hasClass('hiding') ? $panel.show().removeClass('hiding', 500) : $panel.addClass('hiding', 500, function() { $panel.hide(); });
+    _animatePanelToggle($panel, className, callback) {
+        $panel.hasClass(className) ? $panel.removeClass(className, 500, callback) : $panel.addClass(className, 500, callback);
     }
 
     updateQuestPanelInfo(questInfo) {
@@ -511,7 +538,7 @@ class UI {
      * @param params: object containing values for id (id of element to update) and value (value to update to)
      */
     updateStatusValue(params) {
-        let $element = $(params.id + ' .status-value'),
+        let $element = $(params.id + ' .stats-value'),
             bubbleElements,
             difference = 0,
             newBubble = '<span class="life-bubble"></span>';

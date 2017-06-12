@@ -43,4 +43,7 @@ let Game = {
     }
 };
 
+// for testing
+function lighting() { $('#canvas-lighting').toggle(); }
+
 $(Game.initialize());
