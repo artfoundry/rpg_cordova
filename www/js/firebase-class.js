@@ -59,6 +59,7 @@ class FirebaseServices {
                         });
                         fbServices.scores[list] = newScores;
                     });
+                    this.scores[list].reverse();
                 }
             }
         }

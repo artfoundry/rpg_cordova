@@ -78,7 +78,7 @@ class PlayerActions {
                                 playerActions.ui.hideStatus();
                             }, 3000);
 
-                            this.ui.showFearEffect(.5);
+                            // this.ui.showFearEffect(.5);
 
                             animateFearParams = {
                                 'position' : currentPlayer.pos,

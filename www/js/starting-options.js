@@ -23,7 +23,8 @@ let StartingOptions = {
             "subtype" : "investigator",
             "startPos" : "row1col1",
             "startingQuest" : "elderSign",
-            "health" : 3
+            "health" : 3,
+            "sanity" : 20
         }
     },
     "monsterOptions" : {
