@@ -14,6 +14,12 @@ let StartingOptions = {
                 "questName" : "elderSign",
                 "location" : "bottom",
                 "image" : "elder-sign"
+            },
+            "stairsDown" : {
+                "itemType" : "stairs",
+                "location" : "right",
+                "image" : "stairs-down",
+                "func" : "nextLevel"
             }
         }
     },

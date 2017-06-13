@@ -103,15 +103,15 @@ class Grid {
 
     /**
      * function addItems
-     * Randomly adds all passed items into walkable tiles
-     * @param items: object of
+     * Adds all passed items into randomly chosen walkable tiles
+     * @param items: object of items from StartingOptions.gridOptions.items
      */
     addItems(items) {
         for (let item in items) {
             if (items.hasOwnProperty(item)) {
                 let itemLoc = Game.helpers.randomizeLoc(items[item].location);
 
-                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName);
+                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].func);
                 this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
             }
         }
@@ -128,12 +128,14 @@ class Grid {
         $('.tile').remove();
     }
 
-    changeTileSetting(position, name, type, subtype, questName = null) {
+    changeTileSetting(position, name, type, subtype, questName = null, func = null) {
         let $position = $('#' + position);
         $position.addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
         $position.data('itemType', subtype).data('itemName', name);
         if (questName)
             $position.data('questName', questName);
+        if (func)
+
     }
 
     changeTileImg(position, addClasses, removeClasses) {
