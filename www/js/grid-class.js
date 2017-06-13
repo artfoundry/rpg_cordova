@@ -5,7 +5,8 @@
  */
 
 class Grid {
-    constructor(gridOptions, audio, ui) {
+    constructor(dungeon, gridOptions, audio, ui) {
+        this.dungeon = dungeon;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
         this.gridRandomFactor = gridOptions.randomization;
@@ -111,7 +112,7 @@ class Grid {
             if (items.hasOwnProperty(item)) {
                 let itemLoc = Game.helpers.randomizeLoc(items[item].location);
 
-                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].func);
+                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].funcClass, items[item].func);
                 this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
             }
         }
@@ -128,13 +129,15 @@ class Grid {
         $('.tile').remove();
     }
 
-    changeTileSetting(position, name, type, subtype, questName = null, func = null) {
+    changeTileSetting(position, name, type, subtype, questName = null, funcClass = null, func = null) {
         let $position = $('#' + position);
         $position.addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
         $position.data('itemType', subtype).data('itemName', name);
         if (questName)
             $position.data('questName', questName);
-        if (func)
+        if (funcClass) {
+            this[funcClass][func]();
+        }
 
     }
 

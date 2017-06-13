@@ -12,8 +12,12 @@ class Dungeon {
     }
 
     createNewLevel() {
-        let grid = new Grid(this.gridOptions, this.audio, this.ui);
+        let grid = new Grid(this, this.gridOptions, this.audio, this.ui);
         grid.drawGrid(this.levelItems);
         this.levels.push(grid);
+    }
+
+    nextLevel() {
+
     }
 }

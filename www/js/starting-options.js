@@ -19,6 +19,7 @@ let StartingOptions = {
                 "itemType" : "stairs",
                 "location" : "right",
                 "image" : "stairs-down",
+                "funcClass" : "dungeon",
                 "func" : "nextLevel"
             }
         }
