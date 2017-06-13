@@ -80,14 +80,9 @@ class PlayerActions {
                 if (this.monsters.hasOwnProperty(monsterNum)) {
                     targetMonster = this.monsters[monsterNum];
                     if (targetMonster.pos === targetTile.id) {
-                        if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elder-sign')) {
+                        if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elderSign')) {
                             this.ui.displayStatus('fear');
-                            setTimeout(function() {
-                                playerActions.ui.hideStatus();
-                            }, 3000);
-
-                            // this.ui.showFearEffect(.5);
-
+                            this.ui.showFearEffect(.5);
                             animateFearParams = {
                                 'position' : currentPlayer.pos,
                                 'type' : 'impassable'
