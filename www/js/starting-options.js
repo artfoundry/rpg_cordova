@@ -9,17 +9,22 @@ let StartingOptions = {
         "tileSize" : 64,
         "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
         "items" : {
-            "elderSign" : {
-                "itemType" : "questItems",
-                "questName" : "elderSign",
-                "location" : "bottom",
-                "image" : "elder-sign"
+            "elderSign": {
+                "itemType": "questItems",
+                "questName": "elderSign",
+                "tileType" : "walkable",
+                "location": "bottom",
+                "image": "elder-sign",
+                "func" : null
             },
+        },
+        "objects" : {
             "stairsDown" : {
                 "itemType" : "stairs",
+                "questName": null,
+                "tileType" : "walkable",
                 "location" : "right",
                 "image" : "stairs-down",
-                "funcClass" : "dungeon",
                 "func" : "nextLevel"
             }
         }

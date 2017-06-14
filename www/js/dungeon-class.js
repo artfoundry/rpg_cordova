@@ -9,15 +9,21 @@ class Dungeon {
         this.ui = ui;
         this.gridOptions = StartingOptions.gridOptions;
         this.levelItems = this.gridOptions.items;
+        this.levelObjects = this.gridOptions.objects;
+        this.grid = new Grid(this, this.gridOptions, this.audio, this.ui);
     }
 
     createNewLevel() {
-        let grid = new Grid(this, this.gridOptions, this.audio, this.ui);
-        grid.drawGrid(this.levelItems);
-        this.levels.push(grid);
+        this.grid.drawGrid(null, this.levelItems, this.levelObjects);
+        this.levels.push({'level' : this.grid.levelStorage, 'items' : this.levelItems, 'objects' : this.levelObjects});
     }
 
-    nextLevel() {
+    nextLevel(nextLevel) {
+        let levelObject = this.levels[nextLevel];
 
+        if (levelObject)
+            this.grid.drawGrid(levelObject.level, levelObject.items, levelObject.objects);
+        else
+            this.createNewLevel();
     }
 }

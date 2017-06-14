@@ -14,13 +14,16 @@ class Grid {
         this.audio = audio;
         this.ui = ui;
         this.lightRadius = 2;
+        this.levelStorage = $();
     }
 
     /**
      * function drawGrid
-     * @param items: object that comes from StartingOptions.gridOptions.items
+     * @param level: jQuery object of previously created level (all levels stored in dungeon)
+     * @param items: object of items from StartingOptions.gridOptions.items
+     * @param objects: object of objects from StartingOptions.gridOptions.items
      */
-    drawGrid(items) {
+    drawGrid(level, items, objects) {
         let grid = this,
             $gridEl = $('.grid'),
             gridPixels = (this.gridWidth + 2) * this.tileSize,
@@ -30,28 +33,33 @@ class Grid {
             blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>',
             borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>';
 
-        $gridEl.prepend(() => {
-            for (let rowNum = 0; rowNum <= grid.gridHeight + 1; rowNum++) {
-                markup += '<div class="row">';
-                for (let colNum = 0; colNum <= grid.gridWidth + 1; colNum++) {
-                    id = "row" + rowNum + "col" + colNum;
-                    if (rowNum === 0 || rowNum === grid.gridHeight + 1 || colNum === 0 || colNum === grid.gridWidth + 1) {
-                        markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
-                    } else {
-                        tileType = this.randomizeTileType(id, markup);
-                        if (tileType === 'ground')
-                            markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
-                        else if (tileType === 'wall')
+        if (level) {
+            $gridEl.prepend(level);
+        } else {
+            $gridEl.prepend(() => {
+                for (let rowNum = 0; rowNum <= grid.gridHeight + 1; rowNum++) {
+                    markup += '<div class="row">';
+                    for (let colNum = 0; colNum <= grid.gridWidth + 1; colNum++) {
+                        id = "row" + rowNum + "col" + colNum;
+                        if (rowNum === 0 || rowNum === grid.gridHeight + 1 || colNum === 0 || colNum === grid.gridWidth + 1) {
                             markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
+                        } else {
+                            tileType = this.randomizeTileType(id, markup);
+                            if (tileType === 'ground')
+                                markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                            else if (tileType === 'wall')
+                                markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
+                        }
                     }
+                    markup += '</div>';
                 }
-                markup += '</div>';
-            }
-            return markup;
-        });
-        this.addItems(items);
-        $gridEl.css('width', gridPixels + 1);
-        $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></canvas>');
+                return markup;
+            });
+            this.addItems(items, objects);
+            $gridEl.css('width', gridPixels + 1);
+            $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></canvas>');
+            this.levelStorage = $gridEl.children;
+        }
     }
 
     randomizeTileType(tileId, markup) {
@@ -106,14 +114,23 @@ class Grid {
      * function addItems
      * Adds all passed items into randomly chosen walkable tiles
      * @param items: object of items from StartingOptions.gridOptions.items
+     * @param objects: object of objects from StartingOptions.gridOptions.items
      */
-    addItems(items) {
+    addItems(items, objects) {
         for (let item in items) {
             if (items.hasOwnProperty(item)) {
                 let itemLoc = Game.helpers.randomizeLoc(items[item].location);
 
-                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].funcClass, items[item].func);
+                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].tileType, items[item].func);
                 this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
+            }
+        }
+        for (let object in objects) {
+            if (objects.hasOwnProperty(object)) {
+                let objectLoc = Game.helpers.randomizeLoc(objects[object].location);
+
+                this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func);
+                this.changeTileImg(objectLoc, 'content-' + objects[object].image, 'content-trans');
             }
         }
     }
@@ -129,16 +146,17 @@ class Grid {
         $('.tile').remove();
     }
 
-    changeTileSetting(position, name, type, subtype, questName = null, funcClass = null, func = null) {
+    changeTileSetting(position, name, type, subtype, questName = null, tileType = null, func = null) {
         let $position = $('#' + position);
-        $position.addClass(name + ' ' + type + ' ' + subtype).removeClass('walkable');
+        $position.addClass(name + ' ' + type + ' ' + subtype);
+        if (tileType !== 'walkable')
+            $position.removeClass('walkable');
         $position.data('itemType', subtype).data('itemName', name);
         if (questName)
             $position.data('questName', questName);
-        if (funcClass) {
-            this[funcClass][func]();
+        if (func) {
+            $position.data('func', func);
         }
-
     }
 
     changeTileImg(position, addClasses, removeClasses) {

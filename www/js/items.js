@@ -9,7 +9,8 @@ const ITEMS = {
         'internalOnly'  : {
             'questItem' : true,
             'audioPickup'  : 'artifact-stone',
-            'image'     : 'elder-sign'
+            'image'     : 'elder-sign',
+            'canBeAcquired' : true
         }
     }
 };

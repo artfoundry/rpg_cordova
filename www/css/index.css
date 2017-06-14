@@ -392,6 +392,10 @@ button:active {
     background-image: url('../img/elder-sign.png');
 }
 
+.content-stairs-down {
+    background-image: url('../img/stairs-down.png');
+}
+
 /**
  *  Modal
  */

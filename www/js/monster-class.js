@@ -11,7 +11,7 @@ class Monster {
         this.location = monsterOptions.location;
         this.questGoal = monsterOptions.questGoal || null;
         this.questName = monsterOptions.questName || null;
-        this.grid = dungeon.levels[0];
+        this.grid = dungeon.grid;
         this.audio = audio;
         this.row = 0;
         this.col = 0;

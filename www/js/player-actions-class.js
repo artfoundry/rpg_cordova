@@ -4,16 +4,18 @@
 
 class PlayerActions {
     constructor(dungeon, ui, players, monsters, audio) {
-        this.grid = dungeon.levels[0];
-        this.ui = ui;
         this.players = players;
+        this.dungeon = dungeon;
+        this.grid = dungeon.levels[this.players.player1.currentLevel];
+        this.ui = ui;
         this.monsters = monsters;
         this.audio = audio;
     }
 
     /**
      * function movePlayer
-     * Moves player character to newTile
+     * Moves player character to newTile or displays jiggle animation if tile is impassable.
+     * Then runs a function tied to the tile if one is present.
      * Parameters:
      * - params: Object sent by TurnController containing player object and callback
      * - newTile: DOM element of tile to which player is moving
@@ -22,6 +24,7 @@ class PlayerActions {
         let player = this.players[params.player],
             currentPos = player.pos,
             newTilePos = newTile.id,
+            func = $(newTile).data('func') || null,
             callback = params.callback;
 
         if ($(newTile).hasClass('pc-adjacent')) {
@@ -29,6 +32,11 @@ class PlayerActions {
                 this.grid.animateTile({'position' : currentPos, 'type' : 'impassable'});
             else
                 player.setPlayer(currentPos, newTilePos, callback);
+
+            if (func) {
+                if (func === 'nextLevel')
+                    this.dungeon.nextLevel(this.players.player1.currentLevel + 1);
+            }
         }
     }
 
@@ -45,7 +53,7 @@ class PlayerActions {
             itemImage = Game.items[itemName].internalOnly.image,
             questName = $targetTile.data('questName');
 
-        if ($targetTile.hasClass('pc-adjacent')) {
+        if ($targetTile.hasClass('pc-adjacent') && Game.items[itemName].internalOnly.canBeAcquired) {
             if (Game.items[itemName].internalOnly.audioPickup)
                 this.audio.playSoundEffect([Game.items[itemName].internalOnly.audioPickup]);
             player.inventory.Items.push(itemName);
