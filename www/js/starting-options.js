@@ -12,7 +12,7 @@ let StartingOptions = {
             "elderSign": {
                 "itemType": "questItems",
                 "questName": "elderSign",
-                "tileType" : "walkable",
+                "tileType" : "item",
                 "location": "bottom",
                 "image": "elder-sign",
                 "func" : null

@@ -19,7 +19,7 @@ class TurnController {
      *****************************/
 
     constructor(dungeon, ui, players, playerActions, monsterActions, monsters, events) {
-        this.grid = dungeon.levels[0];
+        this.grid = dungeon.grid;
         this.ui = ui;
         this.players = players;
         this.playerActions = playerActions;

@@ -21,6 +21,7 @@ class Dungeon {
     nextLevel(nextLevel) {
         let levelObject = this.levels[nextLevel];
 
+        this.grid.clearGrid();
         if (levelObject)
             this.grid.drawGrid(levelObject.level, levelObject.items, levelObject.objects);
         else

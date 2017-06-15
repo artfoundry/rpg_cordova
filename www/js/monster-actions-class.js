@@ -4,7 +4,7 @@
 
 class MonsterActions {
     constructor(dungeon, ui, players, monsters, audio) {
-        this.grid = dungeon.levels[0];
+        this.grid = dungeon.grid;
         this.ui = ui;
         this.players = players;
         this.monsters = monsters;

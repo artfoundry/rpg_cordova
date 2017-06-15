@@ -146,8 +146,20 @@ class Grid {
         $('.tile').remove();
     }
 
+    /**
+     * function changeTileSetting
+     *
+     * @param position
+     * @param name
+     * @param type
+     * @param subtype
+     * @param questName
+     * @param tileType
+     * @param func
+     */
     changeTileSetting(position, name, type, subtype, questName = null, tileType = null, func = null) {
         let $position = $('#' + position);
+
         $position.addClass(name + ' ' + type + ' ' + subtype);
         if (tileType !== 'walkable')
             $position.removeClass('walkable');

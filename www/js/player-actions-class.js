@@ -6,7 +6,7 @@ class PlayerActions {
     constructor(dungeon, ui, players, monsters, audio) {
         this.players = players;
         this.dungeon = dungeon;
-        this.grid = dungeon.levels[this.players.player1.currentLevel];
+        this.grid = dungeon.grid;
         this.ui = ui;
         this.monsters = monsters;
         this.audio = audio;
@@ -34,8 +34,10 @@ class PlayerActions {
                 player.setPlayer(currentPos, newTilePos, callback);
 
             if (func) {
-                if (func === 'nextLevel')
+                if (func === 'nextLevel') {
                     this.dungeon.nextLevel(this.players.player1.currentLevel + 1);
+                    player.setPlayer(currentPos, newTilePos);
+                }
             }
         }
     }
