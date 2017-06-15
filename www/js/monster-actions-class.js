@@ -32,7 +32,7 @@ class MonsterActions {
                 return;
             else if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
                 currentMonster = this.monsters[monster];
-                nearbyPlayerTiles = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1);
+                nearbyPlayerTiles = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1, this.grid.gridWidth, this.grid.gridHeight);
                 if (currentMonster.name === 'Elder') {
                     currentMonster.saveCurrentPos();
                 } else if (nearbyPlayerTiles) {
@@ -70,7 +70,7 @@ class MonsterActions {
     }
 
     _affectPlayerSanity(currentMonster, setIsGameOver) {
-        let nearbyPlayers = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1),
+        let nearbyPlayers = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1, this.grid.gridWidth, this.grid.gridHeight),
             fearValue = 0,
             sanityPercentage = 0;
 

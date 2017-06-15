@@ -19,7 +19,7 @@ class Monster {
     }
 
     initialize() {
-        this.pos = Game.helpers.randomizeLoc(this.location);
+        this.pos = Game.helpers.randomizeLoc(this.location, this.grid.gridWidth, this.grid.gridHeight);
         this._setMonster(this.pos);
     }
 
@@ -42,7 +42,7 @@ class Monster {
 
         // start searching from radius 2 because moveMonsters() already checks for players 1 space away to attack
         for (let radius=2; radius <= searchRadius; radius++) {
-            $targets = $targets.add(Game.helpers.checkForNearbyCharacters(this, 'player', radius));
+            $targets = $targets.add(Game.helpers.checkForNearbyCharacters(this, 'player', radius, this.grid.gridWidth, this.grid.gridHeight));
         }
         if ($targets.length === 0)
             this.randomMove();

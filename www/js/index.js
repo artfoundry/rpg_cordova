@@ -13,8 +13,9 @@ let Game = {
     'items' : ITEMS,
     'quests' : QUESTS,
     'initialize' : function() {
-        let playerOptions = StartingOptions.playerOptions;
-        let monsterOptions = StartingOptions.monsterOptions;
+        let startingMap = StartingOptions.startingMap;
+        let playerOptions = startingMap.playerOptions;
+        let monsterOptions = startingMap.monsterOptions;
         if (this.initialGame) {
             this.gameSettings.soundOn = StartingOptions.audioOptions.soundOn;
             this.gameSettings.musicOn = StartingOptions.audioOptions.musicOn;
@@ -26,7 +27,7 @@ let Game = {
         let audio = new Audio();
         let events = new Events();
         let ui = new UI(audio, events);
-        let dungeon = new Dungeon(audio, ui);
+        let dungeon = new Dungeon(startingMap, audio, ui);
         dungeon.createNewLevel();
 
         let players = {

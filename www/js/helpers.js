@@ -6,19 +6,17 @@
 
 
 class Helpers {
-    constructor() {
-        this.gridOptions = StartingOptions.gridOptions;
-    }
-
     /**
      * function findSurroundingTiles
      * Finds all tiles in a given radius from the passed in center tile, no farther, no closer, but ignores tiles that are out of the grid
      *
+     * @param gridWidth: number of tiles of grid width, not including outer walls
+     * @param gridHeight: number of tiles of grid height, not including outer walls
      * @param centerTile: string of the tile ID of the search origin
      * @param searchRadius: distance in tiles from the character to search
      * @returns $(): jquery object array of matching tiles
      */
-    findSurroundingTiles(centerTile, searchRadius) {
+    findSurroundingTiles(gridWidth, gridHeight, centerTile, searchRadius) {
         let center = this.getRowCol(centerTile),
             firstRow = center.row - searchRadius,
             firstCol = center.col - searchRadius,
@@ -29,22 +27,22 @@ class Helpers {
 
         for (let r = firstRow; r <= lastRow; r++) {
             // if on the first or last row, and that row is inside the grid...
-            if ((r === firstRow && firstRow >= 0) || (r === lastRow && lastRow <= (this.gridOptions.height + 1))){
+            if ((r === firstRow && firstRow >= 0) || (r === lastRow && lastRow <= (gridHeight + 1))){
                 // ...then add all tiles for that row (as long as the tile is inside the grid as well
                 for (let c = firstCol; c <= lastCol; c++) {
-                    if (c >= 0 && c <= (this.gridOptions.width + 1)) {
+                    if (c >= 0 && c <= (gridWidth + 1)) {
                         tileToAdd = 'row' + r + 'col' + c;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
                 }
             } else {
                 // add the left and right tiles for the middle rows as long as they're inside the grid
-                if (r >= 0 && r <= (this.gridOptions.height + 1)) {
+                if (r >= 0 && r <= (gridHeight + 1)) {
                     if (firstCol >= 0) {
                         tileToAdd = 'row' + r + 'col' + firstCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
-                    if (lastCol <= (this.gridOptions.width + 1)) {
+                    if (lastCol <= (gridWidth + 1)) {
                         tileToAdd = 'row' + r + 'col' + lastCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
@@ -63,7 +61,7 @@ class Helpers {
         }
     }
 
-    randomizeLoc(option) {
+    randomizeLoc(option, gridWidth, gridHeight) {
         let row = 0,
             col = 0,
             values = {
@@ -112,8 +110,8 @@ class Helpers {
                 break;
         }
         while (!$('#row' + row + 'col' + col).hasClass('walkable')) {
-            row = Math.ceil((Math.random() * (this.gridOptions.height * values.rowFactor)) + (this.gridOptions.height * values.rowAdd));
-            col = Math.ceil((Math.random() * (this.gridOptions.width * values.colFactor)) + (this.gridOptions.width * values.colAdd));
+            row = Math.ceil((Math.random() * (gridHeight * values.rowFactor)) + (gridHeight * values.rowAdd));
+            col = Math.ceil((Math.random() * (gridWidth * values.colFactor)) + (gridWidth * values.colAdd));
         }
         return 'row' + row + 'col' + col;
     }
@@ -129,12 +127,14 @@ class Helpers {
      * @param character: object of the character around which the search is done
      * @param charSearchType: string of the class name (no '.') of the character type to search for
      * @param distance: distance in tiles from the character to search
+     * @param gridWidth: number of tiles of grid width, not including outer walls
+     * @param gridHeight: number of tiles of grid height, not including outer walls
      * @returns {*}: array of matching tiles, or null if no matches
      */
-    checkForNearbyCharacters(character, charSearchType, distance) {
+    checkForNearbyCharacters(character, charSearchType, distance, gridWidth, gridHeight) {
         let characterLoc = character.pos,
             nearbyCharLoc = null,
-            $surroundingTiles = this.findSurroundingTiles(characterLoc, distance);
+            $surroundingTiles = this.findSurroundingTiles(gridWidth, gridHeight, characterLoc, distance);
 
         if ($surroundingTiles.hasClass(charSearchType)) {
             nearbyCharLoc = $.grep($surroundingTiles, function(tile){

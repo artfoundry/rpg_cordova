@@ -3,11 +3,11 @@
  */
 
 class Dungeon {
-    constructor(audio, ui) {
+    constructor(startingMap, audio, ui) {
         this.levels = [];
         this.audio = audio;
         this.ui = ui;
-        this.gridOptions = StartingOptions.gridOptions;
+        this.gridOptions = startingMap.gridOptions;
         this.levelItems = this.gridOptions.items;
         this.levelObjects = this.gridOptions.objects;
         this.grid = new Grid(this, this.gridOptions, this.audio, this.ui);
@@ -22,9 +22,6 @@ class Dungeon {
         let levelObject = this.levels[nextLevel];
 
         this.grid.clearGrid();
-        if (levelObject)
-            this.grid.drawGrid(levelObject.level, levelObject.items, levelObject.objects);
-        else
-            this.createNewLevel();
+        levelObject ? this.grid.drawGrid(levelObject.level, levelObject.items, levelObject.objects) ? this.createNewLevel();
     }
 }
