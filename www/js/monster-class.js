@@ -83,7 +83,8 @@ class Monster {
             newTileCol = this.col,
             oldTileId = this.pos,
             firstRowOpt,
-            firstColOpt;
+            firstColOpt,
+            $tileOption;
 
         // for each position of the target, there are three possible moves for the monster that will bring it closer
         // this is the best option
@@ -146,7 +147,8 @@ class Monster {
         }
 
         for (let opt=0; opt < options.length; opt++) {
-            if ($('#' + options[opt]).hasClass('walkable')) {
+            $tileOption = $('#' + options[opt]);
+            if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item')) {
                 this._setMonster(options[opt], oldTileId, callback);
                 return;
             }
@@ -157,23 +159,28 @@ class Monster {
     randomMove(callback) {
         let direction = Math.floor(Math.random() * 4),
             oldTileId = this.pos,
-            newTileId = this.pos;
+            newTileId = this.pos,
+            $tileOption;
 
         switch (direction) {
             case 0:
-                if ($('#row' + (this.row - 1) + 'col' + this.col).hasClass('walkable'))
+                $tileOption = $('#row' + (this.row - 1) + 'col' + this.col);
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + (this.row - 1) + 'col' + this.col;
                 break;
             case 1:
-                if ($('#row' + this.row + 'col' + (this.col + 1)).hasClass('walkable'))
+                $tileOption = $('#row' + this.row + 'col' + (this.col + 1));
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + this.row + 'col' + (this.col + 1);
                 break;
             case 2:
-                if ($('#row' + (this.row + 1) + 'col' + this.col).hasClass('walkable'))
+                $tileOption = $('#row' + (this.row + 1) + 'col' + this.col);
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + (this.row + 1) + 'col' + this.col;
                 break;
             case 3:
-                if ($('#row' + this.row + 'col' + (this.col - 1)).hasClass('walkable'))
+                $tileOption = $('#row' + this.row + 'col' + (this.col - 1));
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + this.row + 'col' + (this.col - 1);
                 break;
         }

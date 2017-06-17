@@ -117,20 +117,24 @@ class Grid {
      * @param objects: object of objects from StartingOptions.gridOptions.items
      */
     addItems(items, objects) {
-        for (let item in items) {
-            if (items.hasOwnProperty(item)) {
-                let itemLoc = Game.helpers.randomizeLoc(items[item].location, this.gridWidth, this.gridHeight);
+        if (items) {
+            for (let item in items) {
+                if (items.hasOwnProperty(item)) {
+                    let itemLoc = Game.helpers.randomizeLoc(items[item].location, this.gridWidth, this.gridHeight);
 
-                this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].tileType, items[item].func);
-                this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
+                    this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].tileType, items[item].func);
+                    this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
+                }
             }
         }
-        for (let object in objects) {
-            if (objects.hasOwnProperty(object)) {
-                let objectLoc = Game.helpers.randomizeLoc(objects[object].location, this.gridWidth, this.gridHeight);
+        if (objects) {
+            for (let object in objects) {
+                if (objects.hasOwnProperty(object)) {
+                    let objectLoc = Game.helpers.randomizeLoc(objects[object].location, this.gridWidth, this.gridHeight);
 
-                this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func);
-                this.changeTileImg(objectLoc, 'content-' + objects[object].image, 'content-trans');
+                    this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func);
+                    this.changeTileImg(objectLoc, 'content-' + objects[object].image, 'content-trans');
+                }
             }
         }
     }

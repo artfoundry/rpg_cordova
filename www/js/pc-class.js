@@ -8,7 +8,7 @@
 
 class PlayerCharacter {
     constructor(playerOptions, dungeon) {
-        this.currentLevel = 0;
+        this.currentLevel = playerOptions.startingLevel;
         this.grid = dungeon.grid;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;

@@ -28,13 +28,13 @@ let Game = {
         let events = new Events();
         let ui = new UI(audio, events);
         let dungeon = new Dungeon(startingMap, audio, ui);
-        dungeon.createNewLevel();
+        dungeon.createNewLevel(startingMap.levels[0]);
 
         let players = {
             player1: new PlayerCharacter(playerOptions.player1, dungeon)
         };
         let monsters = {
-            monster1 : new ElderMonster(monsterOptions.monster1, dungeon, audio)
+            monster1 : new ElderMonster(monsterOptions.elder1, dungeon, audio)
         };
         let playerActions = new PlayerActions(dungeon, ui, players, monsters, audio);
         let monsterActions = new MonsterActions(dungeon, ui, players, monsters, audio);
