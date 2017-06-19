@@ -114,7 +114,7 @@ button:active {
     position: fixed;
     z-index: 6;
     width: 94%;
-    min-width: 420px;
+    min-width: 350px;
     border-top: 40px solid black;
 }
 
@@ -404,7 +404,7 @@ button:active {
     display: none;
     position: absolute;
     z-index: 5;
-    width: 60%;
+    width: 80%;
     min-width: 250px;
     max-width: 600px;
     max-height: 600px;
