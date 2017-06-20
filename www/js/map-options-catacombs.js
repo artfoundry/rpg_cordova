@@ -92,6 +92,26 @@ let MapOptionsCatacombs = {
         }
     },
     "monsterOptions" : {
+        "shoggoth1" : {
+            "name" : "Shoggoth",
+            "type" : "monster",
+            "subtype" : "shoggoth",
+            "health" : 1,
+            "startingLevel" : 1,
+            "location" : "center",
+            "questGoal" : false,
+            "questName" : ""
+        },
+        "shoggoth2" : {
+            "name" : "Shoggoth",
+            "type" : "monster",
+            "subtype" : "shoggoth",
+            "health" : 1,
+            "startingLevel" : 1,
+            "location" : "bottom",
+            "questGoal" : false,
+            "questName" : ""
+        },
         "elder1" : {
             "name" : "Elder",
             "type" : "monster",
