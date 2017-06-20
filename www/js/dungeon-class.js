@@ -9,6 +9,7 @@ class Dungeon {
         this.audio = audio;
         this.ui = ui;
         this.gridOptions = {};
+        this.levelMarkup = '';
         this.levelItems = {};
         this.levelObjects = {};
         this.grid = {};
@@ -18,16 +19,32 @@ class Dungeon {
         this.gridOptions = levelOptions;
         this.levelItems = levelOptions.items || null;
         this.levelObjects = levelOptions.objects || null;
-        this.grid = new Grid(this, this.gridOptions, this.audio, this.ui);
+        this.grid = new Grid(this, this.gridOptions, this.audio);
         this.grid.drawGrid(null, this.levelItems, this.levelObjects);
-        this.levels.push({'level' : this.grid.levelStorage, 'items' : this.levelItems, 'objects' : this.levelObjects});
     }
 
-    nextLevel(nextLevel) {
-        let levelInfo = this.levels[nextLevel],
+    saveLevel(monsterList) {
+        this.levelMarkup = JSON.stringify($('.grid').children());
+        this.levels.push({'level' : this.levelMarkup, 'monsters' : monsterList});
+    }
+
+    nextLevel(nextLevel, restoreMonsters) {
+        let levelInfo,
+            isNewLevel = false,
             levelOptions = this.mapOptions.levels[nextLevel];
 
         this.grid.clearGrid();
-        levelInfo ? this.grid.drawGrid(levelInfo.level, levelInfo.items, levelInfo.objects) : this.createNewLevel(levelOptions);
+        if (this.levels[nextLevel]) {
+            levelInfo = JSON.parse(this.levels[nextLevel].level);
+            this.grid.drawGrid(levelInfo);
+        } else {
+            this.createNewLevel(levelOptions);
+            isNewLevel = true;
+        }
+        restoreMonsters(isNewLevel, nextLevel);
+    }
+
+    getMonstersForLevel(level) {
+        return this.levels[level].monsters;
     }
 }

@@ -19,7 +19,6 @@ class Monster {
     }
 
     initialize() {
-        this.pos = Game.helpers.randomizeLoc(this.location, this.grid.gridWidth, this.grid.gridHeight);
         this._setMonster(this.pos);
     }
 
@@ -186,6 +185,10 @@ class Monster {
         }
         if (oldTileId !== newTileId)
             this._setMonster(newTileId, oldTileId, callback);
+    }
+
+    randomPos() {
+        this.pos = Game.helpers.randomizeLoc(this.location, this.grid.gridWidth, this.grid.gridHeight);
     }
 
     _setMonster(newTileId, oldTileId, callback) {

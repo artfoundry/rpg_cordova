@@ -19,7 +19,7 @@ class TurnController {
      *****************************/
 
     constructor(dungeon, ui, players, playerActions, monsterActions, monsters, events) {
-        this.grid = dungeon.grid;
+        this.dungeon = dungeon;
         this.ui = ui;
         this.players = players;
         this.playerActions = playerActions;
@@ -95,10 +95,20 @@ class TurnController {
     }
 
     endTurn() {
+        let stairsPos;
+
         this._tearDownListeners();
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
             if (Object.keys(this.monsters).length > 0) {
+                if (this.players.player1.levelChanged === true) {
+                    this.dungeon.saveLevel(this.monsters);
+                    this.dungeon.nextLevel(this.players.player1.currentLevel, this._restoreMonstersForLevel.bind(this));
+                    stairsPos = $('.stairsUp').attr('id');
+                    this.players.player1.pos = stairsPos;
+                    this.players.player1.setPlayer(stairsPos);
+                    this.players.player1.levelChanged = false;
+                }
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
             } else {
@@ -124,6 +134,21 @@ class TurnController {
      * Private Functions
      *
      *****************************/
+
+    _restoreMonstersForLevel(isNewLevel, level) {
+        if (isNewLevel) {
+            this.monsters = {};
+        } else {
+            this.monsters = this.dungeon.getMonstersForLevel(level);
+            for (let monster in this.monsters) {
+                if (this.monsters.hasOwnProperty(monster)) {
+                    monster.initialize();
+                }
+            }
+        }
+        this.playerActions.monsters = this.monsters;
+        this.monsterActions.monsters = this.monsters;
+    }
 
     _waitForAnimationsToFinish() {
         let turnCycle = this;
@@ -202,7 +227,7 @@ class TurnController {
     _endGame(message) {
         let controller = this,
             restartCallback = function() {
-                controller.grid.clearGrid();
+                controller.dungeon.grid.clearGrid();
                 controller.events.removeAllListeners();
                 Game.initialize();
             },

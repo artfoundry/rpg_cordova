@@ -9,6 +9,7 @@
 class PlayerCharacter {
     constructor(playerOptions, dungeon) {
         this.currentLevel = playerOptions.startingLevel;
+        this.levelChanged = false;
         this.grid = dungeon.grid;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
@@ -17,6 +18,7 @@ class PlayerCharacter {
         this.health = playerOptions.health;
         this.sanity = playerOptions.sanity;
         this.maxSanity = playerOptions.sanity;
+        this.lightRadius = 2;
         this.row = 0;
         this.col = 0;
         this.kills = 0;
@@ -31,7 +33,6 @@ class PlayerCharacter {
 
     initialize() {
         this.setPlayer(this.pos);
-        this.grid.setLighting(this.pos);
         this.resetKills();
     }
 
@@ -45,6 +46,12 @@ class PlayerCharacter {
 
     getKills() {
         return this.kills;
+    }
+
+    changeMapLevel(levelDirection, newTilePos, callback) {
+        this.currentLevel += levelDirection;
+        this.levelChanged = true;
+        this.setPlayer(this.pos, newTilePos, callback);
     }
 
     setPlayer(currentPos, newPos, callback) {
@@ -66,13 +73,12 @@ class PlayerCharacter {
             player.grid.setTileWalkable(currentPos, player.name, player.type, player.subtype);
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
             player.grid.animateTile(animateMoveParams);
-            player.grid.setLighting(newPosId, currentPos);
             player.pos = newPosId;
         } else {
             player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
         }
-
+        player.grid.setLighting(newPosId, currentPos, this.lightRadius);
         this.grid.labelPCAdjacentTiles(newPosId);
 
         player.row = Game.helpers.getRowCol(newPosId).row;

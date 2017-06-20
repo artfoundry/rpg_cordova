@@ -9,7 +9,25 @@ let MapOptionsCatacombs = {
             "height" : 10,
             "tileSize" : 64,
             "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
+            "items" : {
+                "elderSign": {
+                    "itemType": "questItems",
+                    "questName": "elderSign",
+                    "tileType" : "item",
+                    "location": "center",
+                    "image": "elder-sign",
+                    "func" : null
+                },
+            },
             "objects" : {
+                "stairsUp" : {
+                    "itemType" : "stairs",
+                    "questName": null,
+                    "tileType" : "walkable",
+                    "location" : "row1col1",
+                    "image" : "stairs-up",
+                    "func" : "nextLevel"
+                },
                 "stairsDown" : {
                     "itemType" : "stairs",
                     "questName": null,
@@ -25,17 +43,15 @@ let MapOptionsCatacombs = {
             "height" : 10,
             "tileSize" : 64,
             "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
-            "items" : {
-                "elderSign": {
-                    "itemType": "questItems",
-                    "questName": "elderSign",
-                    "tileType" : "item",
-                    "location": "center",
-                    "image": "elder-sign",
-                    "func" : null
-                },
-            },
             "objects" : {
+                "stairsUp" : {
+                    "itemType" : "stairs",
+                    "questName": null,
+                    "tileType" : "walkable",
+                    "location" : "bottom",
+                    "image" : "stairs-up",
+                    "func" : "nextLevel"
+                },
                 "stairsDown" : {
                     "itemType" : "stairs",
                     "questName": null,
@@ -51,6 +67,16 @@ let MapOptionsCatacombs = {
             "height" : 10,
             "tileSize" : 64,
             "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
+            "objects" : {
+                "stairsUp" : {
+                    "itemType" : "stairs",
+                    "questName": null,
+                    "tileType" : "walkable",
+                    "location" : "right",
+                    "image" : "stairs-up",
+                    "func" : "nextLevel"
+                }
+            }
         }
     ],
     "playerOptions" : {

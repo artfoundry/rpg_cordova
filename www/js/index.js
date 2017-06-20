@@ -31,11 +31,12 @@ let Game = {
         dungeon.createNewLevel(startingMap.levels[0]);
 
         let players = {
-            player1: new PlayerCharacter(playerOptions.player1, dungeon)
+            'player1': new PlayerCharacter(playerOptions.player1, dungeon)
         };
         let monsters = {
-            monster1 : new ElderMonster(monsterOptions.elder1, dungeon, audio)
+            'monster1' : new ElderMonster(monsterOptions.elder1, dungeon, audio)
         };
+        monsters.monster1.randomPos();
         let playerActions = new PlayerActions(dungeon, ui, players, monsters, audio);
         let monsterActions = new MonsterActions(dungeon, ui, players, monsters, audio);
         let turnController = new TurnController(dungeon, ui, players, playerActions, monsterActions, monsters, events);

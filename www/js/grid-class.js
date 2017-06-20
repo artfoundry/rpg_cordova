@@ -5,16 +5,13 @@
  */
 
 class Grid {
-    constructor(dungeon, gridOptions, audio, ui) {
+    constructor(dungeon, gridOptions, audio) {
         this.dungeon = dungeon;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
         this.gridRandomFactor = gridOptions.randomization;
         this.tileSize = gridOptions.tileSize;
         this.audio = audio;
-        this.ui = ui;
-        this.lightRadius = 2;
-        this.levelStorage = $();
     }
 
     /**
@@ -58,7 +55,6 @@ class Grid {
             this.addItems(items, objects);
             $gridEl.css('width', gridPixels + 1);
             $('#row0col0').prepend('<canvas id="canvas-lighting" width="' + gridPixels + '" height="' + gridPixels + '"></canvas>');
-            this.levelStorage = $gridEl.children;
         }
     }
 
@@ -120,8 +116,12 @@ class Grid {
         if (items) {
             for (let item in items) {
                 if (items.hasOwnProperty(item)) {
-                    let itemLoc = Game.helpers.randomizeLoc(items[item].location, this.gridWidth, this.gridHeight);
+                    let itemLoc = '';
 
+                    if (items[item].location.includes('row'))
+                        itemLoc = items[item].location;
+                    else
+                        itemLoc = Game.helpers.randomizeLoc(items[item].location, this.gridWidth, this.gridHeight);
                     this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].tileType, items[item].func);
                     this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
                 }
@@ -130,8 +130,12 @@ class Grid {
         if (objects) {
             for (let object in objects) {
                 if (objects.hasOwnProperty(object)) {
-                    let objectLoc = Game.helpers.randomizeLoc(objects[object].location, this.gridWidth, this.gridHeight);
+                    let objectLoc = '';
 
+                    if (objects[object].location.includes('row'))
+                        objectLoc = objects[object].location;
+                    else
+                        objectLoc = Game.helpers.randomizeLoc(objects[object].location, this.gridWidth, this.gridHeight);
                     this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func);
                     this.changeTileImg(objectLoc, 'content-' + objects[object].image, 'content-trans');
                 }
@@ -187,7 +191,7 @@ class Grid {
         $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable').removeData();
     }
 
-    setLighting(newPos, currentPos) {
+    setLighting(newPos, currentPos, lightRadius) {
         let oldPos = currentPos || newPos,
             newLightPos = $('#' + newPos).offset(),
             currentLightPos = $('#' + oldPos + ' .content').offset(),
@@ -195,7 +199,7 @@ class Grid {
             grid = this;
 
         lightingParams.gridPos = $('.grid').offset();
-        lightingParams.radius = this.lightRadius * grid.tileSize + (grid.tileSize/2);
+        lightingParams.radius = lightRadius * grid.tileSize + (grid.tileSize/2);
         lightingParams.newLightPosTop = Math.round(newLightPos.top - lightingParams.gridPos.top - (lightingParams.radius/3));
         lightingParams.newLightPosLeft = Math.round(newLightPos.left - lightingParams.gridPos.left + (lightingParams.radius/6));
         lightingParams.currentLightPosLeft = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).left;

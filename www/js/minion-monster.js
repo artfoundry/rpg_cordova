@@ -8,8 +8,4 @@ class MinionMonster extends Monster {
         this.pos = monsterOptions.pos;
         this.audio = audio;
     }
-
-    initialize() {
-        this._setMonster(this.pos);
-    }
 }

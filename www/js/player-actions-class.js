@@ -25,19 +25,19 @@ class PlayerActions {
             currentPos = player.pos,
             newTilePos = newTile.id,
             func = $(newTile).data('func') || null,
+            levelDirection,
             callback = params.callback;
 
         if ($(newTile).hasClass('pc-adjacent')) {
-            if ($(newTile).hasClass('impassable'))
+            if ($(newTile).hasClass('impassable')) {
                 this.grid.animateTile({'position' : currentPos, 'type' : 'impassable'});
-            else
-                player.setPlayer(currentPos, newTilePos, callback);
-
-            if (func) {
+            } else if (func) {
                 if (func === 'nextLevel') {
-                    this.dungeon.nextLevel(this.players.player1.currentLevel + 1);
-                    player.setPlayer(currentPos, newTilePos);
+                    levelDirection = $(newTile).hasClass('stairsDown') ? 1 : -1;
+                    this.players[params.player].changeMapLevel(levelDirection, newTilePos, callback);
                 }
+            } else {
+                player.setPlayer(currentPos, newTilePos, callback);
             }
         }
     }
