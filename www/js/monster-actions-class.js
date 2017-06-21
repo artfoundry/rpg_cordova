@@ -121,7 +121,7 @@ class MonsterActions {
                         "callback" : function() {
                             if (targetPlayer.health < 1) {
                                 monsterActions.audio.playSoundEffect(['death-human']);
-                                monsterActions.grid.changeTileImg(targetPlayer.pos, 'content-trans', 'content-player');
+                                monsterActions.grid.changeTileImg(targetPlayer.pos, '', 'content-player');
                                 setIsGameOver();
                             }
                         }

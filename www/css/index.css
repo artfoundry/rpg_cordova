@@ -372,8 +372,12 @@ button:active {
     z-index: 1;
 }
 
-.content-trans {
-    background-image: url('../img/trans.png');
+.content-stairs-up {
+    background-image: url('../img/stairs-down.png');
+}
+
+.content-stairs-down {
+    background-image: url('../img/stairs-down.png');
 }
 
 .content-player {
@@ -390,10 +394,6 @@ button:active {
 
 .content-elder-sign {
     background-image: url('../img/elder-sign.png');
-}
-
-.content-stairs-down {
-    background-image: url('../img/stairs-down.png');
 }
 
 /**

@@ -28,8 +28,8 @@ class Grid {
             markup = '',
             id = '',
             tileType = '',
-            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>',
-            borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content content-trans"></div></figure>';
+            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content"></div></figure>',
+            borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content"></div></figure>';
 
         if (level) {
             $gridEl.prepend(level);
@@ -124,7 +124,7 @@ class Grid {
                     else
                         itemLoc = Game.helpers.randomizeLoc(items[item].location, this.gridWidth, this.gridHeight);
                     this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].tileType, items[item].func);
-                    this.changeTileImg(itemLoc, 'content-' + items[item].image, 'content-trans');
+                    this.changeTileImg(itemLoc, 'content-' + items[item].image);
                 }
             }
         }
@@ -138,7 +138,7 @@ class Grid {
                     else
                         objectLoc = Game.helpers.randomizeLoc(objects[object].location, this.gridWidth, this.gridHeight);
                     this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func);
-                    this.changeTileImg(objectLoc, 'content-' + objects[object].image, 'content-trans');
+                    this.changeTileImg(objectLoc, 'content-' + objects[object].image);
                 }
             }
         }
@@ -152,12 +152,13 @@ class Grid {
     }
 
     clearGrid() {
-        $('.tile').remove();
+        $('.row').remove();
     }
 
     /**
      * function changeTileSetting
-     *
+     * Changes tile classes to indicate the type of tile (walkable, impassable, item, object, player, monster, etc.).
+     * Also adds data information for item info, quest name, and function
      * @param position
      * @param name
      * @param type
@@ -176,11 +177,11 @@ class Grid {
         if (questName)
             $position.data('questName', questName);
         if (func) {
-            $position.data('func', func);
+            $position.attr('data-function', func);
         }
     }
 
-    changeTileImg(position, addClasses, removeClasses) {
+    changeTileImg(position, addClasses, removeClasses = null) {
         $('#' + position + ' .content').addClass(addClasses).removeClass(removeClasses);
     }
 
@@ -224,7 +225,7 @@ class Grid {
             radius = lightingParams.radius,
             cx = lightingParams.currentLightPosLeft,
             cy = lightingParams.currentLightPosTop,
-            ctx = canvas.getContext("2d"),
+            ctx = canvas.getContext('2d'),
             cw = canvas.width,
             ch = canvas.height,
             radialGradient = ctx.createRadialGradient(cx, cy, 1, cx, cy, radius);

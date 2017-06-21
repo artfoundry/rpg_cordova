@@ -106,13 +106,14 @@ class TurnController {
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
             if (Object.keys(this.monsters).length > 0) {
-                if (this.players.player1.levelChanged === true) {
+                if (this.players.player1.levelChanged !== null) {
                     this.dungeon.saveLevel(this.monsters);
                     this.dungeon.nextLevel(this.players.player1.currentLevel, this._updateMonstersForLevel.bind(this));
-                    stairsPos = $('.stairsUp').attr('id');
+
+                    stairsPos = this.players.player1.levelChanged === 1 ? $('.stairsUp').attr('id') : $('.stairsDown').attr('id');
                     this.players.player1.pos = stairsPos;
                     this.players.player1.setPlayer(stairsPos);
-                    this.players.player1.levelChanged = false;
+                    this.players.player1.levelChanged = null;
                 }
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();

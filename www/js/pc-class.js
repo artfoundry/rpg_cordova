@@ -9,7 +9,7 @@
 class PlayerCharacter {
     constructor(playerOptions, dungeon) {
         this.currentLevel = playerOptions.startingLevel;
-        this.levelChanged = false;
+        this.levelChanged = null;
         this.grid = dungeon.grid;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
@@ -48,10 +48,9 @@ class PlayerCharacter {
         return this.kills;
     }
 
-    changeMapLevel(levelDirection, newTilePos, callback) {
+    changeMapLevel(levelDirection) {
         this.currentLevel += levelDirection;
-        this.levelChanged = true;
-        this.setPlayer(this.pos, newTilePos, callback);
+        this.levelChanged = levelDirection;
     }
 
     setPlayer(currentPos, newPos, callback) {
@@ -62,8 +61,8 @@ class PlayerCharacter {
                 'destinationId' : newPosId,
                 'type' : 'move',
                 'callback' : function() {
-                    player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
-                    player.grid.changeTileImg(currentPos, 'content-trans', 'content-' + player.type);
+                    player.grid.changeTileImg(newPosId, 'content-' + player.type);
+                    player.grid.changeTileImg(currentPos, '', 'content-' + player.type);
                     if (callback)
                         callback();
                 }
@@ -75,7 +74,7 @@ class PlayerCharacter {
             player.grid.animateTile(animateMoveParams);
             player.pos = newPosId;
         } else {
-            player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
+            player.grid.changeTileImg(newPosId, 'content-' + player.type);
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
         }
         player.grid.setLighting(newPosId, currentPos, this.lightRadius);

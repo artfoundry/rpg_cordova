@@ -16,31 +16,31 @@ class Dungeon {
         this.grid = {};
     }
 
-    createNewLevel(levelOptions) {
+    createLevel(levelOptions, levelMarkup = null) {
         this.gridOptions = levelOptions;
         this.levelItems = levelOptions.items || null;
         this.levelObjects = levelOptions.objects || null;
         this.grid = new Grid(this, this.gridOptions, this.audio);
-        this.grid.drawGrid(null, this.levelItems, this.levelObjects);
+        this.grid.drawGrid(levelMarkup, this.levelItems, this.levelObjects);
     }
 
     saveLevel(monsterList) {
-        this.levelMarkup = JSON.stringify($('.grid').children());
+        this.levelMarkup = $('.grid >');
         this.levels.push({'level' : this.levelMarkup, 'monsters' : monsterList});
     }
 
     nextLevel(nextLevel, callback) {
-        let levelInfo,
+        let levelMarkup,
             isNewLevel = false,
             levelOptions = this.mapOptions.levels[nextLevel];
 
         this.grid.clearGrid();
         if (this.levels[nextLevel]) {
-            levelInfo = JSON.parse(this.levels[nextLevel].level);
-            this.grid.drawGrid(levelInfo);
+            levelMarkup = this.levels[nextLevel].level;
+            this.createLevel(levelOptions, levelMarkup);
             this.grid.level = nextLevel;
         } else {
-            this.createNewLevel(levelOptions);
+            this.createLevel(levelOptions);
             isNewLevel = true;
         }
         this.loadMonstersForLevel(isNewLevel, callback);

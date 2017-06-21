@@ -24,7 +24,7 @@ class PlayerActions {
         let player = this.players[params.player],
             currentPos = player.pos,
             newTilePos = newTile.id,
-            func = $(newTile).data('func') || null,
+            func = $(newTile).attr('data-function') || null,
             levelDirection,
             callback = params.callback;
 
@@ -33,8 +33,12 @@ class PlayerActions {
                 this.grid.animateTile({'position' : currentPos, 'type' : 'impassable'});
             } else if (func) {
                 if (func === 'nextLevel') {
-                    levelDirection = $(newTile).hasClass('stairsDown') ? 1 : -1;
-                    this.players[params.player].changeMapLevel(levelDirection, newTilePos, callback);
+                    if ($(newTile).hasClass('stairsDown'))
+                        levelDirection = 1;
+                    else if ($(newTile).hasClass('stairsUp'))
+                        levelDirection = -1;
+                    player.changeMapLevel(levelDirection);
+                    player.setPlayer(currentPos, newTilePos, callback);
                 }
             } else {
                 player.setPlayer(currentPos, newTilePos, callback);
@@ -64,7 +68,7 @@ class PlayerActions {
             if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
                 this.handleQuest(itemName);
             this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
-            this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemImage);
+            this.grid.changeTileImg(targetTile.id, '', 'content-' + itemImage);
         }
     }
 
@@ -110,7 +114,7 @@ class PlayerActions {
                                 "position" : targetMonster.pos,
                                 "type" : "image-swap",
                                 "delay" : "death",
-                                "addClasses" : "content-trans",
+                                "addClasses" : "",
                                 "removeClasses" : "content-" + targetMonster.subtype,
                                 "callback" : function() {
                                     playerActions.ui.updateStatusValue({id: ".kills", value: currentPlayer.getKills()});

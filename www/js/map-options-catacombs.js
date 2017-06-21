@@ -120,7 +120,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 2,
+            "startingLevel" : 1,
             "location" : "right",
             "questGoal" : false,
             "questName" : ""
@@ -151,7 +151,17 @@ let MapOptionsCatacombs = {
             "subtype" : "shoggoth",
             "health" : 1,
             "startingLevel" : 2,
-            "location" : "bottom",
+            "location" : "center",
+            "questGoal" : false,
+            "questName" : ""
+        },
+        "shoggoth7" : {
+            "name" : "Shoggoth",
+            "type" : "monster",
+            "subtype" : "shoggoth",
+            "health" : 1,
+            "startingLevel" : 2,
+            "location" : "top",
             "questGoal" : false,
             "questName" : ""
         },
