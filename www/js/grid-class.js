@@ -7,6 +7,7 @@
 class Grid {
     constructor(dungeon, gridOptions, audio) {
         this.dungeon = dungeon;
+        this.level = gridOptions.levelNum;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
         this.gridRandomFactor = gridOptions.randomization;

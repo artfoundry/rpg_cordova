@@ -8,7 +8,8 @@ class Monster {
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health; // used by player-actions for attacks
-        this.location = monsterOptions.location;
+        this.currentLevel = monsterOptions.startingLevel;
+        this.startingLocation = monsterOptions.location;
         this.questGoal = monsterOptions.questGoal || null;
         this.questName = monsterOptions.questName || null;
         this.grid = dungeon.grid;
@@ -188,7 +189,7 @@ class Monster {
     }
 
     randomPos() {
-        this.pos = Game.helpers.randomizeLoc(this.location, this.grid.gridWidth, this.grid.gridHeight);
+        this.pos = Game.helpers.randomizeLoc(this.startingLocation, this.grid.gridWidth, this.grid.gridHeight);
     }
 
     _setMonster(newTileId, oldTileId, callback) {
@@ -196,35 +197,37 @@ class Monster {
             animateMoveParams = {},
             questName = monster.questGoal ? monster.questName : null;
 
-        if (oldTileId) {
-            animateMoveParams = {
-                "position" : oldTileId,
-                "destinationId" : newTileId,
-                "type" : "move",
-                "callback" : function() {
-                    monster.audio.playSoundEffect(['move-' + monster.subtype], .5);
-                    monster.grid.changeTileImg(newTileId, 'content-' + monster.subtype, 'content-trans');
-                    monster.grid.changeTileImg(oldTileId, 'content-trans', 'content-' + monster.subtype);
-                    if (callback)
-                        callback();
-                }
-            };
-            monster.grid.setTileWalkable(oldTileId, monster.name, monster.type, monster.subtype);
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
-            monster.grid.animateTile(animateMoveParams);
-            monster.pos = newTileId;
-        } else {
-            animateMoveParams = {
-                "position" : newTileId,
-                "type" : "spawn",
-                "addClasses" : "content-" + monster.subtype,
-                "removeClasses" : "content-trans"
-            };
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
-            monster.grid.animateTile(animateMoveParams);
-        }
+        if (monster.currentLevel === monster.grid.level) {
+            if (oldTileId) {
+                animateMoveParams = {
+                    "position" : oldTileId,
+                    "destinationId" : newTileId,
+                    "type" : "move",
+                    "callback" : function() {
+                        monster.audio.playSoundEffect(['move-' + monster.subtype], .5);
+                        monster.grid.changeTileImg(newTileId, 'content-' + monster.subtype, 'content-trans');
+                        monster.grid.changeTileImg(oldTileId, 'content-trans', 'content-' + monster.subtype);
+                        if (callback)
+                            callback();
+                    }
+                };
+                monster.grid.setTileWalkable(oldTileId, monster.name, monster.type, monster.subtype);
+                monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
+                monster.grid.animateTile(animateMoveParams);
+                monster.pos = newTileId;
+            } else {
+                animateMoveParams = {
+                    "position" : newTileId,
+                    "type" : "spawn",
+                    "addClasses" : "content-" + monster.subtype,
+                    "removeClasses" : "content-trans"
+                };
+                monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
+                monster.grid.animateTile(animateMoveParams);
+            }
 
-        monster.row = Game.helpers.getRowCol(newTileId).row;
-        monster.col = Game.helpers.getRowCol(newTileId).col;
+            monster.row = Game.helpers.getRowCol(newTileId).row;
+            monster.col = Game.helpers.getRowCol(newTileId).col;
+        }
     }
 }

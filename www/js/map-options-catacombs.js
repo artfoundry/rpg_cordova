@@ -5,6 +5,7 @@
 let MapOptionsCatacombs = {
     "levels" : [
         {
+            "levelNum" : 1,
             "width" : 10,
             "height" : 10,
             "tileSize" : 64,
@@ -39,6 +40,7 @@ let MapOptionsCatacombs = {
             }
         },
         {
+            "levelNum" : 2,
             "width" : 10,
             "height" : 10,
             "tileSize" : 64,
@@ -63,6 +65,7 @@ let MapOptionsCatacombs = {
             }
         },
         {
+            "levelNum" : 3,
             "width" : 10,
             "height" : 10,
             "tileSize" : 64,
@@ -112,12 +115,52 @@ let MapOptionsCatacombs = {
             "questGoal" : false,
             "questName" : ""
         },
+        "shoggoth3" : {
+            "name" : "Shoggoth",
+            "type" : "monster",
+            "subtype" : "shoggoth",
+            "health" : 1,
+            "startingLevel" : 2,
+            "location" : "right",
+            "questGoal" : false,
+            "questName" : ""
+        },
+        "shoggoth4" : {
+            "name" : "Shoggoth",
+            "type" : "monster",
+            "subtype" : "shoggoth",
+            "health" : 1,
+            "startingLevel" : 2,
+            "location" : "bottom",
+            "questGoal" : false,
+            "questName" : ""
+        },
+        "shoggoth5" : {
+            "name" : "Shoggoth",
+            "type" : "monster",
+            "subtype" : "shoggoth",
+            "health" : 1,
+            "startingLevel" : 2,
+            "location" : "left",
+            "questGoal" : false,
+            "questName" : ""
+        },
+        "shoggoth6" : {
+            "name" : "Shoggoth",
+            "type" : "monster",
+            "subtype" : "shoggoth",
+            "health" : 1,
+            "startingLevel" : 2,
+            "location" : "bottom",
+            "questGoal" : false,
+            "questName" : ""
+        },
         "elder1" : {
             "name" : "Elder",
             "type" : "monster",
             "subtype" : "elder",
             "health" : 3,
-            "startingLevel" : 2,
+            "startingLevel" : 3,
             "location" : "center",
             "questGoal" : true,
             "questName" : "killElder"

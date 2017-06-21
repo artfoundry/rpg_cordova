@@ -25,6 +25,7 @@ class TurnController {
         this.playerActions = playerActions;
         this.monsterActions = monsterActions;
         this.monsters = monsters;
+        this.totalNumMonsters = Object.keys(this.monsters).length;
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
@@ -33,7 +34,11 @@ class TurnController {
 
     initialize() {
         this.players.player1.initialize();
-        this.monsters.monster1.initialize();
+        for(let monster in this.monsters) {
+            if (this.monsters.hasOwnProperty(monster)) {
+                this.monsters[monster].initialize();
+            }
+        }
         this.startGame();
     }
 
@@ -103,7 +108,7 @@ class TurnController {
             if (Object.keys(this.monsters).length > 0) {
                 if (this.players.player1.levelChanged === true) {
                     this.dungeon.saveLevel(this.monsters);
-                    this.dungeon.nextLevel(this.players.player1.currentLevel, this._restoreMonstersForLevel.bind(this));
+                    this.dungeon.nextLevel(this.players.player1.currentLevel, this._updateMonstersForLevel.bind(this));
                     stairsPos = $('.stairsUp').attr('id');
                     this.players.player1.pos = stairsPos;
                     this.players.player1.setPlayer(stairsPos);
@@ -135,17 +140,8 @@ class TurnController {
      *
      *****************************/
 
-    _restoreMonstersForLevel(isNewLevel, level) {
-        if (isNewLevel) {
-            this.monsters = {};
-        } else {
-            this.monsters = this.dungeon.getMonstersForLevel(level);
-            for (let monster in this.monsters) {
-                if (this.monsters.hasOwnProperty(monster)) {
-                    monster.initialize();
-                }
-            }
-        }
+    _updateMonstersForLevel(newMonsters) {
+        this.monsters = newMonsters;
         this.playerActions.monsters = this.monsters;
         this.monsterActions.monsters = this.monsters;
     }
