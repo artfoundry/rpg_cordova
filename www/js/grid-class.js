@@ -137,7 +137,7 @@ class Grid {
                         objectLoc = objects[object].location;
                     else
                         objectLoc = Game.helpers.randomizeLoc(objects[object].location, this.gridWidth, this.gridHeight);
-                    this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func);
+                    this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func, objects[object].message);
                     this.changeTileImg(objectLoc, '.content', 'content-' + objects[object].image);
                 }
             }
@@ -159,15 +159,16 @@ class Grid {
      * function changeTileSetting
      * Changes tile classes to indicate the type of tile (walkable, impassable, item, object, player, monster, etc.).
      * Also adds data information for item info, quest name, and function
-     * @param position
-     * @param name
-     * @param type
-     * @param subtype
-     * @param questName
-     * @param tileType
-     * @param func
+     * @param position - string of tile ID
+     * @param name - string of object/item/character name (Elder, Shoggoth, Elder Sign, etc.)
+     * @param type - string of object/item/character type (player, monster, stairs, etc.)
+     * @param subtype - string of object/item/character subtype (investigator, elder, stairsUp, etc.)
+     * @param questName - string of quest tied to item/object
+     * @param tileType - string of type of tile (walkable, impassable, item)
+     * @param func - string of callback to fire - options are 'nextLevel', 'displayStatus'
+     * @param message - string of key for message to display if func is 'displayStatus'
      */
-    changeTileSetting(position, name, type, subtype, questName = null, tileType = null, func = null) {
+    changeTileSetting(position, name, type, subtype, questName = null, tileType = null, func = null, message = null) {
         let $position = $('#' + position);
 
         $position.addClass(name + ' ' + type + ' ' + subtype);
@@ -178,6 +179,9 @@ class Grid {
             $position.data('questName', questName);
         if (func) {
             $position.attr('data-function', func);
+            if (message) {
+                $position.attr('data-message', message);
+            }
         }
     }
 
@@ -273,7 +277,7 @@ class Grid {
      */
     animateTile(params) {
         let $target = $('#' + params.position),
-            $targetContent = $target.children('.content'),
+            $targetContent = $target.children(params.tileLayer),
             type = params.type,
             callback = params.callback,
             imageRotation = Math.random() * 360,

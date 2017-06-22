@@ -27,7 +27,8 @@ let MapOptionsCatacombs = {
                     "tileType" : "walkable",
                     "location" : "row1col1",
                     "image" : "stairs-up",
-                    "func" : "nextLevel"
+                    "func" : "displayStatus",
+                    "message" : "noExit"
                 },
                 "stairsDown" : {
                     "itemType" : "stairs",

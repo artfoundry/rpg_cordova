@@ -25,12 +25,18 @@ class PlayerActions {
             currentPos = player.pos,
             newTilePos = newTile.id,
             func = $(newTile).attr('data-function') || null,
+            message = $(newTile).attr('data-message') || null,
             levelDirection,
+            impassableAnimParams = {
+                'position' : currentPos,
+                'tileLayer' : '.character',
+                'type' : 'impassable'
+            },
             callback = params.callback;
 
         if ($(newTile).hasClass('pc-adjacent')) {
             if ($(newTile).hasClass('impassable')) {
-                this.grid.animateTile({'position' : currentPos, 'type' : 'impassable'});
+                this.grid.animateTile(impassableAnimParams);
             } else if (func) {
                 if (func === 'nextLevel') {
                     if ($(newTile).hasClass('stairsDown'))
@@ -39,6 +45,9 @@ class PlayerActions {
                         levelDirection = -1;
                     player.changeMapLevel(levelDirection);
                     player.setPlayer(currentPos, newTilePos, callback);
+                } else if (func === 'displayStatus') {
+                    this.ui.displayStatus(message);
+                    this.grid.animateTile(impassableAnimParams);
                 }
             } else {
                 player.setPlayer(currentPos, newTilePos, callback);
