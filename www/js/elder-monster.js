@@ -20,7 +20,8 @@ class ElderMonster extends Monster {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "pos" : this.oldPos
+            "pos" : this.oldPos,
+            "startingLevel" : this.currentLevel
         };
         return new MinionMonster(minionOptions, this.dungeon, this.audio);
     }

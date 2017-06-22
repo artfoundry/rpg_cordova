@@ -64,7 +64,6 @@ class MonsterActions {
         this.monsterCount += 1;
         newMinionNum = newMinion.subtype + this.monsterCount;
         this.monsters[newMinionNum] = newMinion;
-        this.monsters[newMinionNum].name = newMinionNum;
         this.monsters[newMinionNum].initialize();
         return this.monsters[newMinionNum];
     }
