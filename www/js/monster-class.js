@@ -205,8 +205,8 @@ class Monster {
                     "type" : "move",
                     "callback" : function() {
                         monster.audio.playSoundEffect(['move-' + monster.subtype], .5);
-                        monster.grid.changeTileImg(newTileId, 'content-' + monster.subtype);
-                        monster.grid.changeTileImg(oldTileId, '', 'content-' + monster.subtype);
+                        monster.grid.changeTileImg(newTileId, '.character', 'character-' + monster.subtype);
+                        monster.grid.changeTileImg(oldTileId, '.character', '', 'character-' + monster.subtype);
                         if (callback)
                             callback();
                     }
@@ -218,8 +218,9 @@ class Monster {
             } else {
                 animateMoveParams = {
                     "position" : newTileId,
+                    "tileLayer" : ".character",
                     "type" : "spawn",
-                    "addClasses" : "content-" + monster.subtype,
+                    "addClasses" : "character-" + monster.subtype,
                     "removeClasses" : null
                 };
                 monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);

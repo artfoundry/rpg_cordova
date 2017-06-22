@@ -61,8 +61,8 @@ class PlayerCharacter {
                 'destinationId' : newPosId,
                 'type' : 'move',
                 'callback' : function() {
-                    player.grid.changeTileImg(newPosId, 'content-' + player.type);
-                    player.grid.changeTileImg(currentPos, '', 'content-' + player.type);
+                    player.grid.changeTileImg(newPosId, '.character', 'character-' + player.type);
+                    player.grid.changeTileImg(currentPos, '.character', '', 'character-' + player.type);
                     if (callback)
                         callback();
                 }
@@ -74,7 +74,7 @@ class PlayerCharacter {
             player.grid.animateTile(animateMoveParams);
             player.pos = newPosId;
         } else {
-            player.grid.changeTileImg(newPosId, 'content-' + player.type);
+            player.grid.changeTileImg(newPosId, '.character', 'character-' + player.type);
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
         }
         player.grid.setLighting(newPosId, currentPos, this.lightRadius);

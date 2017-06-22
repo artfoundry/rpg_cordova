@@ -28,7 +28,7 @@ class Grid {
             markup = '',
             id = '',
             tileType = '',
-            blackGroundTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="content"></div></figure>',
+            walkableTile = '<figure id="" class="tile tile-ground-dungeon walkable"><div class="light-img light-img-trans"></div><div class="character"></div><div class="content"></div></figure>',
             borderTile = '<figure id="" class="tile tile-wall impassable"><div class="light-img light-img-trans"></div><div class="content"></div></figure>';
 
         if (level) {
@@ -44,7 +44,7 @@ class Grid {
                         } else {
                             tileType = this.randomizeTileType(id, markup);
                             if (tileType === 'ground')
-                                markup += grid._insertString(blackGroundTile, id, blackGroundTile.indexOf('id=') + 4);
+                                markup += grid._insertString(walkableTile, id, walkableTile.indexOf('id=') + 4);
                             else if (tileType === 'wall')
                                 markup += grid._insertString(borderTile, id, borderTile.indexOf('id=') + 4);
                         }
@@ -124,7 +124,7 @@ class Grid {
                     else
                         itemLoc = Game.helpers.randomizeLoc(items[item].location, this.gridWidth, this.gridHeight);
                     this.changeTileSetting(itemLoc, item, 'item', items[item].itemType, items[item].questName, items[item].tileType, items[item].func);
-                    this.changeTileImg(itemLoc, 'content-' + items[item].image);
+                    this.changeTileImg(itemLoc, '.content', 'content-' + items[item].image);
                 }
             }
         }
@@ -138,7 +138,7 @@ class Grid {
                     else
                         objectLoc = Game.helpers.randomizeLoc(objects[object].location, this.gridWidth, this.gridHeight);
                     this.changeTileSetting(objectLoc, object, 'object', objects[object].itemType, objects[object].questName, objects[object].tileType, objects[object].func);
-                    this.changeTileImg(objectLoc, 'content-' + objects[object].image);
+                    this.changeTileImg(objectLoc, '.content', 'content-' + objects[object].image);
                 }
             }
         }
@@ -181,8 +181,8 @@ class Grid {
         }
     }
 
-    changeTileImg(position, addClasses, removeClasses = null) {
-        $('#' + position + ' .content').addClass(addClasses).removeClass(removeClasses);
+    changeTileImg(position, tileLayer, addClasses, removeClasses = null) {
+        $('#' + position + ' ' + tileLayer).addClass(addClasses).removeClass(removeClasses);
     }
 
     toggleDirection($targetContent, direction) {
@@ -196,7 +196,7 @@ class Grid {
     setLighting(newPos, currentPos, lightRadius) {
         let oldPos = currentPos || newPos,
             newLightPos = $('#' + newPos).offset(),
-            currentLightPos = $('#' + oldPos + ' .content').offset(),
+            currentLightPos = $('#' + oldPos + ' .character').offset(),
             lightingParams = {},
             grid = this;
 
@@ -245,7 +245,7 @@ class Grid {
         ctx.restore();
 
         if (lightingParams.animID) {
-            let $charPos = $('#' + lightingParams.currentPos + ' .content'),
+            let $charPos = $('#' + lightingParams.currentPos + ' .character'),
                 currentLightPos = $charPos.offset();
 
             lightingParams.currentLightPosLeft = this._calcCurrentPosition(currentLightPos, lightingParams.gridPos, lightingParams.radius).left;
@@ -291,7 +291,7 @@ class Grid {
                 let delay = params.delay === 'death' ? 200 : 0;
 
                 $targetContent.fadeOut(delay, function() {
-                    grid.changeTileImg(params.position, params.addClasses, params.removeClasses);
+                    grid.changeTileImg(params.position, params.tileLayer, params.addClasses, params.removeClasses);
                     $targetContent.fadeIn();
                     if (callback)
                         callback();
@@ -325,7 +325,7 @@ class Grid {
                     });
                 break;
             case 'spawn':
-                grid.changeTileImg(params.position, params.addClasses, params.removeClasses);
+                grid.changeTileImg(params.position, params.tileLayer, params.addClasses, params.removeClasses);
                 $targetContent
                     .css({"backgroundPosition": "32px", "backgroundSize": "0", "opacity": "0"})
                     .animate({"background-position": "-=32px", "backgroundSize": "+=64px", "opacity": "+=1"}, 500, function() {
@@ -337,8 +337,8 @@ class Grid {
 
     _animateMovement(position, destination, callback) {
         let $target = $('#' + position),
-            $targetContent = $target.children('.content'),
-            $destinationContent = $('#' + destination).children('.content'),
+            $targetContent = $target.children('.character'),
+            $destinationContent = $('#' + destination).children('.character'),
             destinationPosValues = Game.helpers.getRowCol(destination),
             currentPosValues = Game.helpers.getRowCol(position),
             moveDirection = {
@@ -365,10 +365,10 @@ class Grid {
             this.toggleDirection($destinationContent);
 
         // temporarily increase z-index of image for animation, so it doesn't slip under destination tile
-        $targetContent.addClass('content-zindex-raised');
+        $targetContent.addClass('character-zindex-raised');
 
         $targetContent.addClass(movementClasses, function() {
-            movementClasses += ' content-zindex-raised face-right face-left';
+            movementClasses += ' character-zindex-raised face-right face-left';
             $targetContent.removeClass(movementClasses);
         });
         $targetContent.promise().done(function() {

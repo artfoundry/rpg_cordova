@@ -12,7 +12,7 @@ class MonsterActions {
         this.monsterCount = Object.keys(this.monsters).length;
     }
 
-    moveMonsters(isGameOver, setIsGameOver) {
+    moveMonsters(getIsGameOverCallback, setIsGameOverCallback) {
         let currentMonster,
             minionAttacked,
             nearbyPlayerTiles = [],
@@ -21,22 +21,22 @@ class MonsterActions {
             elderSpawnCallback = function() {
                 if ($('#' + this.oldPos).hasClass('walkable')) {
                     newMinion = monsterActions.addNewMinion(this);
-                    monsterActions._affectPlayerSanity(newMinion, setIsGameOver);
+                    monsterActions._affectPlayerSanity(newMinion, setIsGameOverCallback);
                 }
             };
 
         for (let monster in this.monsters) {
             minionAttacked = false;
 
-            if (isGameOver())
+            if (getIsGameOverCallback())
                 return;
-            else if (Object.prototype.hasOwnProperty.call(this.monsters, monster)) {
+            else if (this.monsters.hasOwnProperty(monster)) {
                 currentMonster = this.monsters[monster];
                 nearbyPlayerTiles = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1, this.grid.gridWidth, this.grid.gridHeight);
                 if (currentMonster.name === 'Elder') {
                     currentMonster.saveCurrentPos();
                 } else if (nearbyPlayerTiles) {
-                    this._monsterAttack(nearbyPlayerTiles[0], setIsGameOver);
+                    this._monsterAttack(nearbyPlayerTiles[0], setIsGameOverCallback);
                     minionAttacked = true;
                 }
                 if (!minionAttacked) {
@@ -52,7 +52,7 @@ class MonsterActions {
                         currentMonster.searchForPrey(2);
                     }
                 }
-                this._affectPlayerSanity(currentMonster, setIsGameOver);
+                this._affectPlayerSanity(currentMonster, setIsGameOverCallback);
             }
         }
     }
@@ -69,7 +69,7 @@ class MonsterActions {
         return this.monsters[newMinionNum];
     }
 
-    _affectPlayerSanity(currentMonster, setIsGameOver) {
+    _affectPlayerSanity(currentMonster, setIsGameOverCallback) {
         let nearbyPlayers = Game.helpers.checkForNearbyCharacters(currentMonster, 'player', 1, this.grid.gridWidth, this.grid.gridHeight),
             fearValue = 0,
             sanityPercentage = 0;
@@ -84,7 +84,7 @@ class MonsterActions {
                             this.ui.showFearEffect(fearValue);
                             if (this.players[player].sanity === 0) {
                                 this.audio.playSoundEffect(['human-insane']);
-                                setIsGameOver();
+                                setIsGameOverCallback();
                             }
                         }
                     }
@@ -99,9 +99,9 @@ class MonsterActions {
      * function monsterAttack
      * For registering an attack by a monster on a player
      * @param targetTile - jquery element target of attack
-     * @param setIsGameOver - turnControl function for setting isGameOver flag
+     * @param setIsGameOverCallback - turnControl function for setting isGameOver flag
      ********************/
-    _monsterAttack(targetTile, setIsGameOver) {
+    _monsterAttack(targetTile, setIsGameOverCallback) {
         let playerNum,
             targetLoc,
             targetPlayer,
@@ -121,8 +121,8 @@ class MonsterActions {
                         "callback" : function() {
                             if (targetPlayer.health < 1) {
                                 monsterActions.audio.playSoundEffect(['death-human']);
-                                monsterActions.grid.changeTileImg(targetPlayer.pos, '', 'content-player');
-                                setIsGameOver();
+                                monsterActions.grid.changeTileImg(targetPlayer.pos, '.character', '', 'character-player');
+                                setIsGameOverCallback();
                             }
                         }
                     };

@@ -68,7 +68,7 @@ class PlayerActions {
             if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
                 this.handleQuest(itemName);
             this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
-            this.grid.changeTileImg(targetTile.id, '', 'content-' + itemImage);
+            this.grid.changeTileImg(targetTile.id, '.content', '', 'content-' + itemImage);
         }
     }
 
@@ -112,10 +112,11 @@ class PlayerActions {
                             };
                             animateDeathParams = {
                                 "position" : targetMonster.pos,
+                                "tileLayer" : ".character",
                                 "type" : "image-swap",
                                 "delay" : "death",
                                 "addClasses" : "",
-                                "removeClasses" : "content-" + targetMonster.subtype,
+                                "removeClasses" : "character-" + targetMonster.subtype,
                                 "callback" : function() {
                                     playerActions.ui.updateStatusValue({id: ".kills", value: currentPlayer.getKills()});
                                     playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type, targetMonster.subtype);
