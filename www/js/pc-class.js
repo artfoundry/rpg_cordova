@@ -8,7 +8,7 @@
 
 class PlayerCharacter {
     constructor(playerOptions, dungeon) {
-        this.currentLevel = playerOptions.startingLevel;
+        this.currentLevel = playerOptions.startingLevel; // starting level is 0 because levels is an array starting at index 0
         this.levelChanged = null;
         this.grid = dungeon.grid;
         this.pos = playerOptions.startPos;

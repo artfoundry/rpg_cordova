@@ -25,7 +25,7 @@ class TurnController {
         this.playerActions = playerActions;
         this.monsterActions = monsterActions;
         this.monsters = monsters;
-        this.totalNumMonsters = Object.keys(this.monsters).length;
+        this.totalNumMonsters = [];
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
@@ -100,33 +100,34 @@ class TurnController {
     }
 
     endTurn() {
-        let stairsPos;
+        let stairsPos,
+            player = this.players.player1;
 
         this._tearDownListeners();
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
-            if (Object.keys(this.monsters).length > 0) {
-                if (this.players.player1.levelChanged !== null) {
+            if (player.quests.completedQuests.includes('killElder') && this._getTotalNumMonsters(player.currentLevel) === 0) {
+                this._endGame('gameOverWin');
+            } else {
+                if (player.levelChanged !== null) {
                     this.dungeon.saveLevel(this.monsters);
-                    this.dungeon.nextLevel(this.players.player1.currentLevel, this._updateMonstersForLevel.bind(this));
+                    this.dungeon.nextLevel(player.currentLevel, this._updateMonstersForLevel.bind(this));
 
-                    stairsPos = this.players.player1.levelChanged === 1 ? $('.stairsUp').attr('id') : $('.stairsDown').attr('id');
-                    this.players.player1.pos = stairsPos;
-                    this.players.player1.setPlayer(stairsPos);
-                    this.players.player1.levelChanged = null;
+                    stairsPos = player.levelChanged === 1 ? $('.stairsUp').attr('id') : $('.stairsDown').attr('id');
+                    player.pos = stairsPos;
+                    player.setPlayer(stairsPos);
+                    player.levelChanged = null;
                 }
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
-            } else {
-                this._endGame('gameOverWin');
             }
         // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
                 this._tearDownListeners();
-                if (this.players.player1.health <= 0)
+                if (player.health <= 0)
                     this._endGame('gameOverDead');
-                else if (this.players.player1.sanity <= 0)
+                else if (player.sanity <= 0)
                     this._endGame('gameOverInsane');
             } else {
                 this.setIsPlayerTurn(true);
@@ -145,6 +146,16 @@ class TurnController {
         this.monsters = newMonsters;
         this.playerActions.monsters = this.monsters;
         this.monsterActions.monsters = this.monsters;
+    }
+
+    _getTotalNumMonsters(level) {
+        let total = 0;
+
+        this.totalNumMonsters[level] = Object.keys(this.monsters).length;
+        this.totalNumMonsters.forEach(function (num) {
+            total += num;
+        });
+        return total;
     }
 
     _waitForAnimationsToFinish() {

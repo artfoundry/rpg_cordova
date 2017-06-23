@@ -10,16 +10,6 @@ let MapOptionsCatacombs = {
             "height" : 10,
             "tileSize" : 64,
             "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
-            "items" : {
-                "elderSign": {
-                    "itemType": "questItems",
-                    "questName": "elderSign",
-                    "tileType" : "item",
-                    "location": "center",
-                    "image": "elder-sign",
-                    "func" : null
-                },
-            },
             "objects" : {
                 "stairsUp" : {
                     "itemType" : "stairs",
@@ -46,6 +36,16 @@ let MapOptionsCatacombs = {
             "height" : 10,
             "tileSize" : 64,
             "randomization" : 0.4, // determines what type of tile is chosen - lower values = more walls
+            "items" : {
+                "elderSign": {
+                    "itemType": "questItems",
+                    "questName": "elderSign",
+                    "tileType" : "item",
+                    "location": "center",
+                    "image": "elder-sign",
+                    "func" : null
+                },
+            },
             "objects" : {
                 "stairsUp" : {
                     "itemType" : "stairs",
@@ -89,7 +89,7 @@ let MapOptionsCatacombs = {
             "type" : "player",
             "subtype" : "investigator",
             "startPos" : "row1col1",
-            "startingLevel" : 0,
+            "startingLevel" : 0, // 0 because levels is an array starting at index 0
             "startingQuest" : "elderSign",
             "health" : 3,
             "sanity" : 20
