@@ -8,10 +8,11 @@ class Monster {
         this.type = monsterOptions.type;
         this.subtype = monsterOptions.subtype;
         this.health = monsterOptions.health; // used by player-actions for attacks
-        this.location = monsterOptions.location;
+        this.currentLevel = monsterOptions.startingLevel;
+        this.startingLocation = monsterOptions.location;
         this.questGoal = monsterOptions.questGoal || null;
         this.questName = monsterOptions.questName || null;
-        this.grid = dungeon.levels[0];
+        this.grid = dungeon.grid;
         this.audio = audio;
         this.row = 0;
         this.col = 0;
@@ -19,7 +20,6 @@ class Monster {
     }
 
     initialize() {
-        this.pos = Game.helpers.randomizeLoc(this.location);
         this._setMonster(this.pos);
     }
 
@@ -42,7 +42,7 @@ class Monster {
 
         // start searching from radius 2 because moveMonsters() already checks for players 1 space away to attack
         for (let radius=2; radius <= searchRadius; radius++) {
-            $targets = $targets.add(Game.helpers.checkForNearbyCharacters(this, 'player', radius));
+            $targets = $targets.add(Game.helpers.checkForNearbyCharacters(this, 'player', radius, this.grid.gridWidth, this.grid.gridHeight));
         }
         if ($targets.length === 0)
             this.randomMove();
@@ -83,7 +83,8 @@ class Monster {
             newTileCol = this.col,
             oldTileId = this.pos,
             firstRowOpt,
-            firstColOpt;
+            firstColOpt,
+            $tileOption;
 
         // for each position of the target, there are three possible moves for the monster that will bring it closer
         // this is the best option
@@ -146,7 +147,8 @@ class Monster {
         }
 
         for (let opt=0; opt < options.length; opt++) {
-            if ($('#' + options[opt]).hasClass('walkable')) {
+            $tileOption = $('#' + options[opt]);
+            if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item')) {
                 this._setMonster(options[opt], oldTileId, callback);
                 return;
             }
@@ -157,23 +159,28 @@ class Monster {
     randomMove(callback) {
         let direction = Math.floor(Math.random() * 4),
             oldTileId = this.pos,
-            newTileId = this.pos;
+            newTileId = this.pos,
+            $tileOption;
 
         switch (direction) {
             case 0:
-                if ($('#row' + (this.row - 1) + 'col' + this.col).hasClass('walkable'))
+                $tileOption = $('#row' + (this.row - 1) + 'col' + this.col);
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + (this.row - 1) + 'col' + this.col;
                 break;
             case 1:
-                if ($('#row' + this.row + 'col' + (this.col + 1)).hasClass('walkable'))
+                $tileOption = $('#row' + this.row + 'col' + (this.col + 1));
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + this.row + 'col' + (this.col + 1);
                 break;
             case 2:
-                if ($('#row' + (this.row + 1) + 'col' + this.col).hasClass('walkable'))
+                $tileOption = $('#row' + (this.row + 1) + 'col' + this.col);
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + (this.row + 1) + 'col' + this.col;
                 break;
             case 3:
-                if ($('#row' + this.row + 'col' + (this.col - 1)).hasClass('walkable'))
+                $tileOption = $('#row' + this.row + 'col' + (this.col - 1));
+                if ($tileOption.hasClass('walkable') && !$tileOption.hasClass('object') && !$tileOption.hasClass('item'))
                     newTileId = 'row' + this.row + 'col' + (this.col - 1);
                 break;
         }
@@ -181,40 +188,47 @@ class Monster {
             this._setMonster(newTileId, oldTileId, callback);
     }
 
+    randomPos() {
+        this.pos = Game.helpers.randomizeLoc(this.startingLocation, this.grid.gridWidth, this.grid.gridHeight);
+    }
+
     _setMonster(newTileId, oldTileId, callback) {
         let monster = this,
             animateMoveParams = {},
             questName = monster.questGoal ? monster.questName : null;
 
-        if (oldTileId) {
-            animateMoveParams = {
-                "position" : oldTileId,
-                "destinationId" : newTileId,
-                "type" : "move",
-                "callback" : function() {
-                    monster.audio.playSoundEffect(['move-' + monster.subtype], .5);
-                    monster.grid.changeTileImg(newTileId, 'content-' + monster.subtype, 'content-trans');
-                    monster.grid.changeTileImg(oldTileId, 'content-trans', 'content-' + monster.subtype);
-                    if (callback)
-                        callback();
-                }
-            };
-            monster.grid.setTileWalkable(oldTileId, monster.name, monster.type, monster.subtype);
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
-            monster.grid.animateTile(animateMoveParams);
-            monster.pos = newTileId;
-        } else {
-            animateMoveParams = {
-                "position" : newTileId,
-                "type" : "spawn",
-                "addClasses" : "content-" + monster.subtype,
-                "removeClasses" : "content-trans"
-            };
-            monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
-            monster.grid.animateTile(animateMoveParams);
-        }
+        if (monster.currentLevel === monster.grid.level) {
+            if (oldTileId) {
+                animateMoveParams = {
+                    "position" : oldTileId,
+                    "destinationId" : newTileId,
+                    "type" : "move",
+                    "callback" : function() {
+                        monster.audio.playSoundEffect(['move-' + monster.subtype], .5);
+                        monster.grid.changeTileImg(newTileId, '.character', 'character-' + monster.subtype);
+                        monster.grid.changeTileImg(oldTileId, '.character', '', 'character-' + monster.subtype);
+                        if (callback)
+                            callback();
+                    }
+                };
+                monster.grid.setTileWalkable(oldTileId, monster.name, monster.type, monster.subtype);
+                monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
+                monster.grid.animateTile(animateMoveParams);
+                monster.pos = newTileId;
+            } else {
+                animateMoveParams = {
+                    "position" : newTileId,
+                    "tileLayer" : ".character",
+                    "type" : "spawn",
+                    "addClasses" : "character-" + monster.subtype,
+                    "removeClasses" : null
+                };
+                monster.grid.changeTileSetting(newTileId, monster.name, monster.type, monster.subtype, questName);
+                monster.grid.animateTile(animateMoveParams);
+            }
 
-        monster.row = Game.helpers.getRowCol(newTileId).row;
-        monster.col = Game.helpers.getRowCol(newTileId).col;
+            monster.row = Game.helpers.getRowCol(newTileId).row;
+            monster.col = Game.helpers.getRowCol(newTileId).col;
+        }
     }
 }

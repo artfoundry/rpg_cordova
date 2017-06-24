@@ -75,6 +75,8 @@ button:active {
 .body-container::-webkit-scrollbar
 {
     width: 12px;
+    border-radius: 10px;
+    background-color: lightblue;
 }
 
 .body-container::-webkit-scrollbar-thumb
@@ -93,19 +95,6 @@ button:active {
     opacity: 0;
 }
 
-#testing {
-    position: fixed;
-    height: 10px;
-    z-index: 10;
-    top: 10px;
-    left: 10px;
-    opacity: .1;
-    border: none;
-    border-radius: 2px;
-    box-shadow: none;
-    background: white;
-}
-
 /**
  *  Status bar
  */
@@ -114,7 +103,7 @@ button:active {
     position: fixed;
     z-index: 6;
     width: 94%;
-    min-width: 420px;
+    min-width: 350px;
     border-top: 40px solid black;
 }
 
@@ -190,6 +179,7 @@ button:active {
     top: 90px;
     width: 94%;
     height: 40px;
+    padding-bottom: 10px;
     opacity: .7;
     z-index: 5;
 
@@ -207,11 +197,12 @@ button:active {
 #status-messages {
     display: flex ;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
     width: 75%;
-    padding: 10px;
+    max-height: 70px;
+    padding: 10px 10px 0;
     text-align: left;
-    color: black;
+    color: white;
     font-size: 1em;
     overflow-y: hidden;
 }
@@ -357,6 +348,34 @@ button:active {
 }
 
 /**
+ * Characters
+ */
+
+.character {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 1;
+    background-repeat: no-repeat;
+}
+
+.character-player {
+    background-image: url('../img/character.png');
+}
+
+.character-shoggoth {
+    background-image: url('../img/shoggoth.png');
+}
+
+.character-elder {
+    background-image: url('../img/elder.png');
+}
+
+.character-zindex-raised {
+    z-index: 2;
+}
+
+/**
  *  Tile Content
  */
 
@@ -368,28 +387,16 @@ button:active {
     background-repeat: no-repeat;
 }
 
-.content-zindex-raised {
-    z-index: 1;
-}
-
-.content-trans {
-    background-image: url('../img/trans.png');
-}
-
-.content-player {
-    background-image: url('../img/character.png');
-}
-
-.content-shoggoth {
-    background-image: url('../img/shoggoth.png');
-}
-
-.content-elder {
-    background-image: url('../img/elder.png');
-}
-
 .content-elder-sign {
     background-image: url('../img/elder-sign.png');
+}
+
+.content-stairs-up {
+    background-image: url('../img/stairs-down.png');
+}
+
+.content-stairs-down {
+    background-image: url('../img/stairs-down.png');
 }
 
 /**
@@ -400,7 +407,7 @@ button:active {
     display: none;
     position: absolute;
     z-index: 5;
-    width: 60%;
+    width: 80%;
     min-width: 250px;
     max-width: 600px;
     max-height: 600px;
@@ -718,7 +725,7 @@ button:active {
     width: 64px;
     height: 64px;
     opacity: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 .blood-monster {
@@ -729,7 +736,7 @@ button:active {
     width: 64px;
     height: 64px;
     opacity: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 /*

@@ -8,7 +8,9 @@
 
 class PlayerCharacter {
     constructor(playerOptions, dungeon) {
-        this.grid = dungeon.levels[0];
+        this.currentLevel = playerOptions.startingLevel; // starting level is 0 because levels is an array starting at index 0
+        this.levelChanged = null;
+        this.grid = dungeon.grid;
         this.pos = playerOptions.startPos;
         this.name = playerOptions.name;
         this.type = playerOptions.type;
@@ -16,6 +18,7 @@ class PlayerCharacter {
         this.health = playerOptions.health;
         this.sanity = playerOptions.sanity;
         this.maxSanity = playerOptions.sanity;
+        this.lightRadius = 2;
         this.row = 0;
         this.col = 0;
         this.kills = 0;
@@ -30,7 +33,6 @@ class PlayerCharacter {
 
     initialize() {
         this.setPlayer(this.pos);
-        this.grid.setLighting(this.pos);
         this.resetKills();
     }
 
@@ -46,6 +48,11 @@ class PlayerCharacter {
         return this.kills;
     }
 
+    changeMapLevel(levelDirection) {
+        this.currentLevel += levelDirection;
+        this.levelChanged = levelDirection;
+    }
+
     setPlayer(currentPos, newPos, callback) {
         let player = this,
             newPosId = newPos || currentPos,
@@ -54,8 +61,8 @@ class PlayerCharacter {
                 'destinationId' : newPosId,
                 'type' : 'move',
                 'callback' : function() {
-                    player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
-                    player.grid.changeTileImg(currentPos, 'content-trans', 'content-' + player.type);
+                    player.grid.changeTileImg(newPosId, '.character', 'character-' + player.type);
+                    player.grid.changeTileImg(currentPos, '.character', '', 'character-' + player.type);
                     if (callback)
                         callback();
                 }
@@ -65,13 +72,12 @@ class PlayerCharacter {
             player.grid.setTileWalkable(currentPos, player.name, player.type, player.subtype);
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
             player.grid.animateTile(animateMoveParams);
-            player.grid.setLighting(newPosId, currentPos);
             player.pos = newPosId;
         } else {
-            player.grid.changeTileImg(newPosId, 'content-' + player.type, 'content-trans');
+            player.grid.changeTileImg(newPosId, '.character', 'character-' + player.type);
             player.grid.changeTileSetting(newPosId, player.name, player.type, player.subtype);
         }
-
+        player.grid.setLighting(newPosId, currentPos, this.lightRadius);
         this.grid.labelPCAdjacentTiles(newPosId);
 
         player.row = Game.helpers.getRowCol(newPosId).row;

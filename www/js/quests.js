@@ -8,7 +8,7 @@ const QUESTS = {
         'questText'     : "You have entered these catacombs to find an ancient tablet called the Elder Sign. It's unknown what significance it could have for humanity, but some old runic texts reference it as having a possible connection to an ancient race called the Elders. Find the Elder Sign!",
         'tips'          : "You cannot damage the Elder until you acquire the Elder Sign.",
         'goals'         : {
-            'target'    : 'elder-sign',
+            'target'    : 'elderSign',
             'action'    : 'Acquire',
             'location'  : null
         },

@@ -4,16 +4,18 @@
 
 class PlayerActions {
     constructor(dungeon, ui, players, monsters, audio) {
-        this.grid = dungeon.levels[0];
-        this.ui = ui;
         this.players = players;
+        this.dungeon = dungeon;
+        this.grid = dungeon.grid;
+        this.ui = ui;
         this.monsters = monsters;
         this.audio = audio;
     }
 
     /**
      * function movePlayer
-     * Moves player character to newTile
+     * Moves player character to newTile or displays jiggle animation if tile is impassable.
+     * Then runs a function tied to the tile if one is present.
      * Parameters:
      * - params: Object sent by TurnController containing player object and callback
      * - newTile: DOM element of tile to which player is moving
@@ -22,13 +24,34 @@ class PlayerActions {
         let player = this.players[params.player],
             currentPos = player.pos,
             newTilePos = newTile.id,
+            func = $(newTile).attr('data-function') || null,
+            message = $(newTile).attr('data-message') || null,
+            levelDirection,
+            impassableAnimParams = {
+                'position' : currentPos,
+                'tileLayer' : '.character',
+                'type' : 'impassable'
+            },
             callback = params.callback;
 
         if ($(newTile).hasClass('pc-adjacent')) {
-            if ($(newTile).hasClass('impassable'))
-                this.grid.animateTile({'position' : currentPos, 'type' : 'impassable'});
-            else
+            if ($(newTile).hasClass('impassable')) {
+                this.grid.animateTile(impassableAnimParams);
+            } else if (func) {
+                if (func === 'nextLevel') {
+                    if ($(newTile).hasClass('stairsDown'))
+                        levelDirection = 1;
+                    else if ($(newTile).hasClass('stairsUp'))
+                        levelDirection = -1;
+                    player.changeMapLevel(levelDirection);
+                    player.setPlayer(currentPos, newTilePos, callback);
+                } else if (func === 'displayStatus') {
+                    this.ui.displayStatus(message);
+                    this.grid.animateTile(impassableAnimParams);
+                }
+            } else {
                 player.setPlayer(currentPos, newTilePos, callback);
+            }
         }
     }
 
@@ -45,7 +68,7 @@ class PlayerActions {
             itemImage = Game.items[itemName].internalOnly.image,
             questName = $targetTile.data('questName');
 
-        if ($targetTile.hasClass('pc-adjacent')) {
+        if ($targetTile.hasClass('pc-adjacent') && Game.items[itemName].internalOnly.canBeAcquired) {
             if (Game.items[itemName].internalOnly.audioPickup)
                 this.audio.playSoundEffect([Game.items[itemName].internalOnly.audioPickup]);
             player.inventory.Items.push(itemName);
@@ -54,7 +77,7 @@ class PlayerActions {
             if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
                 this.handleQuest(itemName);
             this.grid.setTileWalkable(targetTile.id, itemName, 'item', itemType);
-            this.grid.changeTileImg(targetTile.id, 'content-trans', 'content-' + itemImage);
+            this.grid.changeTileImg(targetTile.id, '.content', '', 'content-' + itemImage);
         }
     }
 
@@ -80,14 +103,9 @@ class PlayerActions {
                 if (this.monsters.hasOwnProperty(monsterNum)) {
                     targetMonster = this.monsters[monsterNum];
                     if (targetMonster.pos === targetTile.id) {
-                        if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elder-sign')) {
+                        if (targetMonster.name === 'Elder' && !currentPlayer.inventory.Items.includes('elderSign')) {
                             this.ui.displayStatus('fear');
-                            setTimeout(function() {
-                                playerActions.ui.hideStatus();
-                            }, 3000);
-
-                            // this.ui.showFearEffect(.5);
-
+                            this.ui.showFearEffect(.5);
                             animateFearParams = {
                                 'position' : currentPlayer.pos,
                                 'type' : 'impassable'
@@ -103,10 +121,11 @@ class PlayerActions {
                             };
                             animateDeathParams = {
                                 "position" : targetMonster.pos,
+                                "tileLayer" : ".character",
                                 "type" : "image-swap",
                                 "delay" : "death",
-                                "addClasses" : "content-trans",
-                                "removeClasses" : "content-" + targetMonster.subtype,
+                                "addClasses" : "",
+                                "removeClasses" : "character-" + targetMonster.subtype,
                                 "callback" : function() {
                                     playerActions.ui.updateStatusValue({id: ".kills", value: currentPlayer.getKills()});
                                     playerActions.grid.setTileWalkable(targetMonster.pos, targetMonster.name, targetMonster.type, targetMonster.subtype);

@@ -5,11 +5,7 @@
 class MinionMonster extends Monster {
     constructor(monsterOptions, dungeon, audio) {
         super(monsterOptions, dungeon, audio);
-        this.pos = monsterOptions.pos;
+        this.pos = monsterOptions.pos || '';
         this.audio = audio;
-    }
-
-    initialize() {
-        this._setMonster(this.pos);
     }
 }
