@@ -417,7 +417,8 @@ class UI {
             let currentOption = params[option],
                 wrapperID = currentOption.id ? currentOption.id : null,
                 buttonContainer = currentOption.buttonContainer ? currentOption.buttonContainer : null,
-                listenerTarget = wrapperID ? wrapperID : buttonContainer;
+                listenerTarget = wrapperID ? wrapperID : buttonContainer,
+                cbParams = currentOption.cbParams || null;
 
             if (currentOption.content) {
                 $(currentOption.container).append(currentOption.content);
@@ -427,10 +428,10 @@ class UI {
             }
 
             if (buttonContainer && currentOption.disabled === false)
-                this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback);
+                this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback, cbParams);
 
             if (currentOption.callback && currentOption.runCallbackOnOpen) {
-                currentOption.callback();
+                cbParams ? currentOption.callback(cbParams) : currentOption.callback();
             }
 
             if (currentOption.disabled === true)

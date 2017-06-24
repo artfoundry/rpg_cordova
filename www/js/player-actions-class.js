@@ -32,7 +32,40 @@ class PlayerActions {
                 'tileLayer' : '.character',
                 'type' : 'impassable'
             },
-            callback = params.callback;
+            callback = params.callback,
+            panelStairsParams = [
+                {
+                    'container' : '.panel-body-container',
+                    'content' : 'Do you want to take the stairs or just move to them?',
+                    'disabled' : false
+                },
+                {
+                    'container' : '.panel-footer',
+                    'content' : '<span class="button-container dynamic"><button class="panel-button">Cancel</button></span>',
+                    'buttonContainer' : '.panel-button',
+                    'disabled' : false,
+                    'callback' : this.ui.dynamicPanelClose.bind(this),
+                    'runCallbackOnOpen' : false
+                },
+                {
+                    'container' : '.panel-footer',
+                    'content' : '<span class="button-container dynamic"><button class="panel-button">Move</button></span>',
+                    'buttonContainer' : '.panel-button',
+                    'disabled' : false,
+                    'callback' : player.setPlayer.bind(this),
+                    'cbParams' : [currentPos, newTilePos, callback],
+                    'runCallbackOnOpen' : false
+                },
+                {
+                    'container' : '.panel-footer',
+                    'content' : '<span class="button-container dynamic"><button class="panel-button">Stairs</button></span>',
+                    'buttonContainer' : '.panel-button',
+                    'disabled' : false,
+                    'callback' : player.changeMapLevel.bind(this),
+                    'cbParams' : [],
+                    'runCallbackOnOpen' : false
+                }
+            ];
 
         if ($(newTile).hasClass('pc-adjacent')) {
             if ($(newTile).hasClass('impassable')) {
@@ -43,8 +76,8 @@ class PlayerActions {
                         levelDirection = 1;
                     else if ($(newTile).hasClass('stairsUp'))
                         levelDirection = -1;
-                    player.changeMapLevel(levelDirection);
-                    player.setPlayer(currentPos, newTilePos, callback);
+                    panelStairsParams[3].cbParams.push(levelDirection);
+                    this.ui.dynamicPanelOpen(panelStairsParams);
                 } else if (func === 'displayStatus') {
                     this.ui.displayStatus(message);
                     this.grid.animateTile(impassableAnimParams);
