@@ -28,32 +28,25 @@ class Dungeon {
 
     saveLevel(monsterList) {
         this.levelMarkup = $('.grid >');
-        this.levels.push({'level' : this.levelMarkup, 'monsters' : monsterList});
+        this.levels[this.currentLevel] = {'level' : this.levelMarkup, 'monsters' : monsterList};
     }
 
     nextLevel(nextLevel, callback) {
-        let dungeon = this,
-            levelMarkup,
+        let levelMarkup = null,
             isNewLevel = false,
             levelOptions = this.mapOptions.levels[nextLevel] || null;
 
         this.grid.clearGrid();
-        if (this.levels[nextLevel]) {
+        if (this.levels[nextLevel])
             levelMarkup = this.levels[nextLevel].level;
-            this.createLevel(levelOptions, levelMarkup);
-            this.currentLevel = nextLevel;
-        } else {
-            this.createLevel(levelOptions);
+        else
             isNewLevel = true;
-        }
-        $.when(this.createLevel(levelOptions, levelMarkup)).done(function() {
-             $.when(dungeon.loadMonstersForLevel(isNewLevel)).done(function() {
-                 callback(dungeon.monsters);
-             });
-        });
+        this.currentLevel = nextLevel;
+        this.createLevel(levelOptions, levelMarkup);
+        this.loadMonstersForLevel(isNewLevel, callback);
     }
 
-    loadMonstersForLevel(isNewLevel) {
+    loadMonstersForLevel(isNewLevel, callback) {
         if (isNewLevel) {
             this.monsters = this.createMonstersForLevel();
         } else {
@@ -64,6 +57,8 @@ class Dungeon {
                 }
             }
         }
+        if (callback)
+            callback(this.monsters);
     }
 
     createMonstersForLevel() {
@@ -72,7 +67,10 @@ class Dungeon {
         for(let monster in this.monsterOptions) {
             if (this.monsterOptions.hasOwnProperty(monster)) {
                 if (this.monsterOptions[monster].startingLevel === this.currentLevel) {
-                    newMonsters[monster] = this.monsterOptions[monster].subtype === 'elder' ? new ElderMonster(this.monsterOptions[monster], this, this.audio) : new MinionMonster(this.monsterOptions[monster], this, this.audio);
+                    if (this.monsterOptions[monster].subtype === 'elder')
+                        newMonsters[monster] = new ElderMonster(this.monsterOptions[monster], this, this.audio);
+                    else
+                        newMonsters[monster] = new MinionMonster(this.monsterOptions[monster], this, this.audio);
                     newMonsters[monster].randomPos();
                     newMonsters[monster].initialize();
                 }

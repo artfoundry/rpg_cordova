@@ -101,7 +101,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 1,
+            "startingLevel" : 0,
             "location" : "center",
             "questGoal" : false,
             "questName" : ""
@@ -111,7 +111,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 1,
+            "startingLevel" : 0,
             "location" : "bottom",
             "questGoal" : false,
             "questName" : ""
@@ -121,7 +121,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 1,
+            "startingLevel" : 0,
             "location" : "right",
             "questGoal" : false,
             "questName" : ""
@@ -131,7 +131,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 2,
+            "startingLevel" : 1,
             "location" : "bottom",
             "questGoal" : false,
             "questName" : ""
@@ -141,7 +141,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 2,
+            "startingLevel" : 1,
             "location" : "left",
             "questGoal" : false,
             "questName" : ""
@@ -151,7 +151,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 2,
+            "startingLevel" : 1,
             "location" : "center",
             "questGoal" : false,
             "questName" : ""
@@ -161,7 +161,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "shoggoth",
             "health" : 1,
-            "startingLevel" : 2,
+            "startingLevel" : 1,
             "location" : "top",
             "questGoal" : false,
             "questName" : ""
@@ -171,7 +171,7 @@ let MapOptionsCatacombs = {
             "type" : "monster",
             "subtype" : "elder",
             "health" : 3,
-            "startingLevel" : 3,
+            "startingLevel" : 2,
             "location" : "center",
             "questGoal" : true,
             "questName" : "killElder"
