@@ -609,7 +609,8 @@ button:active {
 }
 
 .panel-button {
-    width: 100px;
+    width: 70px;
+    height: 35px;
     background-color: transparent;
 }
 

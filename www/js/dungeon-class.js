@@ -7,6 +7,7 @@ class Dungeon {
         this.mapOptions = startingMap;
         this.monsterOptions = startingMap.monsterOptions;
         this.levels = [];
+        this.currentLevel = startingMap.playerOptions.player1.startingLevel;
         this.audio = audio;
         this.ui = ui;
         this.gridOptions = {};
@@ -14,6 +15,7 @@ class Dungeon {
         this.levelItems = {};
         this.levelObjects = {};
         this.grid = {};
+        this.monsters = {};
     }
 
     createLevel(levelOptions, levelMarkup = null) {
@@ -30,36 +32,38 @@ class Dungeon {
     }
 
     nextLevel(nextLevel, callback) {
-        let levelMarkup,
+        let dungeon = this,
+            levelMarkup,
             isNewLevel = false,
-            levelOptions = this.mapOptions.levels[nextLevel];
+            levelOptions = this.mapOptions.levels[nextLevel] || null;
 
         this.grid.clearGrid();
         if (this.levels[nextLevel]) {
             levelMarkup = this.levels[nextLevel].level;
             this.createLevel(levelOptions, levelMarkup);
-            this.grid.level = nextLevel;
+            this.currentLevel = nextLevel;
         } else {
             this.createLevel(levelOptions);
             isNewLevel = true;
         }
-        this.loadMonstersForLevel(isNewLevel, callback);
+        $.when(this.createLevel(levelOptions, levelMarkup)).done(function() {
+             $.when(dungeon.loadMonstersForLevel(isNewLevel)).done(function() {
+                 callback(dungeon.monsters);
+             });
+        });
     }
 
-    loadMonstersForLevel(isNewLevel, callback) {
-        let newMonsters = {};
-
+    loadMonstersForLevel(isNewLevel) {
         if (isNewLevel) {
-            newMonsters = this.createMonstersForLevel();
+            this.monsters = this.createMonstersForLevel();
         } else {
-            newMonsters = this.getMonstersForLevel();
-            for (let monster in newMonsters) {
-                if (newMonsters.hasOwnProperty(monster)) {
-                    newMonsters[monster].initialize();
+            this.monsters = this.getMonstersForLevel();
+            for (let monster in this.monsters) {
+                if (this.monsters.hasOwnProperty(monster)) {
+                    this.monsters[monster].initialize();
                 }
             }
         }
-        callback(newMonsters);
     }
 
     createMonstersForLevel() {
@@ -67,7 +71,7 @@ class Dungeon {
 
         for(let monster in this.monsterOptions) {
             if (this.monsterOptions.hasOwnProperty(monster)) {
-                if (this.monsterOptions[monster].startingLevel === this.grid.level) {
+                if (this.monsterOptions[monster].startingLevel === this.currentLevel) {
                     newMonsters[monster] = this.monsterOptions[monster].subtype === 'elder' ? new ElderMonster(this.monsterOptions[monster], this, this.audio) : new MinionMonster(this.monsterOptions[monster], this, this.audio);
                     newMonsters[monster].randomPos();
                     newMonsters[monster].initialize();
@@ -78,6 +82,6 @@ class Dungeon {
     }
 
     getMonstersForLevel() {
-        return this.levels[this.grid.level].monsters;
+        return this.levels[this.currentLevel].monsters;
     }
 }

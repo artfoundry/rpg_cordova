@@ -430,6 +430,9 @@ class UI {
             if (buttonContainer && currentOption.disabled === false)
                 this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback, cbParams);
 
+            if (currentOption.container === '.panel-footer')
+                this.events.setUpGeneralInteractionListeners(listenerTarget, this.dynamicPanelClose.bind(this));
+
             if (currentOption.callback && currentOption.runCallbackOnOpen) {
                 cbParams ? currentOption.callback(cbParams) : currentOption.callback();
             }

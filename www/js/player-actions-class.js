@@ -36,7 +36,7 @@ class PlayerActions {
             panelStairsParams = [
                 {
                     'container' : '.panel-body-container',
-                    'content' : 'Do you want to take the stairs or just move to them?',
+                    'content' : '<span class="dynamic">Do you want to take the stairs or just move to them?</span>',
                     'disabled' : false
                 },
                 {
@@ -48,21 +48,23 @@ class PlayerActions {
                     'runCallbackOnOpen' : false
                 },
                 {
+                    'id' : '#panel-stairs-move',
                     'container' : '.panel-footer',
-                    'content' : '<span class="button-container dynamic"><button class="panel-button">Move</button></span>',
+                    'content' : '<span class="button-container dynamic"><button id="panel-stairs-move" class="panel-button">Move</button></span>',
                     'buttonContainer' : '.panel-button',
                     'disabled' : false,
-                    'callback' : player.setPlayer.bind(this),
-                    'cbParams' : [currentPos, newTilePos, callback],
+                    'callback' : player.setPlayer.bind(player),
+                    'cbParams' : {'currentPos' : currentPos, 'newPos' : newTilePos, 'callback' : callback},
                     'runCallbackOnOpen' : false
                 },
                 {
+                    'id' : '#panel-stairs-climb',
                     'container' : '.panel-footer',
-                    'content' : '<span class="button-container dynamic"><button class="panel-button">Stairs</button></span>',
+                    'content' : '<span class="button-container dynamic"><button id="panel-stairs-climb" class="panel-button">Stairs</button></span>',
                     'buttonContainer' : '.panel-button',
                     'disabled' : false,
-                    'callback' : player.changeMapLevel.bind(this),
-                    'cbParams' : [],
+                    'callback' : player.changeMapLevel.bind(player),
+                    'cbParams' : {'currentPos' : currentPos, 'newPos' : newTilePos, 'callback' : callback},
                     'runCallbackOnOpen' : false
                 }
             ];
@@ -76,14 +78,14 @@ class PlayerActions {
                         levelDirection = 1;
                     else if ($(newTile).hasClass('stairsUp'))
                         levelDirection = -1;
-                    panelStairsParams[3].cbParams.push(levelDirection);
+                    panelStairsParams[3].cbParams.levelDirection = levelDirection;
                     this.ui.dynamicPanelOpen(panelStairsParams);
                 } else if (func === 'displayStatus') {
                     this.ui.displayStatus(message);
                     this.grid.animateTile(impassableAnimParams);
                 }
             } else {
-                player.setPlayer(currentPos, newTilePos, callback);
+                player.setPlayer({'currentPos' : currentPos, 'newPos' : newTilePos, 'callback' : callback});
             }
         }
     }

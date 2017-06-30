@@ -32,7 +32,7 @@ class PlayerCharacter {
     }
 
     initialize() {
-        this.setPlayer(this.pos);
+        this.setPlayer({'currentPos' : this.pos});
         this.resetKills();
     }
 
@@ -48,13 +48,17 @@ class PlayerCharacter {
         return this.kills;
     }
 
-    changeMapLevel(levelDirection) {
-        this.currentLevel += levelDirection;
-        this.levelChanged = levelDirection;
+    changeMapLevel(params) {
+        this.currentLevel += params.levelDirection;
+        this.levelChanged = params.levelDirection;
+        this.setPlayer(params);
     }
 
-    setPlayer(currentPos, newPos, callback) {
+    setPlayer(params) {
         let player = this,
+            currentPos = params.currentPos,
+            newPos = params.newPos,
+            callback = params.callback,
             newPosId = newPos || currentPos,
             animateMoveParams = {
                 'position' : currentPos,
