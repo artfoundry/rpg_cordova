@@ -490,9 +490,9 @@ class UI {
     showFearEffect(intensity, removeEffect = true) {
         let $fearEffect = $('#fear-effect');
 
-        $fearEffect.show().animate({ opacity: intensity }, 500);
+        $fearEffect.show().animate({ opacity: intensity }, 250);
         if (removeEffect) {
-            $fearEffect.animate({ opacity: 0 }, 500, function() {
+            $fearEffect.animate({ opacity: 0 }, 250, function() {
                 $('#fear-effect').hide();
             });
         }

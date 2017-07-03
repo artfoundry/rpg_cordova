@@ -124,7 +124,6 @@ class TurnController {
         // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
-                this._tearDownListeners();
                 if (player.health <= 0)
                     this._endGame('gameOverDead');
                 else if (player.sanity <= 0)
