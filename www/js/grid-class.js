@@ -173,9 +173,9 @@ class Grid {
         $position.addClass(name + ' ' + type + ' ' + subtype);
         if (tileType !== 'walkable')
             $position.removeClass('walkable');
-        $position.data('itemType', subtype).data('itemName', name);
+        $position.attr('data-item-type', subtype).attr('data-item-name', name);
         if (questName)
-            $position.data('questName', questName);
+            $position.attr('data-quest-name', questName);
         if (func) {
             $position.attr('data-function', func);
             if (message) {

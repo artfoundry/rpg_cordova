@@ -98,10 +98,10 @@ class PlayerActions {
     pickUpItem(params, targetTile) {
         let player = this.players[params.player],
             $targetTile = $(targetTile),
-            itemType = $targetTile.data('itemType'),
-            itemName = $targetTile.data('itemName'),
+            itemType = $targetTile.attr('data-item-type'),
+            itemName = $targetTile.attr('data-item-name'),
             itemImage = Game.items[itemName].internalOnly.image,
-            questName = $targetTile.data('questName');
+            questName = $targetTile.attr('data-quest-name');
 
         if ($targetTile.hasClass('pc-adjacent') && Game.items[itemName].internalOnly.canBeAcquired) {
             if (Game.items[itemName].internalOnly.audioPickup)
