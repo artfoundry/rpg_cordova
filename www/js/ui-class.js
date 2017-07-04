@@ -60,6 +60,7 @@ class UI {
             }
         ];
         this.$panelPartials = $('<div></div>');
+        this.$leaderboardPartial = $('<div></div>');
         this.gameIsOnline = false;
         this.statusMessages = [];
     }
@@ -70,7 +71,8 @@ class UI {
     }
 
     preLoadPartials() {
-        this.$panelPartials.load('html/panel-options.html');
+        this.$panelPartials.load('html/partials/panel-options.html');
+        this.$leaderboardPartial.load('html/partials/modal-leaderboards.html');
     }
 
     updateUIAtStart(params) {
@@ -255,25 +257,9 @@ class UI {
     }
 
     displayLeaderboards() {
-        let scores = Game.fbServices.scores,
-            scoresMarkup = `
-                <table>
-                    <tbody>
-                        <tr>
-                            <th class="creepy-text column-header">Easy</th>
-                            <th class="creepy-text column-header">Medium</th>
-                            <th class="creepy-text column-header">Hard</th>
-                        </tr>
-                        <tr>
-                            <td><ol id="score-list-easy"></ol></td>
-                            <td><ol id="score-list-medium"></ol></td>
-                            <td><ol id="score-list-hard"></ol></td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
+        let scores = Game.fbServices.scores;
 
-        $('#leaderboard').append(scoresMarkup);
+        $('#leaderboard').append(this.$leaderboardPartial);
         for (let list in scores) {
             if (scores.hasOwnProperty(list) && scores[list].length > 0) {
                 scores[list].reverse();
@@ -431,7 +417,8 @@ class UI {
             let currentOption = params[option],
                 wrapperID = currentOption.id ? currentOption.id : null,
                 buttonContainer = currentOption.buttonContainer ? currentOption.buttonContainer : null,
-                listenerTarget = wrapperID ? wrapperID : buttonContainer;
+                listenerTarget = wrapperID ? wrapperID : buttonContainer,
+                cbParams = currentOption.cbParams || null;
 
             if (currentOption.content) {
                 $(currentOption.container).append(currentOption.content);
@@ -441,10 +428,13 @@ class UI {
             }
 
             if (buttonContainer && currentOption.disabled === false)
-                this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback);
+                this.events.setUpGeneralInteractionListeners(listenerTarget, currentOption.callback, cbParams);
+
+            if (currentOption.container === '.panel-footer')
+                this.events.setUpGeneralInteractionListeners(listenerTarget, this.dynamicPanelClose.bind(this));
 
             if (currentOption.callback && currentOption.runCallbackOnOpen) {
-                currentOption.callback();
+                cbParams ? currentOption.callback(cbParams) : currentOption.callback();
             }
 
             if (currentOption.disabled === true)
@@ -500,9 +490,9 @@ class UI {
     showFearEffect(intensity, removeEffect = true) {
         let $fearEffect = $('#fear-effect');
 
-        $fearEffect.show().animate({ opacity: intensity }, 500);
+        $fearEffect.show().animate({ opacity: intensity }, 250);
         if (removeEffect) {
-            $fearEffect.animate({ opacity: 0 }, 500, function() {
+            $fearEffect.animate({ opacity: 0 }, 250, function() {
                 $('#fear-effect').hide();
             });
         }

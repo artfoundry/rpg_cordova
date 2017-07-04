@@ -12,6 +12,7 @@ class Monster {
         this.startingLocation = monsterOptions.location;
         this.questGoal = monsterOptions.questGoal || null;
         this.questName = monsterOptions.questName || null;
+        this.dungeon = dungeon;
         this.grid = dungeon.grid;
         this.audio = audio;
         this.row = 0;
@@ -197,7 +198,7 @@ class Monster {
             animateMoveParams = {},
             questName = monster.questGoal ? monster.questName : null;
 
-        if (monster.currentLevel === monster.grid.level) {
+        if (monster.currentLevel === monster.dungeon.currentLevel) {
             if (oldTileId) {
                 animateMoveParams = {
                     "position" : oldTileId,

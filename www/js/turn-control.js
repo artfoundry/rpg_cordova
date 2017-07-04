@@ -115,7 +115,7 @@ class TurnController {
 
                     stairsPos = player.levelChanged === 1 ? $('.stairsUp').attr('id') : $('.stairsDown').attr('id');
                     player.pos = stairsPos;
-                    player.setPlayer(stairsPos);
+                    player.setPlayer({'currentPos' : stairsPos});
                     player.levelChanged = null;
                 }
                 this.setIsPlayerTurn(false);
@@ -124,7 +124,6 @@ class TurnController {
         // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
-                this._tearDownListeners();
                 if (player.health <= 0)
                     this._endGame('gameOverDead');
                 else if (player.sanity <= 0)

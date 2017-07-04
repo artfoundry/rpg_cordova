@@ -7,7 +7,6 @@
 class Grid {
     constructor(dungeon, gridOptions, audio) {
         this.dungeon = dungeon;
-        this.level = gridOptions.levelNum;
         this.gridHeight = gridOptions.height;
         this.gridWidth = gridOptions.width;
         this.gridRandomFactor = gridOptions.randomization;
@@ -174,9 +173,10 @@ class Grid {
         $position.addClass(name + ' ' + type + ' ' + subtype);
         if (tileType !== 'walkable')
             $position.removeClass('walkable');
-        $position.data('itemType', subtype).data('itemName', name);
+        if (tileType === 'item')
+            $position.attr('data-item-type', subtype).attr('data-item-name', name);
         if (questName)
-            $position.data('questName', questName);
+            $position.attr('data-quest-name', questName);
         if (func) {
             $position.attr('data-function', func);
             if (message) {
@@ -194,7 +194,13 @@ class Grid {
     }
 
     setTileWalkable(position, name, type, subtype) {
-        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable').removeData();
+        let $position = $('#' + position);
+
+        $position.addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable');
+        if ($position.attr('data-item-type'))
+            $position.attr('data-item-type', null).attr('data-item-name', null);
+        if ($position.attr('data-quest-name'))
+            $position.attr('data-quest-name', null);
     }
 
     setLighting(newPos, currentPos, lightRadius) {

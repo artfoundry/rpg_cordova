@@ -32,7 +32,42 @@ class PlayerActions {
                 'tileLayer' : '.character',
                 'type' : 'impassable'
             },
-            callback = params.callback;
+            callback = params.callback,
+            panelStairsParams = [
+                {
+                    'container' : '.panel-body-container',
+                    'content' : '<span class="dynamic">Do you want to take the stairs or just move to them?</span>',
+                    'disabled' : false
+                },
+                {
+                    'container' : '.panel-footer',
+                    'content' : '<span class="button-container dynamic"><button class="panel-button">Cancel</button></span>',
+                    'buttonContainer' : '.panel-button',
+                    'disabled' : false,
+                    'callback' : this.ui.dynamicPanelClose.bind(this),
+                    'runCallbackOnOpen' : false
+                },
+                {
+                    'id' : '#panel-stairs-move',
+                    'container' : '.panel-footer',
+                    'content' : '<span class="button-container dynamic"><button id="panel-stairs-move" class="panel-button">Move</button></span>',
+                    'buttonContainer' : '.panel-button',
+                    'disabled' : false,
+                    'callback' : player.setPlayer.bind(player),
+                    'cbParams' : {'currentPos' : currentPos, 'newPos' : newTilePos, 'callback' : callback},
+                    'runCallbackOnOpen' : false
+                },
+                {
+                    'id' : '#panel-stairs-climb',
+                    'container' : '.panel-footer',
+                    'content' : '<span class="button-container dynamic"><button id="panel-stairs-climb" class="panel-button">Stairs</button></span>',
+                    'buttonContainer' : '.panel-button',
+                    'disabled' : false,
+                    'callback' : player.changeMapLevel.bind(player),
+                    'cbParams' : {'currentPos' : currentPos, 'newPos' : newTilePos, 'callback' : callback},
+                    'runCallbackOnOpen' : false
+                }
+            ];
 
         if ($(newTile).hasClass('pc-adjacent')) {
             if ($(newTile).hasClass('impassable')) {
@@ -43,14 +78,14 @@ class PlayerActions {
                         levelDirection = 1;
                     else if ($(newTile).hasClass('stairsUp'))
                         levelDirection = -1;
-                    player.changeMapLevel(levelDirection);
-                    player.setPlayer(currentPos, newTilePos, callback);
+                    panelStairsParams[3].cbParams.levelDirection = levelDirection;
+                    this.ui.dynamicPanelOpen(panelStairsParams);
                 } else if (func === 'displayStatus') {
                     this.ui.displayStatus(message);
                     this.grid.animateTile(impassableAnimParams);
                 }
             } else {
-                player.setPlayer(currentPos, newTilePos, callback);
+                player.setPlayer({'currentPos' : currentPos, 'newPos' : newTilePos, 'callback' : callback});
             }
         }
     }
@@ -63,10 +98,10 @@ class PlayerActions {
     pickUpItem(params, targetTile) {
         let player = this.players[params.player],
             $targetTile = $(targetTile),
-            itemType = $targetTile.data('itemType'),
-            itemName = $targetTile.data('itemName'),
+            itemType = $targetTile.attr('data-item-type'),
+            itemName = $targetTile.attr('data-item-name'),
             itemImage = Game.items[itemName].internalOnly.image,
-            questName = $targetTile.data('questName');
+            questName = $targetTile.attr('data-quest-name');
 
         if ($targetTile.hasClass('pc-adjacent') && Game.items[itemName].internalOnly.canBeAcquired) {
             if (Game.items[itemName].internalOnly.audioPickup)

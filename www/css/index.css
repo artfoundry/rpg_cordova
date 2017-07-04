@@ -392,11 +392,11 @@ button:active {
 }
 
 .content-stairs-up {
-    background-image: url('../img/stairs-down.png');
+    background-image: url('../img/ground-dungeon-stairs-up.png');
 }
 
 .content-stairs-down {
-    background-image: url('../img/stairs-down.png');
+    background-image: url('../img/ground-dungeon-stairs-down.png');
 }
 
 /**
@@ -609,7 +609,8 @@ button:active {
 }
 
 .panel-button {
-    width: 100px;
+    width: 70px;
+    height: 35px;
     background-color: transparent;
 }
 
