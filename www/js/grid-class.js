@@ -173,7 +173,8 @@ class Grid {
         $position.addClass(name + ' ' + type + ' ' + subtype);
         if (tileType !== 'walkable')
             $position.removeClass('walkable');
-        $position.attr('data-item-type', subtype).attr('data-item-name', name);
+        if (tileType === 'item')
+            $position.attr('data-item-type', subtype).attr('data-item-name', name);
         if (questName)
             $position.attr('data-quest-name', questName);
         if (func) {
@@ -193,7 +194,13 @@ class Grid {
     }
 
     setTileWalkable(position, name, type, subtype) {
-        $('#' + position).addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable').removeData();
+        let $position = $('#' + position);
+
+        $position.addClass('walkable').removeClass(name + ' ' + type + ' ' + subtype + ' impassable');
+        if ($position.attr('data-item-type'))
+            $position.attr('data-item-type', null).attr('data-item-name', null);
+        if ($position.attr('data-quest-name'))
+            $position.attr('data-quest-name', null);
     }
 
     setLighting(newPos, currentPos, lightRadius) {
