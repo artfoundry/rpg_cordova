@@ -30,11 +30,13 @@ Addition of inventory and quests/tasks. An Elder Sign artifact is placed randoml
 
 **Phase 4: More advanced game**
 
-Addition of player insanity, reduced by being near and interacting with monsters and increased by moving enough tiles without finding any monsters. If sanity reaches 0, game over. Addition of multiple dungeon levels, each with different tasks (tentative list):
+Addition of player insanity, reduced by being near and interacting with monsters. If sanity reaches 0, game over. Addition of multiple dungeon levels, each with different tasks:
 
-1) First level: Find weapon (only Shoggoths, no Elders)
-2) Second level: Find Elder Sign (one Elder)
-3) Third level: Kill remaining monsters (two Elders)
+1) First level: Kill monsters (only Shoggoths, no Elders)
+2) Second level: Find Elder Sign (only Shoggoths, no Elders)
+3) Third level: Kill Elder and any Shoggoths (one Elder)
+
+*Completed*
 
 **Phase 5: More RPG elements added**
 
