@@ -18,13 +18,14 @@ class TurnController {
      *
      *****************************/
 
-    constructor(grid, ui, players, playerActions, monsterActions, monsters, events) {
-        this.grid = grid;
+    constructor(dungeon, ui, players, playerActions, monsterActions, monsters, events) {
+        this.dungeon = dungeon;
         this.ui = ui;
         this.players = players;
         this.playerActions = playerActions;
         this.monsterActions = monsterActions;
         this.monsters = monsters;
+        this.totalNumMonsters = [];
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
@@ -32,36 +33,43 @@ class TurnController {
     }
 
     initialize() {
-        this.grid.drawGrid();
-
-        // for testing
-        if ($('#testing').length === 0) {
-            $('#app').prepend('<button id="testing"></button>');
-            $('#testing').click(function() {
-                $('.light-img').toggle();
-            });
-        }
-        // end test code
-
         this.players.player1.initialize();
-        this.monsters.monster1.initialize();
+        for(let monster in this.monsters) {
+            if (this.monsters.hasOwnProperty(monster)) {
+                this.monsters[monster].initialize();
+            }
+        }
         this.startGame();
     }
 
     startGame() {
         let startingMessages = [
-                {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body subheader creepy-text", "text" : "gameIntro", "hidden" : false},
-                {"class" : "modal-body", "text" : "instructions", "hidden" : false},
-                {"class" : "modal-tips", "text" : "tips", "hidden" : true}
+                {'class' : 'modal-header', 'text' : 'dialogHeader'},
+                {'class' : 'modal-body left-content subheader creepy-text', 'text' : 'gameIntro', 'hidden' : false},
+                {'class' : 'modal-body left-content', 'text' : 'instructions', 'hidden' : false},
+                {'class' : 'modal-body left-content', 'text' : 'online', 'hidden' : false},
+                {'class' : 'modal-tips', 'text' : 'tips', 'hidden' : true}
             ],
             buttons = [
-                {"label" : "Tips", "action" : this.ui.visibilityToggle, "params" : ".modal-tips", "hidden" : false},
-                {"label" : "Start!", "action" : this.ui.modalClose, "params" : {"callback" : this.ui.runTurnCycle.bind(this)}, "hidden" : false},
+                {
+                    'label' : 'Tips',
+                    'id' : 'modal-button-tips',
+                    'action' : this.ui.slideWindow,
+                    'params' : {'container' : '.modal .body-container', 'button' : '#modal-button-tips'},
+                    'hidden' : false
+                },
+                {
+                    'label' : 'Start!',
+                    'id' : 'modal-button-start',
+                    'action' : this.ui.updateUIAtStart,
+                    'params' : {'player' : this.players.player1, 'callback' : this.ui.runTurnCycle.bind(this)},
+                    'hidden' : false
+                },
             ];
 
-        this.ui.updateValue({id: ".kills", value: 0});
-        this.ui.updateValue({id: ".pc-health", value: this.players.player1.health});
+        this.ui.updateStatusValue({id: '.kills', value: 0});
+        this.ui.updateStatusValue({id: '.pc-health', value: this.players.player1.health});
+        this.ui.updateStatusValue({id: '.pc-sanity', value: Math.round((this.players.player1.sanity / this.players.player1.maxSanity) * 100)});
         this.ui.modalOpen(startingMessages, buttons);
     }
 
@@ -92,20 +100,34 @@ class TurnController {
     }
 
     endTurn() {
+        let stairsPos,
+            player = this.players.player1;
+
         this._tearDownListeners();
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
-            if (Object.keys(this.monsters).length > 0) {
+            if (player.quests.completedQuests.includes('killElder') && this._getTotalNumMonsters(player.currentLevel) === 0) {
+                this._endGame('gameOverWin');
+            } else {
+                if (player.levelChanged !== null) {
+                    this.dungeon.saveLevel(this.monsters);
+                    this.dungeon.nextLevel(player.currentLevel, this._updateMonstersForLevel.bind(this));
+
+                    stairsPos = player.levelChanged === 1 ? $('.stairsUp').attr('id') : $('.stairsDown').attr('id');
+                    player.pos = stairsPos;
+                    player.setPlayer({'currentPos' : stairsPos});
+                    player.levelChanged = null;
+                }
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
-            } else {
-                this._endGame("gameOverWin");
             }
         // just played monsters' turn
         } else {
             if (this.getIsGameOver() === true) {
-                this._tearDownListeners();
-                this._endGame("gameOverDead");
+                if (player.health <= 0)
+                    this._endGame('gameOverDead');
+                else if (player.sanity <= 0)
+                    this._endGame('gameOverInsane');
             } else {
                 this.setIsPlayerTurn(true);
                 this.runTurnCycle();
@@ -118,6 +140,22 @@ class TurnController {
      * Private Functions
      *
      *****************************/
+
+    _updateMonstersForLevel(newMonsters) {
+        this.monsters = newMonsters;
+        this.playerActions.monsters = this.monsters;
+        this.monsterActions.monsters = this.monsters;
+    }
+
+    _getTotalNumMonsters(level) {
+        let total = 0;
+
+        this.totalNumMonsters[level] = Object.keys(this.monsters).length;
+        this.totalNumMonsters.forEach(function (num) {
+            total += num;
+        });
+        return total;
+    }
 
     _waitForAnimationsToFinish() {
         let turnCycle = this;
@@ -132,21 +170,22 @@ class TurnController {
      *
      * Sets up player click and key handlers for monster turn using events class (in order to send status message)
      *
-     * parameters:
-     * -target (class ".tile")
-     * -targetActions: keys are tile classes, values are actions to take
+     * parameters sent to event handler:
+     * -tileListenerTarget (class '.tile')
+     * -targetAction: callback that displays the message
+     * -params: values are keys to react to (display message) if user types them
      ****************************/
     _setupMonsterTurnInteractionHandlers() {
         let turnCycle = this,
             targetAction = function() {
                 if (turnCycle.getIsPlayerTurn() === false) {
                     turnCycle.ui.displayStatus('wait');
-                    setTimeout(function() {
-                        turnCycle.ui.hideStatus();
-                    }, 1500);
                 }
+            },
+            params = {
+                "keys" : [97, 98, 99, 100, 101, 102, 103, 104, 105]
             };
-        this.events.setUpGeneralInteractionListeners(this.tileListenerTarget, targetAction);
+        this.events.setUpGeneralInteractionListeners(this.tileListenerTarget, targetAction, params);
     }
 
     /*****************************
@@ -154,33 +193,37 @@ class TurnController {
      *
      * Sets up click and key handlers for player turn using events class
      *
-     * parameters:
-     * -target (class ".tile")
+     * parameters to send to event handler:
+     * -tileListenerTarget (class ".tile")
      * -targetActions: keys are tile classes, values are actions to take
      * -params: parameters to send to each target action
+     * -this.players.player1.pos: player's current position
      ****************************/
     _setupPlayerTurnInteractionHandlers() {
         let targetActions = {
-                "walkable": this.playerActions.movePlayer.bind(this.playerActions),
-                "impassable": this.grid.animateTile.bind(this),
-                "monster": this.playerActions.playerAttack.bind(this.playerActions)
+                'walkable': this.playerActions.movePlayer.bind(this.playerActions),
+                'impassable': this.playerActions.movePlayer.bind(this.playerActions),
+                'monster': this.playerActions.playerAttack.bind(this.playerActions),
+                'item': this.playerActions.pickUpItem.bind(this.playerActions)
             },
             params = {
-                "walkable": {
-                    "player": "player1",
-                    "callback": this.endTurn.bind(this)
+                'walkable': {
+                    'player': 'player1',
+                    'callback': this.endTurn.bind(this)
                 },
-                "impassable": {
-                    "position": this.players.player1.pos,
-                    "type": "impassable"
+                'impassable': {
+                    'player': 'player1'
                 },
-                "monster": {
-                    "player": "player1",
-                    "callback" : this.endTurn.bind(this)
+                'monster': {
+                    'player': 'player1',
+                    'callback' : this.endTurn.bind(this)
+                },
+                'item': {
+                    'player': 'player1'
                 }
             };
             this.events.setUpClickListener(this.tileListenerTarget, targetActions, params);
-            this.events.setUpArrowKeysListener(targetActions, params, this.players.player1.pos);
+            this.events.setUpArrowKeysListener(this.players.player1.pos, targetActions, params);
     }
 
     _tearDownListeners() {
@@ -191,20 +234,25 @@ class TurnController {
     _endGame(message) {
         let controller = this,
             restartCallback = function() {
-                controller.grid.clearGrid();
-                game.initialize();
+                controller.dungeon.grid.clearGrid();
+                controller.events.removeAllListeners();
+                Game.initialize();
             },
             scoreValues = {
-                "kills" : this.players.player1.kills,
-                "health" : this.players.player1.health
+                'kills' : this.players.player1.kills,
+                'health' : this.players.player1.health,
+                'sanity' : this.players.player1.sanity,
+                'elderSign' : this.players.player1.quests.completedQuests.includes('elderSign'),
+                'elderKilled' : this.players.player1.quests.completedQuests.includes('killElder'),
+                'gameWon' : message === 'gameOverWin'
             },
             endingMessages = [
-                {"class" : "modal-header", "text" : "dialogHeader"},
-                {"class" : "modal-body", "text" : message, "hidden" : false},
-                {"class" : "modal-body", "text" : "score", "scoreValues" : scoreValues, "hidden" : false},
+                {'class' : 'modal-header', 'text' : 'dialogHeader'},
+                {'class' : 'modal-body left-content', 'text' : message, 'hidden' : false},
+                {'class' : 'modal-body left-content', 'text' : 'score', 'scoreValues' : scoreValues, 'hidden' : false},
             ],
             buttons = [
-                {"label" : "Restart", "action" : this.ui.modalClose, "params" : {"callback" : restartCallback}, "hidden" : false}
+                {'label' : 'Restart', 'action' : this.ui.modalClose, 'params' : {'callback' : restartCallback}, 'hidden' : false}
             ];
 
         this.ui.modalOpen(endingMessages, buttons);

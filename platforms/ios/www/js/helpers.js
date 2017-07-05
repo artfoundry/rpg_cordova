@@ -1,20 +1,22 @@
 /**
  * Created by dsmarkowitz on 12/19/16.
  *
- * Helper functions used by player and turn-control classes.
+ * Helper functions used by most classes.
  */
 
 
 class Helpers {
-    constructor(gridOptions) {
-        this.grid = gridOptions;
-    }
-
-    /*
-     * findSurroundingTiles()
+    /**
+     * function findSurroundingTiles
      * Finds all tiles in a given radius from the passed in center tile, no farther, no closer, but ignores tiles that are out of the grid
+     *
+     * @param gridWidth: number of tiles of grid width, not including outer walls
+     * @param gridHeight: number of tiles of grid height, not including outer walls
+     * @param centerTile: string of the tile ID of the search origin
+     * @param searchRadius: distance in tiles from the character to search
+     * @returns $(): jquery object array of matching tiles
      */
-    findSurroundingTiles(centerTile, searchRadius) {
+    findSurroundingTiles(gridWidth, gridHeight, centerTile, searchRadius) {
         let center = this.getRowCol(centerTile),
             firstRow = center.row - searchRadius,
             firstCol = center.col - searchRadius,
@@ -25,22 +27,22 @@ class Helpers {
 
         for (let r = firstRow; r <= lastRow; r++) {
             // if on the first or last row, and that row is inside the grid...
-            if ((r === firstRow && firstRow >= 0) || (r === lastRow && lastRow <= (this.grid.height + 1))){
+            if ((r === firstRow && firstRow >= 0) || (r === lastRow && lastRow <= (gridHeight + 1))){
                 // ...then add all tiles for that row (as long as the tile is inside the grid as well
                 for (let c = firstCol; c <= lastCol; c++) {
-                    if (c >= 0 && c <= (this.grid.width + 1)) {
+                    if (c >= 0 && c <= (gridWidth + 1)) {
                         tileToAdd = 'row' + r + 'col' + c;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
                 }
             } else {
                 // add the left and right tiles for the middle rows as long as they're inside the grid
-                if (r >= 0 && r <= (this.grid.height + 1)) {
+                if (r >= 0 && r <= (gridHeight + 1)) {
                     if (firstCol >= 0) {
                         tileToAdd = 'row' + r + 'col' + firstCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
-                    if (lastCol <= (this.grid.width + 1)) {
+                    if (lastCol <= (gridWidth + 1)) {
                         tileToAdd = 'row' + r + 'col' + lastCol;
                         tiles = tiles.add($('#' + tileToAdd));
                     }
@@ -59,21 +61,87 @@ class Helpers {
         }
     }
 
+    randomizeLoc(option, gridWidth, gridHeight) {
+        let row = 0,
+            col = 0,
+            values = {
+                'rowFactor' : 0,
+                'rowAdd' : 0,
+                'colFactor' : 0,
+                'colAdd' : 0
+            };
+
+        switch (option) {
+            case 'right':
+                values.rowFactor = 1;
+                values.rowAdd = 0;
+                values.colFactor = .5;
+                values.colAdd = .5;
+                break;
+            case 'left':
+                values.rowFactor = 1;
+                values.rowAdd = 0;
+                values.colFactor = 0;
+                values.colAdd = .5;
+                break;
+            case 'top':
+                values.rowFactor = 0;
+                values.rowAdd = .5;
+                values.colFactor = 1;
+                values.colAdd = 0;
+                break;
+            case 'bottom':
+                values.rowFactor = .5;
+                values.rowAdd = .5;
+                values.colFactor = 1;
+                values.colAdd = 0;
+                break;
+            case 'center':
+                values.rowFactor = .5;
+                values.rowAdd = .3;
+                values.colFactor = .5;
+                values.colAdd = .3;
+                break;
+            default:
+                values.rowFactor = 1;
+                values.rowAdd = 0;
+                values.colFactor = 1;
+                values.colAdd = 0;
+                break;
+        }
+        while (!$('#row' + row + 'col' + col).hasClass('walkable') && !$('#row' + row + 'col' + col).hasClass('object') && !$('#row' + row + 'col' + col).hasClass('item')) {
+            row = Math.ceil((Math.random() * (gridHeight * values.rowFactor)) + (gridHeight * values.rowAdd));
+            col = Math.ceil((Math.random() * (gridWidth * values.colFactor)) + (gridWidth * values.colAdd));
+        }
+        return 'row' + row + 'col' + col;
+    }
+
     killObject(objectList, objectKey) {
         delete objectList[objectKey];
     }
 
-    checkForNearbyCharacters(character, charSearchType) {
+    /**
+     * function checkForNearbyCharacters
+     * Looks for a specific type of character within a requested range of tiles and returns all found matches
+     *
+     * @param character: object of the character around which the search is done
+     * @param charSearchType: string of the class name (no '.') of the character type to search for
+     * @param distance: distance in tiles from the character to search
+     * @param gridWidth: number of tiles of grid width, not including outer walls
+     * @param gridHeight: number of tiles of grid height, not including outer walls
+     * @returns {*}: array of matching tiles, or null if no matches
+     */
+    checkForNearbyCharacters(character, charSearchType, distance, gridWidth, gridHeight) {
         let characterLoc = character.pos,
-            $nearbyCharLoc = null,
-            $surroundingTiles = this.findSurroundingTiles(characterLoc, 1);
+            nearbyCharLoc = null,
+            $surroundingTiles = this.findSurroundingTiles(gridWidth, gridHeight, characterLoc, distance);
 
         if ($surroundingTiles.hasClass(charSearchType)) {
-            $nearbyCharLoc = $.grep($surroundingTiles, function(tile){
+            nearbyCharLoc = $.grep($surroundingTiles, function(tile){
                 return $(tile).hasClass(charSearchType);
             });
         }
-        return $nearbyCharLoc;
+        return nearbyCharLoc;
     }
 
     checkPlayerDestination(keyCode, playerPos) {
@@ -101,7 +169,20 @@ class Helpers {
                 return 'row'+ (rowNum+1) + 'col' + (colNum-1);
         }
     }
+    
+    setKeysEnabled() {
+        $('body').addClass('keys-enabled');
+    }
 
+    setKeysDisabled() {
+        $('body').removeClass('keys-enabled');
+    }
+    
+    getKeysEnabled() {
+        return $('body').hasClass('keys-enabled');
+    }
+
+    // Currently not in use - was more annoying than helpful
     isOffScreen(element) {
         let height = element.outerHeight(),
             width = element.outerWidth(),

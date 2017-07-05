@@ -198,7 +198,7 @@ button:active {
     display: flex ;
     flex-direction: column;
     justify-content: flex-start;
-    width: 75%;
+    flex-grow: 1;
     max-height: 70px;
     padding: 10px 10px 0;
     text-align: left;
@@ -217,6 +217,9 @@ button:active {
 }
 
 #stats {
+    display: flex;
+    align-items: center;
+    flex-basis: 125px;
     padding: 10px;
     text-align: left;
     color: black;
@@ -224,14 +227,18 @@ button:active {
     white-space: nowrap;
 }
 
+.status-panel-open #stats {
+    flex-wrap: wrap;
+}
+
 .stat {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     padding: 0 3px;
     white-space: nowrap;
 }
 
 #status-panel.status-panel-open .stat {
-    display: block;
     padding: 3px 0
 }
 
@@ -245,10 +252,10 @@ button:active {
 }
 
 .stats-bar {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     width: 60px;
     height: 15px;
-    vertical-align: middle;
     background-color: orangered;
     border: 1px darkslateblue solid;
     border-radius: 10px;

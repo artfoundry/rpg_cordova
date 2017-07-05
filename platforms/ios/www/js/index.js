@@ -5,46 +5,38 @@
  * Instantiates major objects and events
  */
 
-let game = {
-    initialize: function() {
-        const gridOptions = {
-            width: 10,
-            height: 10,
-            tileSize: 64
-        };
+let Game = {
+    'initialGame' : true,
+    'gameSettings' : {},
+    'fbServices' : {},
+    'helpers' : new Helpers(),
+    'items' : ITEMS,
+    'quests' : QUESTS,
+    'initialize' : function() {
+        let startingMap = StartingOptions.startingMap;
+        let playerOptions = startingMap.playerOptions;
+        let monsterOptions = startingMap.monsterOptions;
+        if (this.initialGame) {
+            this.gameSettings.soundOn = StartingOptions.audioOptions.soundOn;
+            this.gameSettings.musicOn = StartingOptions.audioOptions.musicOn;
+            this.gameSettings.difficulty = StartingOptions.uiOptions.difficulty;
+            this.fbServices = new FirebaseServices();
+            this.initialGame = false;
+        }
 
-        const playerOptions = {
-            "player1" : {
-                "name" : "Player1",
-                "type" : "player",
-                "subtype" : "investigator",
-                "startPos" : "row1col1",
-                "health" : 3
-            }
-        };
+        let audio = new Audio();
+        let events = new Events();
+        let ui = new UI(audio, events);
+        let dungeon = new Dungeon(startingMap, audio, ui);
+        dungeon.createLevel(startingMap.levels[0]);
 
-        const monsterOptions = {
-            "monster1" : {
-                "name" : "Elder",
-                "type" : "elder",
-                "subtype" : "monster",
-                "health" : 3
-            }
-        };
-
-        let helpers = new Helpers(gridOptions);
-        let events = new Events(helpers);
-        let ui = new UI(events);
-        let grid = new Grid(helpers, gridOptions, ui);
         let players = {
-            player1: new PlayerCharacter(playerOptions.player1, grid, helpers)
+            'player1': new PlayerCharacter(playerOptions.player1, dungeon)
         };
-        let monsters = {
-            monster1 : new ElderMonster(monsterOptions.monster1, grid, helpers)
-        };
-        let playerActions = new PlayerActions(grid, ui, players, monsters, helpers);
-        let monsterActions = new MonsterActions(grid, ui, players, monsters, helpers);
-        let turnController = new TurnController(grid, ui, players, playerActions, monsterActions, monsters, events);
+        let monsters = dungeon.createMonstersForLevel();
+        let playerActions = new PlayerActions(dungeon, ui, players, monsters, audio);
+        let monsterActions = new MonsterActions(dungeon, ui, players, monsters, audio);
+        let turnController = new TurnController(dungeon, ui, players, playerActions, monsterActions, monsters, events);
 
         ui.initialize(turnController);
 
@@ -52,4 +44,7 @@ let game = {
     }
 };
 
-$(game.initialize());
+// for testing
+function lighting() { $('#canvas-lighting').toggle(); }
+
+$(Game.initialize());
