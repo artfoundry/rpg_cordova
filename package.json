@@ -1,0 +1,17 @@
+{
+    "name": "io.cordova.monsters",
+    "version": "1.0.0",
+    "displayName": "Monsters!",
+    "cordova": {
+        "platforms": [
+            "ios"
+        ],
+        "plugins": {
+            "cordova-plugin-whitelist": {}
+        }
+    },
+    "dependencies": {
+        "cordova-ios": "^4.4.0",
+        "cordova-plugin-whitelist": "1"
+    }
+}
