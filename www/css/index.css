@@ -108,7 +108,8 @@ button:active {
 }
 
 .statusbar {
-    position: relative;
+    display: flex;
+    justify-content: space-between;
     height: 26px;
     z-index: 6;
     padding: 10px;
@@ -122,16 +123,23 @@ button:active {
     box-shadow: 0 -10px 20px 20px black;
 }
 
+.statusbar-section {
+    flex-basis: 160px;
+}
+
+.statusbar-section:first-child {
+    min-width: 160px;
+    text-align: left;
+}
+
+.statusbar-section:last-child {
+    text-align: right;
+}
+
 .statusbar .title {
     font-family: 'Creepster', serif;
     font-size: 1.4em;
 }
-
-#options-button-container {
-    position: absolute;
-    right: 0;
-}
-
 
 .statusbar-button {
     width: 70px;
@@ -139,11 +147,6 @@ button:active {
     margin: 0;
     font-size: .8em;
     background-color: transparent;
-}
-
-#pc-buttons {
-    position: absolute;
-    left: 0;
 }
 
 .statusbar-button-leftcap {
