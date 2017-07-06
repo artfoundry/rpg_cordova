@@ -109,7 +109,7 @@ class Helpers {
                 values.colAdd = 0;
                 break;
         }
-        while (!$('#row' + row + 'col' + col).hasClass('walkable') && !$('#row' + row + 'col' + col).hasClass('object') && !$('#row' + row + 'col' + col).hasClass('item')) {
+        while (!$('#row' + row + 'col' + col).hasClass('walkable') || ($('#row' + row + 'col' + col).hasClass('object') || $('#row' + row + 'col' + col).hasClass('item'))) {
             row = Math.ceil((Math.random() * (gridHeight * values.rowFactor)) + (gridHeight * values.rowAdd));
             col = Math.ceil((Math.random() * (gridWidth * values.colFactor)) + (gridWidth * values.colAdd));
         }
@@ -182,7 +182,6 @@ class Helpers {
         return $('body').hasClass('keys-enabled');
     }
 
-    // Currently not in use - was more annoying than helpful
     isOffScreen(element) {
         let height = element.outerHeight(),
             width = element.outerWidth(),
