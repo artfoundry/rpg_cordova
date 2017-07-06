@@ -16,7 +16,7 @@ class UI {
             "gameOverDead"  : "The hideous monstrosity sucks the life out of you.  You are dead.",
             "gameOverInsane": "Your sanity and grasp on reality have succumbed to the immense dread brought on by your terrifying encounters. You sink to the ground, unable to move, lost in endless horror.",
             "gameOverWin"   : "You've slaughtered every last horrific creature. You make it out alive!",
-            "score"         : "How're your monster slaying skills?",
+            "score"         : "How are your monster slaying skills?",
             "wait"          : "Wait... something is moving in the darkness...",
             "fear"          : "Just the sight of the Elder horrifies you, preventing you from even thinking of attacking it!",
             "noExit"        : "You are here to find the Elder Sign.  There's no backing out now!"
