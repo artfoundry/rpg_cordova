@@ -1,4 +1,4 @@
-# rpg_cordova
+# Monsters! (rpg_cordova)
 A Lovecraft themed turn based RPG using cordova for mobile.
 
 Built using only HTML5, CSS3, JS (Ecmasript 6), and JQuery. Designed with object oriented programming in mind from the start to allow for
@@ -37,6 +37,12 @@ Addition of player insanity, reduced by being near and interacting with monsters
 3) Third level: Kill Elder and any Shoggoths (one Elder)
 
 *Completed*
+
+**Phase 4a: Compiling with Cordova for native mobile**
+
+Use Cordova to compile native apps for iOS and Google Play app stores.  Need to create app icon and splash screen.  Need Restart Game button in Options panel so user doesn't need to restart app.
+
+*In progress*
 
 **Phase 5: More RPG elements added**
 
