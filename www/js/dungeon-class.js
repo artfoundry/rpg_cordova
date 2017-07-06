@@ -18,6 +18,10 @@ class Dungeon {
         this.monsters = {};
     }
 
+    clearGrid() {
+        $('.row').remove();
+    }
+
     createLevel(levelOptions, levelMarkup = null) {
         this.gridOptions = levelOptions;
         this.levelItems = levelOptions.items || null;
@@ -36,7 +40,7 @@ class Dungeon {
             isNewLevel = false,
             levelOptions = this.mapOptions.levels[nextLevel] || null;
 
-        this.grid.clearGrid();
+        this.clearGrid();
         if (this.levels[nextLevel])
             levelMarkup = this.levels[nextLevel].level;
         else

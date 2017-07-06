@@ -6,7 +6,6 @@ class UI {
     constructor(audio, events) {
         this.audio = audio;
         this.events = events;
-        this.runTurnCycle = function(){};
         this.dialogs = {
             "dialogHeader"  : "Here Be Monsters!",
             "gameIntro"     : "You have entered a dark crypt in search of a valuable artifact called the Elder Sign, but little did you know that ancient evil and chaotic denizens wander here.",
@@ -52,6 +51,14 @@ class UI {
             },
             {
                 'container' : '.panel-footer',
+                'content' : '<span class="button-container dynamic"><button class="panel-button">Restart Game</button></span>',
+                'buttonContainer' : '.panel-button',
+                'disabled' : false,
+                'callback' : this.restartGame.bind(this),
+                'runCallbackOnOpen' : false
+            },
+            {
+                'container' : '.panel-footer',
                 'content' : '<span class="button-container dynamic"><button class="panel-button">Close</button></span>',
                 'buttonContainer' : '.panel-button',
                 'disabled' : false,
@@ -65,9 +72,8 @@ class UI {
         this.statusMessages = [];
     }
 
-    initialize(turnController) {
+    initialize() {
         this.preLoadPartials();
-        this.runTurnCycle = turnController.runTurnCycle;
     }
 
     preLoadPartials() {
@@ -139,6 +145,11 @@ class UI {
         this.events.setUpClickListener(target, targetActions, actionParams);
     }
 
+    restartGame() {
+        this.events.removeAllListeners();
+        Game.initialize();
+    }
+
     /*********************
      *  Modal functions
      *********************/
@@ -160,7 +171,7 @@ class UI {
             },
             // when opening the options panel from the modal, it should only contain the header, diff level, and button
             panelOptions = {
-                'open': this.defaultDynamicPanelOptions.slice(0, 2).concat(this.defaultDynamicPanelOptions.slice(4))
+                'open': this.defaultDynamicPanelOptions.slice(0, 2).concat(this.defaultDynamicPanelOptions.slice(5))
             },
             $lastSection;
 
