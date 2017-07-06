@@ -117,6 +117,7 @@ class TurnController {
                     player.pos = stairsPos;
                     player.setPlayer({'currentPos' : stairsPos});
                     player.levelChanged = null;
+                    this._scrollScreenToPlayer($('#' + player.pos));
                 }
                 this.setIsPlayerTurn(false);
                 this.runTurnCycle();
@@ -140,6 +141,31 @@ class TurnController {
      * Private Functions
      *
      *****************************/
+
+    _scrollScreenToPlayer($playerTile) {
+        let playerPos = Game.helpers.isOffScreen($playerTile),
+            x = 0,
+            y = 0,
+            $win = $(window),
+            verticalCenter = $win.height() / 2,
+            horizontalCenter = $win.width() / 2;
+
+        // if player is at bottom of screen, we want to scroll positive amount
+        if (playerPos.top < verticalCenter) {
+            y = playerPos.bottom - verticalCenter;
+        // if player is at top of screen, we want to scroll negative amount
+        } else if (playerPos.bottom < verticalCenter) {
+            y = verticalCenter - playerPos.top;
+        }
+        // if player is on right side of screen, we want to scroll positive amount
+        if (playerPos.left < horizontalCenter) {
+            x = playerPos.right - horizontalCenter;
+        // if player is on left side of screen, we want to scroll negative amount
+        } else if (playerPos.right < horizontalCenter) {
+            x = horizontalCenter - playerPos.left;
+        }
+        this.ui.scrollWindow(x, y);
+    }
 
     _updateMonstersForLevel(newMonsters) {
         this.monsters = newMonsters;
