@@ -62,7 +62,7 @@ class TurnController {
                     'label' : 'Start!',
                     'id' : 'modal-button-start',
                     'action' : this.ui.updateUIAtStart,
-                    'params' : {'player' : this.players.player1, 'callback' : this.ui.runTurnCycle.bind(this)},
+                    'params' : {'player' : this.players.player1, 'callback' : this.runTurnCycle.bind(this)},
                     'hidden' : false
                 },
             ];
@@ -258,13 +258,7 @@ class TurnController {
     }
 
     _endGame(message) {
-        let controller = this,
-            restartCallback = function() {
-                controller.dungeon.grid.clearGrid();
-                controller.events.removeAllListeners();
-                Game.initialize();
-            },
-            scoreValues = {
+        let scoreValues = {
                 'kills' : this.players.player1.kills,
                 'health' : this.players.player1.health,
                 'sanity' : this.players.player1.sanity,
@@ -278,7 +272,7 @@ class TurnController {
                 {'class' : 'modal-body left-content', 'text' : 'score', 'scoreValues' : scoreValues, 'hidden' : false},
             ],
             buttons = [
-                {'label' : 'Restart', 'action' : this.ui.modalClose, 'params' : {'callback' : restartCallback}, 'hidden' : false}
+                {'label' : 'Restart', 'action' : this.ui.modalClose, 'params' : {'callback' : this.ui.restartGame.bind(this)}, 'hidden' : false}
             ];
 
         this.ui.modalOpen(endingMessages, buttons);

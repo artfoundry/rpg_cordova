@@ -150,10 +150,6 @@ class Grid {
         $adjacentTiles.addClass('pc-adjacent');
     }
 
-    clearGrid() {
-        $('.row').remove();
-    }
-
     /**
      * function changeTileSetting
      * Changes tile classes to indicate the type of tile (walkable, impassable, item, object, player, monster, etc.).
