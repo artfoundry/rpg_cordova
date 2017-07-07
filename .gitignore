@@ -29,6 +29,10 @@ Temporary Items
 # Webstorm
 .idea
 
+# Cordova
+platforms
+node_modules
+
 # Misc
 notes.txt
 jquery-ui-1.12.1/
