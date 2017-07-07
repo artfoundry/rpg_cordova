@@ -28,13 +28,15 @@ figure {
 }
 
 button {
+    padding: 0 5px;
     border: 1px solid darkblue;
     border-top: 1px solid lightblue;
     border-bottom: 1px solid darkslateblue;
     border-radius: 12px;
     color: lightgray;
-    font-size: 1em;
+    font-size: .9em;
     line-height: 1.5em;
+    white-space: nowrap;
     cursor: pointer;
 }
 
@@ -108,7 +110,8 @@ button:active {
 }
 
 .statusbar {
-    position: relative;
+    display: flex;
+    justify-content: space-between;
     height: 26px;
     z-index: 6;
     padding: 10px;
@@ -122,16 +125,23 @@ button:active {
     box-shadow: 0 -10px 20px 20px black;
 }
 
+.statusbar-section {
+    flex-basis: 160px;
+}
+
+.statusbar-section:first-child {
+    min-width: 160px;
+    text-align: left;
+}
+
+.statusbar-section:last-child {
+    text-align: right;
+}
+
 .statusbar .title {
     font-family: 'Creepster', serif;
     font-size: 1.4em;
 }
-
-#options-button-container {
-    position: absolute;
-    right: 0;
-}
-
 
 .statusbar-button {
     width: 70px;
@@ -139,11 +149,6 @@ button:active {
     margin: 0;
     font-size: .8em;
     background-color: transparent;
-}
-
-#pc-buttons {
-    position: absolute;
-    left: 0;
 }
 
 .statusbar-button-leftcap {
@@ -616,7 +621,7 @@ button:active {
 }
 
 .panel-button {
-    width: 70px;
+    width: 120px;
     height: 35px;
     background-color: transparent;
 }

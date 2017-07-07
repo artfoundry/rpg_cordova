@@ -28,13 +28,15 @@ figure {
 }
 
 button {
+    padding: 0 5px;
     border: 1px solid darkblue;
     border-top: 1px solid lightblue;
     border-bottom: 1px solid darkslateblue;
     border-radius: 12px;
     color: lightgray;
-    font-size: 1em;
+    font-size: .9em;
     line-height: 1.5em;
+    white-space: nowrap;
     cursor: pointer;
 }
 
