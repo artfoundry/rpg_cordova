@@ -32,6 +32,7 @@ Temporary Items
 # Cordova
 platforms
 node_modules
+plugins
 
 # Misc
 notes.txt
