@@ -74,6 +74,7 @@ class UI {
 
     initialize() {
         this.preLoadPartials();
+        $('#title-screen').click(function() { $(this).hide(); });
     }
 
     preLoadPartials() {

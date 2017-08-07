@@ -44,6 +44,25 @@ button:active {
     box-shadow: inset 0 0 8px 8px black;
 }
 
+#title-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: url('../img/title-art.jpg') no-repeat;
+    background-color: black;
+    background-size: 400px 600px;
+    background-position: 50% 5%;
+    width: 100%;
+    height: 1000px;
+    z-index: 30;
+}
+
+#title {
+    top: 3%;
+    font-size: 80px;
+    color: orangered;
+}
+
 #app {
     text-align:center;
     padding: 0 3% 3%;
