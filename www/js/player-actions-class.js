@@ -175,6 +175,7 @@ class PlayerActions {
                                     playerActions.handleQuest(targetMonster.name);
                                 }
                                 Game.helpers.killObject(this.monsters, monsterNum);
+                                playerActions.dungeon.updateMonsterNumForLevel(currentPlayer.currentLevel);
                                 currentPlayer.updateKills();
                                 animateAttackParams.callback = function() {
                                     playerActions.grid.animateTile(animateDeathParams);

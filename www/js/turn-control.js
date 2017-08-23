@@ -25,7 +25,6 @@ class TurnController {
         this.playerActions = playerActions;
         this.monsterActions = monsterActions;
         this.monsters = monsters;
-        this.totalNumMonsters = [];
         this.events = events;
         this.isPlayerTurn = true;
         this.tileListenerTarget = '.tile';
@@ -106,7 +105,7 @@ class TurnController {
         this._tearDownListeners();
         // just played Player's turn
         if (this.getIsPlayerTurn() === true) {
-            if (player.quests.completedQuests.includes('killElder') && this._getTotalNumMonsters(player.currentLevel) === 0) {
+            if (player.quests.completedQuests.includes('killElder') && this._getTotalNumMonsters() === 0) {
                 this._endGame('gameOverWin');
             } else {
                 if (player.levelChanged !== null) {
@@ -173,13 +172,12 @@ class TurnController {
         this.monsterActions.monsters = this.monsters;
     }
 
-    _getTotalNumMonsters(level) {
+    _getTotalNumMonsters() {
         let total = 0;
 
-        this.totalNumMonsters[level] = Object.keys(this.monsters).length;
-        this.totalNumMonsters.forEach(function (num) {
-            total += num;
-        });
+        for (let n=0; n < this.dungeon.monstersPerLevel.length; n++) {
+            total += this.dungeon.monstersPerLevel[n];
+        }
         return total;
     }
 
