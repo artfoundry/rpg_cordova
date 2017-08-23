@@ -36,7 +36,7 @@ class PlayerActions {
             panelStairsParams = [
                 {
                     'container' : '.panel-body-container',
-                    'content' : '<span class="dynamic">Do you want to take the stairs or just move to them?</span>',
+                    'content' : '<div class="dynamic">Do you want to take the stairs or just move to them?</div>',
                     'disabled' : false
                 },
                 {
