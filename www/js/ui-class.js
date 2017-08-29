@@ -50,19 +50,15 @@ class UI {
                 'runCallbackOnOpen' : true
             },
             {
-                'container' : '.panel-footer',
-                'content' : '<span class="button-container dynamic"><button class="panel-button">Restart Game</button></span>',
-                'buttonContainer' : '.panel-button',
-                'disabled' : false,
-                'callback' : this.restartGame.bind(this),
-                'runCallbackOnOpen' : false
+                'container' : '.panel-body-container',
+                'content' : '<div class="dynamic"><span class="creepy-text">Monsters!</span> is produced by<div class="logo"></div></div><div class="dynamic">Visit the <a href="https://www.facebook.com/Monsters-112679832784491/" target="_blank"><span class="creepy-text">Monsters!</span> Facebook page!</a></div></div>'
             },
             {
                 'container' : '.panel-footer',
-                'content' : '<span class="button-container dynamic"><button class="panel-button">Close</button></span>',
-                'buttonContainer' : '.panel-button',
+                'content' : '<span class="button-container dynamic"><button id="restart-button" class="panel-button">Restart Game</button></span>',
+                'buttonContainer' : '#restart-button',
                 'disabled' : false,
-                'callback' : this.dynamicPanelClose.bind(this),
+                'callback' : this.restartGame.bind(this),
                 'runCallbackOnOpen' : false
             }
         ];
@@ -74,7 +70,12 @@ class UI {
 
     initialize() {
         this.preLoadPartials();
-        $('#title-screen').click(function() { $(this).hide(); });
+        this.manageTitleScreen();
+    }
+
+    manageTitleScreen() {
+        if (window.navigator.platform === 'MacIntel')
+            $('#title-screen').show().click(function() { $(this).hide(); });
     }
 
     preLoadPartials() {
@@ -94,18 +95,6 @@ class UI {
                 'open' : this.toggleStaticPanel.bind(this),
                 'close' : this.toggleStaticPanel.bind(this)
             },
-            invPanelParams = {
-                'open' : {
-                    'button' : '#pc-button-inv',
-                    'target' : '#inventory',
-                    'content' : params.player.inventory,
-                    'callback' : this.updateInventoryInfo.bind(this)
-                },
-                'close' : {
-                    'button' : '#pc-button-inv',
-                    'target' : '#inventory'
-                }
-            },
             questsPanelParams = {
                 'open' : {
                     'button' : '#pc-button-quests',
@@ -120,7 +109,6 @@ class UI {
             };
 
         this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
-        this.setUpPanelTrigger('#pc-button-inv', staticPanelCallbacks, invPanelParams);
         this.setUpPanelTrigger('#pc-button-quests', staticPanelCallbacks, questsPanelParams);
         $('#status-panel').click(this.toggleStatusPanel.bind(this));
 
@@ -423,7 +411,8 @@ class UI {
         Game.helpers.setKeysDisabled();
         $('.panel').show();
         $('#grid-cover').show();
-        $('#button-options').addClass('close-panel').removeClass('open-panel');
+        $('#button-options').removeClass('open-panel');
+        this.events.setUpGeneralInteractionListeners('#panel-close-button .button-close', this.dynamicPanelClose.bind(this));
 
         for (let option = 0; option < params.length; option++) {
             let currentOption = params[option],
@@ -457,7 +446,7 @@ class UI {
     dynamicPanelClose() {
         $('#grid-cover').hide();
         $('.panel').hide();
-        $('#button-options').addClass('open-panel').removeClass('close-panel');
+        $('#button-options').addClass('open-panel');
         Game.helpers.setKeysEnabled();
         // remove dynamically added content
         $('.panel .dynamic').remove();
