@@ -8,6 +8,21 @@
 
 
 class Events {
+    constructor() {
+        this.eventType = Game.platform === 'mobile' ? 'touchend' : 'click';
+        this.dragging = false;
+    }
+
+    setUpTouchMoveListener(target) {
+        $(target).on('touchmove', () => {
+            this.dragging = true;
+        });
+    }
+
+    removeTouchMoveListener(target) {
+        $(target).off('touchmove');
+    }
+
     /**
      * function setUpGeneralInteractionListeners
      * Used to handle less complex events with just one action and one or no sets of params,
@@ -18,7 +33,15 @@ class Events {
      * @param params - parameters to pass to callback
      */
     setUpGeneralInteractionListeners(target, targetAction, params = null) {
-        $(target).click((e) => {
+        this.setUpTouchMoveListener(target);
+
+        $(target).on(this.eventType, (e) => {
+            if (this.dragging) {
+                this.dragging = false;
+                this.removeTouchMoveListener();
+                return;
+            }
+
             let $target = $(e.target),
                 selectedOpt = Object.keys($target.data())[0],
                 actionParam = selectedOpt ? $target.data()[selectedOpt] : params;
@@ -42,7 +65,15 @@ class Events {
      * @param params - parameters to pass to callback
      */
     setUpClickListener(target, targetActions, params) {
-        $(target).click((e) => {
+        this.setUpTouchMoveListener(target);
+
+        $(target).on(this.eventType, (e) => {
+            if (this.dragging) {
+                this.dragging = false;
+                this.removeTouchMoveListener();
+                return;
+            }
+
             this.processAction(e.currentTarget, targetActions, params);
         });
     }
@@ -86,7 +117,7 @@ class Events {
     }
 
     removeClickListener(target) {
-        $(target).off('click');
+        $(target).off(this.eventType);
     }
 
     removeArrowKeysListener() {

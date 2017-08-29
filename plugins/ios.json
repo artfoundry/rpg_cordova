@@ -8,7 +8,7 @@
     },
     "installed_plugins": {
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.lcddreams.monsters"
+            "PACKAGE_NAME": "com.lcddreams.monsters"
         }
     },
     "dependent_plugins": {}

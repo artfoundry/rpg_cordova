@@ -74,8 +74,10 @@ class UI {
     }
 
     manageTitleScreen() {
-        if (window.navigator.platform === 'MacIntel')
-            $('#title-screen').show().click(function() { $(this).hide(); });
+        if (Game.platform === 'desktop') {
+            $('#title-screen').show();
+            this.events.setUpGeneralInteractionListeners('#title-screen', function() { $('#title-screen').hide(); });
+        }
     }
 
     preLoadPartials() {
@@ -110,7 +112,7 @@ class UI {
 
         this.setUpPanelTrigger('#button-options', dynamicPanelCallbacks, dynamicPanelParams);
         this.setUpPanelTrigger('#pc-button-quests', staticPanelCallbacks, questsPanelParams);
-        $('#status-panel').click(this.toggleStatusPanel.bind(this));
+        this.events.setUpGeneralInteractionListeners('#status-panel', this.toggleStatusPanel.bind(this));
 
         this.audio.setSoundState(Game.gameSettings.soundOn);
         this.audio.setMusicState(Game.gameSettings.musicOn);
