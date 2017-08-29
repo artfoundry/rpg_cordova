@@ -673,6 +673,10 @@ button:active {
     white-space: pre;
 }
 
+.panel-footer .button-container {
+    margin: 10px;
+}
+
 .panel-button {
     width: 120px;
     height: 35px;

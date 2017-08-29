@@ -16,6 +16,7 @@ class Dungeon {
         this.levelObjects = {};
         this.grid = {};
         this.monsters = {};
+        this.monstersPerLevel = [];
     }
 
     clearGrid() {
@@ -48,6 +49,10 @@ class Dungeon {
         this.currentLevel = nextLevel;
         this.createLevel(levelOptions, levelMarkup);
         this.loadMonstersForLevel(isNewLevel, callback);
+    }
+
+    updateMonsterNumForLevel(level) {
+        this.monstersPerLevel[level] = Object.keys(this.monsters).length;
     }
 
     loadMonstersForLevel(isNewLevel, callback) {
