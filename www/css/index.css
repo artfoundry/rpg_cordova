@@ -152,7 +152,7 @@ button:active {
     z-index: 6;
     width: 94%;
     min-width: 350px;
-    border-top: 40px solid black;
+    border-top: 20px solid black;
 }
 
 .statusbar {
@@ -226,7 +226,7 @@ button:active {
     justify-content: space-between;
     align-items: flex-end;
     position: fixed;
-    top: 90px;
+    top: 70px;
     width: 94%;
     height: 40px;
     padding-bottom: 10px;
@@ -345,7 +345,7 @@ button:active {
 
 .grid {
     margin: auto;
-    padding-top: 88px;
+    padding-top: 68px;
     background-color: black;
     overflow: hidden;
 }
@@ -355,7 +355,7 @@ button:active {
     position: fixed;
     width: 95%;
     height: 100%;
-    padding-top: 88px;
+    padding-top: 68px;
     background-color: black;
     opacity: 0.5;
     z-index: 5;
@@ -468,7 +468,7 @@ button:active {
     min-width: 250px;
     max-width: 600px;
     max-height: 600px;
-    top: 110px;
+    top: 90px;
     left: 50%;
     transform: translateX(-50%);
     overflow: hidden;
@@ -593,7 +593,7 @@ button:active {
     z-index: 6;
     min-width: 300px;
     max-width: 90%;
-    top: 150px;
+    top: 130px;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 15px;
@@ -695,7 +695,7 @@ button:active {
 
 #pc-panels {
     position: fixed;
-    top: 135px;
+    top: 125px;
     left: 3%;
     height: 0;
     z-index: 4;
