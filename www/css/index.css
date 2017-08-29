@@ -620,6 +620,10 @@ button:active {
     padding: 8px 8px 10px;
 }
 
+.panel-footer .button-container {
+    margin: 10px;
+}
+
 .panel-button {
     width: 120px;
     height: 35px;
