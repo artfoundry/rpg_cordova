@@ -262,7 +262,7 @@ class UI {
         el.append('<div id="leaderboard"><span class="score-text">Monster Leaders</span></div>');
 
         if (this.gameIsOnline)
-            Game.fbServices.saveScore(scores.total, this.displayLeaderboards);
+            Game.fbServices.saveScore(scores.total, this.displayLeaderboards.bind(this));
         else
             this.displayLeaderboards();
     }
