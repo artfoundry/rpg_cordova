@@ -13,6 +13,11 @@ div {
     padding: 0;
 }
 
+a {
+    color: orangered;
+    text-decoration: none;
+}
+
 figure {
     width: auto;
     margin: 0;
@@ -25,6 +30,10 @@ figure {
     box-shadow: inset 0 0 8px black;
     border-radius: 12px;
     background: linear-gradient(to bottom, rgba(130, 190, 210, 0.8) 15%, rgba(70, 70, 70, 0.8) 40%, rgba(50, 50, 50, 0.8) 70%, rgba(80, 120, 140, 0.2) 80%, rgba(50, 50, 50, 0.8) 100%);
+}
+
+.button-container.dynamic {
+    margin: 10px;
 }
 
 button {
@@ -44,7 +53,16 @@ button:active {
     box-shadow: inset 0 0 8px 8px black;
 }
 
+.button-close {
+    width: 30px;
+    color: black;
+    font-family: 'Creepster', serif;
+    font-size: 1.3em;
+    text-shadow: 0 0 5px orangered;
+}
+
 #title-screen {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -55,6 +73,15 @@ button:active {
     width: 100%;
     height: 1000px;
     z-index: 30;
+}
+
+.logo {
+    display: block;
+    margin: 20px auto 0;
+    width: 180px;
+    height: 29px;
+    background: url('../img/lcddreams_logo_transparent_sml.png') no-repeat;
+    background-size: 180px 29px;
 }
 
 #title {
@@ -125,7 +152,7 @@ button:active {
     z-index: 6;
     width: 94%;
     min-width: 350px;
-    border-top: 40px solid black;
+    border-top: 20px solid black;
 }
 
 .statusbar {
@@ -149,7 +176,6 @@ button:active {
 }
 
 .statusbar-section:first-child {
-    min-width: 160px;
     text-align: left;
 }
 
@@ -200,7 +226,7 @@ button:active {
     justify-content: space-between;
     align-items: flex-end;
     position: fixed;
-    top: 90px;
+    top: 70px;
     width: 94%;
     height: 40px;
     padding-bottom: 10px;
@@ -319,7 +345,7 @@ button:active {
 
 .grid {
     margin: auto;
-    padding-top: 88px;
+    padding-top: 68px;
     background-color: black;
     overflow: hidden;
 }
@@ -329,7 +355,7 @@ button:active {
     position: fixed;
     width: 95%;
     height: 100%;
-    padding-top: 88px;
+    padding-top: 68px;
     background-color: black;
     opacity: 0.5;
     z-index: 5;
@@ -442,7 +468,7 @@ button:active {
     min-width: 250px;
     max-width: 600px;
     max-height: 600px;
-    top: 110px;
+    top: 90px;
     left: 50%;
     transform: translateX(-50%);
     overflow: hidden;
@@ -506,6 +532,7 @@ button:active {
 .modal-button {
     width: 100px;
     margin: 0;
+    padding: 5px;
     background-color: transparent;
 }
 
@@ -564,10 +591,9 @@ button:active {
     display: none;
     position: fixed;
     z-index: 6;
-    width: 30%;
     min-width: 300px;
-    max-width: 400px;
-    top: 150px;
+    max-width: 90%;
+    top: 130px;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 15px;
@@ -578,14 +604,16 @@ button:active {
     font-size: 1em;
 }
 
+.panel-container {
+    margin: 50px 20px 20px;
+}
+
 .panel-header {
-    padding: 10px 8px 8px;
     font-size: 1.5em;
     text-shadow: 0 0 5px orangered;
 }
 
 .panel-body-container .dynamic {
-    padding: 0 20px;
     margin: 20px auto;
 }
 
@@ -600,8 +628,13 @@ button:active {
 
 .panel-options {
     display: inline-block;
+    margin: 0 15px;
     text-align: center;
     position: relative;
+}
+
+#panel-options-diff {
+    white-space: nowrap;
 }
 
 .panel-option {
@@ -636,7 +669,8 @@ button:active {
 }
 
 .panel-footer {
-    padding: 8px 8px 10px;
+    margin: 10px 0;
+    white-space: pre;
 }
 
 .panel-footer .button-container {
@@ -649,13 +683,23 @@ button:active {
     background-color: transparent;
 }
 
+#panel-close-button {
+    position: absolute;
+    top: 10px;
+    right: 0;
+}
+
+.panel-button.button-close {
+    width: 30px;
+}
+
 /**
  * PC Panels
  */
 
 #pc-panels {
     position: fixed;
-    top: 135px;
+    top: 125px;
     left: 3%;
     height: 0;
     z-index: 4;
@@ -711,17 +755,17 @@ button:active {
     background-color: darkslateblue;
 }
 
-.quest-completed-header, .inventory-items-header {
+.quest-completed-header {
     margin: 10px 0;
     border-bottom: 1px solid darkslateblue;
     color: darkslateblue;
 }
 
-.quest-name, .inventory-item-name {
+.quest-name {
     font-weight: bold;
 }
 
-.inventory-item-description, .quest-description {
+.quest-description {
     margin-bottom: 20px;
 }
 
@@ -773,16 +817,4 @@ button:active {
     height: 64px;
     opacity: 0;
     z-index: 2;
-}
-
-/*
- * Items
- */
-
-.inventory-item-elder-sign {
-    background-image: url('../img/elder-sign.png');
-    width: 64px;
-    height: 64px;
-    float: left;
-    margin: 5px 10px 5px 0;
 }

@@ -12,10 +12,34 @@ let Game = {
     'helpers' : new Helpers(),
     'items' : ITEMS,
     'quests' : QUESTS,
+    'platform' : '',
+    'getOS' : function() {
+        let userAgent = window.navigator.userAgent,
+            platform = window.navigator.platform,
+            macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+            windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+            iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+            os = null;
+
+        if (macosPlatforms.indexOf(platform) !== -1) {
+            os = 'Mac OS';
+        } else if (iosPlatforms.indexOf(platform) !== -1) {
+            os = 'iOS';
+        } else if (windowsPlatforms.indexOf(platform) !== -1) {
+            os = 'Windows';
+        } else if (/Android/.test(userAgent)) {
+            os = 'Android';
+        } else if (!os && /Linux/.test(platform)) {
+            os = 'Linux';
+        }
+
+        return (os === 'iOS' || os === 'Android') ? 'mobile' : 'desktop';
+    },
     'initialize' : function() {
         let startingMap = StartingOptions.startingMap;
         let playerOptions = startingMap.playerOptions;
         if (this.initialGame) {
+            this.platform = this.getOS();
             this.gameSettings.soundOn = StartingOptions.audioOptions.soundOn;
             this.gameSettings.musicOn = StartingOptions.audioOptions.musicOn;
             this.gameSettings.difficulty = StartingOptions.uiOptions.difficulty;
