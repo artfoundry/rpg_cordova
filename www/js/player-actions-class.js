@@ -107,7 +107,6 @@ class PlayerActions {
             if (Game.items[itemName].internalOnly.audioPickup)
                 this.audio.playSoundEffect([Game.items[itemName].internalOnly.audioPickup]);
             player.inventory.Items.push(itemName);
-            this.ui.updateInventoryInfo(player.inventory);
 
             if (itemType === 'questItems' && this._checkCurrentQuest(player, questName, itemName))
                 this.handleQuest(itemName);

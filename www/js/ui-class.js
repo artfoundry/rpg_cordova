@@ -18,7 +18,8 @@ class UI {
             "score"         : "How are your monster slaying skills?",
             "wait"          : "Wait... something is moving in the darkness...",
             "fear"          : "Just the sight of the Elder horrifies you, preventing you from even thinking of attacking it!",
-            "noExit"        : "You are here to find the Elder Sign.  There's no backing out now!"
+            "noExit"        : "You are here to find the Elder Sign.  There's no backing out now!",
+            "noConnection"  : "Internet connection not detected. You must have a connection to submit and download scores."
         };
         this.defaultDynamicPanelOptions = [
             {
@@ -51,7 +52,7 @@ class UI {
             },
             {
                 'container' : '.panel-body-container',
-                'content' : '<div class="dynamic"><span class="creepy-text">Monsters!</span> is produced by<div class="logo"></div></div><div class="dynamic">Visit the <a href="https://www.facebook.com/Monsters-112679832784491/" target="_blank"><span class="creepy-text">Monsters!</span> Facebook page!</a></div></div>'
+                'content' : '<div class="dynamic"><span class="creepy-text">Monsters!</span> is produced by<div class="logo"></div></div><div class="dynamic">Visit the <a href="https://www.facebook.com/lovecraft.monsters.game/" target="_blank"><span class="creepy-text">Monsters!</span> Facebook page!</a></div></div>'
             },
             {
                 'container' : '.panel-footer',
@@ -229,6 +230,7 @@ class UI {
                 $onlineButton.removeClass('option-highlight');
                 this.gameIsOnline = false;
             } else {
+        // add conditional for checking online status - if none, display error message
                 this.gameIsOnline = true;
                 $onlineButton.addClass('option-highlight');
                 this.dynamicPanelOpen(params);
@@ -240,6 +242,7 @@ class UI {
 
     displayScore(el, scoreValues) {
         let scores = this.calcScore(scoreValues);
+    // add conditional for checking online status - if none, display error message
 
         el.children('span').addClass('subheader creepy-text');
         el.append('<div><span class="score-headers">Monsters slain: </span><span class="score score-text">' + scores.kills + '</span></div>');
@@ -375,30 +378,6 @@ class UI {
             for (let name=0; name < questList.length; name++) {
                 questID = questList[name];
                 $targetBodyContainer.append('<div class="quest-name">&#8730; ' + Game.quests[questID].questName + '</div>');
-            }
-        }
-    }
-
-    updateInventoryInfo(inventory) {
-        let $targetBodyContainer = $('#inventory .body-container'),
-            invItemName = '',
-            invItemList = [];
-
-        $targetBodyContainer.html('');
-        for (let category in inventory) {
-            if (inventory.hasOwnProperty(category)) {
-                invItemList = inventory[category];
-                if ($('#inventory-' + category).length === 0)
-                    $targetBodyContainer.append('<h4 id="inventory-' + category + '" class="inventory-items-header">' + category + '</h4>');
-                if (invItemList.length > 0) {
-                    for (let i=0; i < invItemList.length; i++) {
-                        invItemName = invItemList[i];
-                        $targetBodyContainer
-                            .append('<div class="inventory-item-' + Game.items[invItemName].internalOnly.image + '"></div>')
-                            .append('<div class="inventory-item-name">' + Game.items[invItemName].name + '</div>')
-                            .append('<div class="inventory-item-description">' + Game.items[invItemName].description + '</div>');
-                    }
-                }
             }
         }
     }
