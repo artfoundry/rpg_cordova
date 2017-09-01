@@ -30,11 +30,12 @@ Temporary Items
 .idea
 
 # Cordova
-platforms
-node_modules
-plugins
+plugins/
+platforms/
+node_modules/
 
 # Misc
+assets/
 notes.txt
 jquery-ui-1.12.1/
 ignore/
