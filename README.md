@@ -4,6 +4,8 @@ A Lovecraft themed turn based RPG using cordova for mobile.
 Built using only HTML5, CSS3, JS (Ecmasript 6), and JQuery. Designed with object oriented programming in mind from the start to allow for
 flexibility and expandability.
 
+Play the game at http://lovecraft-monsters-game.com or https://itunes.apple.com/us/app/lovecraft-monsters/id1278716292?mt=8
+
 Development schedule is in phases:
 
 **Phase 1: First and simplest MVP**
@@ -42,7 +44,7 @@ Addition of player insanity, reduced by being near and interacting with monsters
 
 Use Cordova to compile native apps for iOS and Google Play app stores.  Need to create app icon and splash screen.  Need Restart Game button in Options panel so user doesn't need to restart app.
 
-*In progress*
+*Completed - game is now on the app store!*
 
 **Phase 5: More RPG elements added**
 
